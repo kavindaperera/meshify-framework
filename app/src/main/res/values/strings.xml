@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">meshify-chat</string>
+    <string name="powered_by">Powered by Meshify</string>
+</resources>
