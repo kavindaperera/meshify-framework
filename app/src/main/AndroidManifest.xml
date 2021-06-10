@@ -34,7 +34,7 @@
         <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
-            android:value="8b436faa-2006-433a-a217-ff3e5b79a0f5" />
+            android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
 
     </application>
 

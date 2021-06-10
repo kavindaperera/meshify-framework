@@ -1,16 +1,15 @@
 package com.codewizards.meshify_chat;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.logs.Log;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void startMeshify() {
 
-        Config.Builder builder=new Config.Builder();
+        Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
 
         //TODO - Meshify.start()
