@@ -98,6 +98,41 @@ public class Meshify {
         return providedApiKey;
     }
 
+    public static void start(@Nullable MessageListener messageListener, @Nullable StateListener stateListener) {
+        Meshify.start(messageListener, stateListener, new Config.Builder().build());
+    }
+
+    public static void start(@Nullable MessageListener messageListener, @Nullable StateListener stateListener, Config config) {
+
+        try {
+            if (getInstance().getMeshifyCore() == null) {
+                MeshifyUtils.initialize(getInstance().getContext(), config);
+                getInstance().setConfig(config);
+                getInstance().setMeshifyCore(new MeshifyCore());
+                //TODO - Implement Core constructor
+
+                if (stateListener != null) {
+                    stateListener.onStarted();
+                }
+
+            }
+        } catch (NullPointerException nullPointerException) {
+            if (stateListener != null) {
+                stateListener.onStartError("Meshify must be initialized before calling start().", -40);
+            } else {
+                nullPointerException.printStackTrace();
+            }
+        }  catch (MeshifyException meshifyException) {
+            if (stateListener != null) {
+                stateListener.onStartError(meshifyException.getMessage(), meshifyException.getErrorCode());
+            } else {
+                meshifyException.printStackTrace();
+            }
+        }
+
+    }
+
+
     public Config getConfig() {
         return this.config;
     }
