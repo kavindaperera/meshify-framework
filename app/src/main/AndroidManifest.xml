@@ -2,17 +2,25 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codewizards.meshify_chat">
 
-    <!--Features-->
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
 
-    <!-- Permissions -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- Permissions needed to run Wi-Fi Direct -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permissions needed to run Bluetooth Low Energy -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!--Other Permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
