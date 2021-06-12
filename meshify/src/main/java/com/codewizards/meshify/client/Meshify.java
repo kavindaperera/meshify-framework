@@ -108,8 +108,10 @@ public class Meshify {
             if (getInstance().getMeshifyCore() == null) {
                 MeshifyUtils.initialize(getInstance().getContext(), config);
                 getInstance().setConfig(config);
-                getInstance().setMeshifyCore(new MeshifyCore());
-                //TODO - Implement Core constructor
+                getInstance().setMeshifyCore(new MeshifyCore(getInstance().getContext(), config));
+                getInstance().getMeshifyCore().setMessageListener(messageListener);
+                getInstance().getMeshifyCore().setStateListener(stateListener);
+                getInstance().getMeshifyCore().initializeServices();
 
                 if (stateListener != null) {
                     stateListener.onStarted();

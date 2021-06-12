@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStartError(String message, int errorCode) {
             super.onStartError(message, errorCode);
-            Log.e(TAG, "onStartError()");
+            Log.e(TAG, "onStartError() " + message);
             if (errorCode == stateListener.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
             }
