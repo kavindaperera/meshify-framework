@@ -18,6 +18,8 @@ public class MeshifyCore {
     public static final String PREFS_NAME = "com.codewizards.meshify.client";
     public static final String PREFS_USER_UUID = "com.codewizards.meshify.uuid";
     public static final String PREFS_API_KEY = "com.codewizards.meshify.API_KEY";
+    public static final String PREFS_PUBLIC_KEY ="com.codewizards.meshify.key.public";
+    public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.public";
 
     private static final String TAG = "[Meshify][MeshifyCore]";
 

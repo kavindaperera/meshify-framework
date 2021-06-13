@@ -120,7 +120,7 @@ public class Meshify {
             }
         } catch (NullPointerException nullPointerException) {
             if (stateListener != null) {
-                stateListener.onStartError("Meshify must be initialized before calling start().", -40);
+                stateListener.onStartError(stateListener.INITIALIZATION_ERROR_STRING, stateListener.INITIALIZATION_ERROR);
             } else {
                 nullPointerException.printStackTrace();
             }

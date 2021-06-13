@@ -6,7 +6,7 @@ public class Config {
 
     private Antenna antennaType;
 
-    private MFConfigProfile mfConfigProfile;
+    private ConfigProfile configProfile;
 
     private int maxConnectionRetries;
 
@@ -23,7 +23,7 @@ public class Config {
 
         private boolean isEncryption = true;
 
-        private MFConfigProfile mfConfigProfile = MFConfigProfile.MFConfigProfileDefault;
+        private ConfigProfile configProfile = ConfigProfile.Default;
 
         private Antenna antennaType = Antenna.BLUETOOTH_LE;
 
@@ -40,8 +40,8 @@ public class Config {
             return this;
         }
 
-        public Builder setMFConfigProfile(MFConfigProfile mfConfigProfile) {
-            this.mfConfigProfile = mfConfigProfile;
+        public Builder setConfigProfile(ConfigProfile configProfile) {
+            this.configProfile = configProfile;
             return this;
         }
 
@@ -65,8 +65,8 @@ public class Config {
         return this.isEncryption;
     }
 
-    public MFConfigProfile getConfigProfile() {
-        return this.mfConfigProfile;
+    public ConfigProfile getConfigProfile() {
+        return this.configProfile;
     }
 
     public Antenna getAntennaType() {
@@ -87,7 +87,7 @@ public class Config {
 
     private Config(Builder builder) {
         this.isEncryption = builder.isEncryption;
-        this.mfConfigProfile = builder.mfConfigProfile;
+        this.configProfile = builder.configProfile;
         this.antennaType = builder.antennaType;
         this.maxConnectionRetries = builder.maxConnectionRetries;
         this.isAutoConnect = builder.isAutoConnect;

@@ -63,8 +63,8 @@ public class MeshifyClient {
             this.publicKey = hashMap.get("public");
             this.secretKey = hashMap.get("secret");
             Log.d(TAG, "... generating new key pair");
-            this.editor.putString("com.codewizards.meshify.key.public", this.publicKey);
-            this.editor.putString("com.codewizards.meshify.key.secret", this.secretKey);
+            this.editor.putString(MeshifyCore.PREFS_PUBLIC_KEY, this.publicKey);
+            this.editor.putString(MeshifyCore.PREFS_PRIVATE_KEY, this.secretKey);
             return this;
         }
 
@@ -74,8 +74,8 @@ public class MeshifyClient {
         }
 
         public Builder setKeys() {
-            this.publicKey = this.sharedPreferences.getString("com.codewizards.meshify.key.public", (String) null);
-            this.secretKey = this.sharedPreferences.getString("com.codewizards.meshify.key.secret", (String) null);
+            this.publicKey = this.sharedPreferences.getString(MeshifyCore.PREFS_PUBLIC_KEY, (String) null);
+            this.secretKey = this.sharedPreferences.getString(MeshifyCore.PREFS_PRIVATE_KEY, (String) null);
             return this;
         }
 
