@@ -70,9 +70,28 @@ public class BluetoothController {
         if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE && Meshify.getInstance().getConfig().getAntennaType() == Config.Antenna.BLUETOOTH) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 600);
             getContext().startActivity(intent);
         }
+    }
+
+    public void startDiscovery(Context context) {
+        Log.d(TAG, "startDiscovery:");
+        switch (this.getConfig().getAntennaType()) {
+            case BLUETOOTH: {
+                this.startBluetoothDiscovery(context);
+                break;
+            }
+            case BLUETOOTH_LE: {
+                //TODO - startBluetoothLeDiscovery
+            }
+        }
+    }
+
+    private void startBluetoothDiscovery(Context context) {
+        Log.d(TAG, "startBluetoothDiscovery: " );
+
+        //TODO - call bluetooth discovery
     }
 
     public void startServer(Context context) throws ConnectionException {

@@ -67,6 +67,7 @@ public class MeshifyCore {
         Log.d(TAG, "initializeServices:");
         this.meshifyReceiver.registerReceiver(this.context);
         this.meshifyReceiver.startServer(this.config.getAntennaType());
+        this.meshifyReceiver.startDiscovery(this.config.getAntennaType());
     }
 
 

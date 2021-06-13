@@ -125,16 +125,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
-    public void onBluetoothServerStop(Config.Antenna antenna) {
-        Log.d(TAG, "onBluetoothServerStop:");
-        switch (antenna) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.onBluetoothServerStop();
-            }
-        }
-    }
-
     @SuppressLint("MissingPermission")
     private void startServer() {
         Log.d(TAG, "startServer:");
@@ -147,12 +137,28 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
+    public void onBluetoothServerStop(Config.Antenna antenna) {
+        Log.d(TAG, "onBluetoothServerStop:");
+        switch (antenna) {
+            case BLUETOOTH:
+            case BLUETOOTH_LE: {
+                this.onBluetoothServerStop();
+            }
+        }
+    }
+
+    public void startDiscovery(Config.Antenna antenna) {
+        Log.d(TAG, "startDiscovery:");
+        switch (antenna) {
+            case BLUETOOTH:
+            case BLUETOOTH_LE: {
+                this.bluetoothController.startDiscovery(this.context);
+            }
+        }
+    }
+
     private void onBluetoothServerStop() {
-//        try {
-//            this.bluetoothController.stopServer(this.context.getApplicationContext());
-//        } catch (ConnectionException e) {
-//            Log.e(TAG, "onBluetoothServerStop: " + e.getMessage());
-//        }
+
     }
 
 
