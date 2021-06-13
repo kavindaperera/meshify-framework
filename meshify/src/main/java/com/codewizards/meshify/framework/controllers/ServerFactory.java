@@ -20,10 +20,10 @@ public class ServerFactory {
             case BLUETOOTH: {
                 if (bluetoothServer == null && isNew) {
                     try {
-                        Log.d(TAG, "getServerInstance: new bluetooth server created in " + context.getPackageName() + " context");
+                        Log.d(TAG, "getServerInstance: new bluetooth server created");
                         bluetoothServer = new BluetoothServer(Meshify.getInstance().getConfig(), false, context);
                     } catch (ConnectionException e) {
-                        Log.e(TAG, "getServerInstance: Cannot be possible create a instance of BluetoothServer", e);
+                        Log.e(TAG, "getServerInstance: Error occurred while initiating BluetoothServer", e);
                     }
                 }
                 return bluetoothServer;

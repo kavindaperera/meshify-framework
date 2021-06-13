@@ -83,7 +83,7 @@ public class BluetoothController {
                 break;
             }
             case BLUETOOTH_LE: {
-                //start BLE server
+                //TODO - start BLE server
             }
         }
     }
