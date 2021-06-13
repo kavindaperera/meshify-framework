@@ -180,6 +180,7 @@ public class BluetoothController {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                //TODO - addBluetoothDevice
                 break;
             case BluetoothDevice.ACTION_UUID:
                 //TODO - pairing action
