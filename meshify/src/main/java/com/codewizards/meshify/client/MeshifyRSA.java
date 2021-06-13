@@ -22,10 +22,22 @@ class MeshifyRSA {
         return hashMap;
     }
 
+    public static byte[] encrypt (String publicKey, byte[] bytes){
 
-    //TODO - encrypt
+        //TODO - encrypt
+        
+        return null;
 
-    //TODO - decrypt
+    }
+
+    public static byte[] decrypt (String privateKey, byte[] encryptedBytes){
+
+        //TODO - decrypt
+
+        return null;
+
+    }
+
 
     public static String base64StringFromBytes(byte[] byteArray) { //base64 encode to avoid changes when saving
         return Base64.encodeToString((byte[])byteArray, (int)0);
