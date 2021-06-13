@@ -79,6 +79,24 @@ public class BluetoothController {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private void discover(Context context) {
+        Log.d(TAG, "discovering... ");
+        if (this.bluetoothDiscovery != null) {
+            this.bluetoothDiscovery.setDiscoveryRunning(true);
+            return;
+        } else {
+            this.bluetoothAdapter.cancelDiscovery();
+            BluetoothDiscovery bluetoothDiscovery =  new BluetoothDiscovery(context);
+            this.bluetoothDiscovery = bluetoothDiscovery;
+
+            this.bluetoothDiscovery.stopDiscovery(context);
+            this.bluetoothDiscovery.startDiscovery(context, getConfig());
+        }
+
+    }
+
+
     public void startDiscovery(Context context) {
         Log.d(TAG, "startDiscovery:");
         switch (this.getConfig().getAntennaType()) {
@@ -154,7 +172,7 @@ public class BluetoothController {
                 //TODO - state change action
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
-                //TODO - discover action
+                this.discover(context);
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
                 //TODO - discover finished action
