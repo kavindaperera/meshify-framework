@@ -80,7 +80,7 @@ public class BluetoothDiscovery extends Discovery {
                 } else {
                     completableEmitter.onComplete();
                 }
-            })/*.retryWhen(TODO-implement a flatMap)*/.subscribe(new CompletableObserver(){
+            })/*.retryWhen(TODO-implement a flatMap Function)*/.subscribe(new CompletableObserver(){
 
                 public void onSubscribe(Disposable d2) {
                     Log.d(TAG, "onSubscribe:");

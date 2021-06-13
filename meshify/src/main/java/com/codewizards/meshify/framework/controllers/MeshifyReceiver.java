@@ -47,9 +47,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
         switch (this.config.getAntennaType()) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {
-
-                //TODO - call bluetooth controller
-
+                this.bluetoothController.onReceiveAction(intent, context);
             }
         }
     }

@@ -14,14 +14,14 @@ public class ServerFactory {
     private static BluetoothServer bluetoothServer;
 
 
-    static ThreadServer getServerInstance(Config.Antenna antenna, boolean isNew, Context context) {
+    static ThreadServer getServerInstance(Config.Antenna antenna, boolean isNew) {
 
         switch (antenna) {
             case BLUETOOTH: {
                 if (bluetoothServer == null && isNew) {
                     try {
                         Log.d(TAG, "getServerInstance: new bluetooth server created");
-                        bluetoothServer = new BluetoothServer(Meshify.getInstance().getConfig(), false, context);
+                        bluetoothServer = new BluetoothServer(Meshify.getInstance().getConfig(), false, Meshify.getInstance().getMeshifyCore().getContext());
                     } catch (ConnectionException e) {
                         Log.e(TAG, "getServerInstance: Error occurred while initiating BluetoothServer", e);
                     }
@@ -38,5 +38,8 @@ public class ServerFactory {
 
     }
 
+    static void setBluetoothServer(BluetoothServer bluetoothServer) {
+        ServerFactory.bluetoothServer = bluetoothServer;
+    }
 
 }

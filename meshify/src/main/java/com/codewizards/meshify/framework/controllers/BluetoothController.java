@@ -2,8 +2,10 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Meshify;
@@ -118,7 +120,7 @@ public class BluetoothController {
     @SuppressLint("MissingPermission")
     private void startBluetoothServer(Context context) throws ConnectionException {
         Log.d(TAG, "startBluetoothServer:" );
-        ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH, true, context.getApplicationContext());
+        ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH, true);
         this.threadServer = threadServer;
         if (threadServer != null) {
             threadServer.startServer();
@@ -129,6 +131,42 @@ public class BluetoothController {
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0); //value 0 means 120 seconds discoverable duration
             getContext().startActivity(intent);
         }
+    }
+
+    private void stopBluetoothServer(Context context) throws ConnectionException {
+        ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, false);
+        this.threadServer = threadServer;
+        if (threadServer != null) {
+            threadServer.stopServer();
+            this.threadServer = null;
+            ServerFactory.setBluetoothServer((BluetoothServer) null);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void onReceiveAction(Intent intent, Context context) {
+        String actionLog = intent.getAction();
+        Log.d(TAG, "onReceiveAction: " + actionLog);
+
+        String action = intent.getAction();
+        switch (intent.getAction()) {
+            case BluetoothAdapter.ACTION_STATE_CHANGED:
+                //TODO - state change action
+                break;
+            case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
+                //TODO - discover action
+                break;
+            case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
+                //TODO - discover finished action
+                break;
+            case BluetoothDevice.ACTION_FOUND:
+                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
+                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                break;
+            case BluetoothDevice.ACTION_UUID:
+                //TODO - pairing action
+        }
+
     }
 
     public Config getConfig() {
