@@ -90,7 +90,7 @@ public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServ
                 this.acceptConnection(((BluetoothServerSocket)this.getServerSocket()).accept()); //waiting to accept
             }
             catch (IOException e) {
-                Log.e(TAG, "runServer:" + e.getMessage());
+                Log.e(TAG, "runServer:IOException" + e.getMessage());
             }
         }
 

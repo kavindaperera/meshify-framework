@@ -10,10 +10,15 @@ import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 public class Discovery {
+
     protected String TAG = "[Meshify][Discovery]";
+
     DisposableSubscriber<Device> disposableSubscriber;
+
     Flowable<Device> deviceFlowable; //emits device objects
+
     private Config config;
+
     private boolean discoveryRunning = false;
 
     Discovery() {
@@ -47,5 +52,10 @@ public class Discovery {
     public void setConfig(Config config) {
         this.config = config;
     }
+
+    protected void removeDeviceByAntennaType(Config.Antenna antenna) {
+        //TODO
+    }
+
 
 }

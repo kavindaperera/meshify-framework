@@ -22,7 +22,7 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
 
     @Override
     public void onNext(Device device) {
-
+        Log.d(TAG, "onNext: device: " + device + " | onThread: " +  Thread.currentThread().getName());
         //TODO - create a completableObserver
 
     }

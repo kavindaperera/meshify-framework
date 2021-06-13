@@ -22,6 +22,8 @@ public class BluetoothController {
 
     private Context context;
 
+    private BluetoothDiscovery bluetoothDiscovery;
+
     private ThreadServer threadServer;
 
     private boolean isBLE = true;
@@ -91,7 +93,13 @@ public class BluetoothController {
     private void startBluetoothDiscovery(Context context) {
         Log.d(TAG, "startBluetoothDiscovery: " );
 
-        //TODO - call bluetooth discovery
+        if (this.bluetoothDiscovery == null) {
+            this.bluetoothDiscovery = new BluetoothDiscovery(context);
+        }
+
+        if (!this.bluetoothDiscovery.isDiscoveryRunning()) {
+            this.bluetoothDiscovery.startDiscovery(context, getConfig());
+        }
     }
 
     public void startServer(Context context) throws ConnectionException {
