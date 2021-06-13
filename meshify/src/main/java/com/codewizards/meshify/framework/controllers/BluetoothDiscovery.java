@@ -13,6 +13,8 @@ import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
@@ -98,5 +100,36 @@ public class BluetoothDiscovery extends Discovery {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private void sdpSearch(BluetoothDevice bluetoothDevice) {
+        try {
+            Log.v(TAG, "... fetching with sdpSearch " + bluetoothDevice.getAddress() + " (" + bluetoothDevice.getName() + ")");
+            bluetoothDevice.getClass().getDeclaredMethod("sdpSearch", new Class[]{ParcelUuid.class}).invoke(bluetoothDevice, new Object[]{new ParcelUuid(BluetoothUtils.getBluetoothUuid())});
+        }
+        catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    void DiscoveryFinishedAction(Context context) {
+        Log.i(this.TAG, "DiscoveryFinishedAction: ");
+        this.setDiscoveryRunning(false);
+        this.devices.clear();
+        if (this.bluetoothAdapter.isEnabled()) {
+            if (!this.bluetoothDevices.isEmpty()) {
+
+                //TODO - do fetchDeviceUuidWithSdp() for devices found
+
+                this.startDiscovery(context, this.getConfig());
+            } else {
+                this.startDiscovery(context, this.getConfig());
+            }
+        }
+    }
+
+    private boolean removeDevice(BluetoothDevice bluetoothDevice) {
+        return this.bluetoothDevices.remove((Object)bluetoothDevice);
+    }
 
 }

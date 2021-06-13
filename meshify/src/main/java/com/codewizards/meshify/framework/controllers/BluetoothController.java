@@ -175,7 +175,7 @@ public class BluetoothController {
                 this.discover(context);
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                //TODO - discover finished action
+                this.bluetoothDiscovery.DiscoveryFinishedAction(context);
                 break;
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
