@@ -42,7 +42,6 @@ public class MeshifyUtils {
     }
 
     static void initialize(Context context, Config config) {
-        Log.d(TAG, "initialize:");
         switch (config.getAntennaType()) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {

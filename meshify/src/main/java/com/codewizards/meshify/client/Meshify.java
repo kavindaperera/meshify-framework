@@ -49,7 +49,6 @@ public class Meshify {
     }
 
     private static void initialize(Context context, @Nullable String providedApiKey, UUID uuid)  {
-        Log.d(TAG, "initialize:");
         SharedPreferences sharedPreferences = context.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);
         String loadApiKey = Meshify.loadApiKey(context, providedApiKey);
         String string = sharedPreferences.getString(MeshifyCore.PREFS_USER_UUID, (String) null);
@@ -71,7 +70,6 @@ public class Meshify {
     }
 
     public static void create(Context context, MeshifyClient meshifyClient) {
-        Log.d(TAG, "create:");
         synchronized (Meshify.class) {
             createInstance(new Builder(context, meshifyClient).build());
         }
@@ -85,12 +83,12 @@ public class Meshify {
                     providedApiKey = (String) context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.get(MeshifyCore.PREFS_API_KEY);
 
                     if (providedApiKey == null && (providedApiKey = sharedPreferences.getString(MeshifyCore.PREFS_API_KEY, (String) null)) == null) {
-                        throw new IllegalArgumentException("Missing API KEY in AndroidManifest.xml");
+                        throw new IllegalArgumentException("Missing UUID KEY ");
                     }
                     break block4;
                 }
                 catch (Exception exception) {
-                    throw new IllegalArgumentException("Missing or incorrect API KEY");
+                    throw new IllegalArgumentException("Missing or incorrect UUID KEY");
                 }
             }
             sharedPreferences.edit().putString(MeshifyCore.PREFS_API_KEY, providedApiKey).apply();
@@ -152,7 +150,6 @@ public class Meshify {
     }
 
     private static void createInstance(Meshify meshify) {
-        Log.d(TAG, "createInstance:");
         meshifyInstance = meshify;
     }
 
@@ -173,7 +170,7 @@ public class Meshify {
         Builder(Context context, MeshifyClient meshifyClient) {
 
             if (context == null | meshifyClient == null) {
-                throw new IllegalArgumentException("Context or MeshifyClient must not be null.");
+                throw new IllegalArgumentException("Context or Client is null.");
             }
 
             this.context = context.getApplicationContext();
