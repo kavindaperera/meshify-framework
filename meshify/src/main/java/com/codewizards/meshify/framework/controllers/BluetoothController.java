@@ -47,10 +47,8 @@ public class BluetoothController {
     }
 
     private void hardwareCheck() throws MeshifyException {
-        Log.d(TAG, "hardwareCheck:");
         if (!getContext().getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
             this.isBLE = false;
-
             switch (this.getConfig().getAntennaType()){
                 case BLUETOOTH_LE: {
                     Log.e(TAG, "Bluetooth Low Energy not supported.");
@@ -68,19 +66,17 @@ public class BluetoothController {
 
     @SuppressLint("MissingPermission")
     private void requestDiscoverable() {
-        Log.d(TAG, "requestDiscoverable:");
         BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(getContext());
         this.bluetoothAdapter = bluetoothAdapter;
         if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE && Meshify.getInstance().getConfig().getAntennaType() == Config.Antenna.BLUETOOTH) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 600);
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
             getContext().startActivity(intent);
         }
     }
 
     private void disconnectDevices() {
-        Log.i(TAG, "disconnectDevices: ");
         switch (this.getConfig().getAntennaType()) {
             case BLUETOOTH: {
                 //TODO - remove BT sessions
@@ -136,7 +132,6 @@ public class BluetoothController {
 
 
     public void startDiscovery(Context context) {
-        Log.d(TAG, "startDiscovery:");
         switch (this.getConfig().getAntennaType()) {
             case BLUETOOTH: {
                 this.startBluetoothDiscovery(context);
@@ -149,8 +144,6 @@ public class BluetoothController {
     }
 
     private void startBluetoothDiscovery(Context context) {
-        Log.d(TAG, "startBluetoothDiscovery: " );
-
         if (this.bluetoothDiscovery == null) {
             this.bluetoothDiscovery = new BluetoothDiscovery(context);
         }
@@ -161,7 +154,6 @@ public class BluetoothController {
     }
 
     public void stopDiscovery(Context context) {
-        Log.i(TAG, "stopDiscovery: ");
         if (this.bluetoothDiscovery != null) {
             this.bluetoothDiscovery.stopDiscovery(context);
         }

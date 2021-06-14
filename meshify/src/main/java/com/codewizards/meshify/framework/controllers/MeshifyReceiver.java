@@ -30,7 +30,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     private BluetoothController bluetoothController;
 
     protected MeshifyReceiver(Config config, Context context) throws MeshifyException {
-        Log.d(TAG, "MeshifyReceiver:");
         this.config = config;
         this.context = context;
         createBluetoothController(context, config);
@@ -38,7 +37,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive:");
         this.context = context;
         onReceiveAction(context, intent);
     }
@@ -67,12 +65,10 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     private void addBleAction(IntentFilter intentFilter) {
-        Log.d(TAG, "addBleAction:");
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
     }
 
     private void addBluetoothActions(IntentFilter intentFilter) {
-        Log.d(TAG, "addBluetoothActions:");
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -88,7 +84,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     public void registerReceiver(Context context) {
-        Log.d(TAG, "registerReceiver:");
         if (!this.isRegistered) {
             context.registerReceiver(this, getIntentFilter());
             this.isRegistered = true;
@@ -96,7 +91,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     public void unregisterReceiver(Context context) {
-        Log.e(TAG, "unregisterReceiver:");
         if (this.isRegistered) {
             context.unregisterReceiver(this);
             this.isRegistered = false;
@@ -104,7 +98,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     private void createBluetoothController(Context context, Config config) throws MeshifyException {
-        Log.d(TAG, "createBluetoothController:");
         switch (this.config.getAntennaType()) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {
@@ -126,7 +119,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     @SuppressLint("MissingPermission")
     private void startServer() {
-        Log.d(TAG, "startServer:");
         if (MeshifyUtils.getBluetoothAdapter(this.context).isEnabled()) {
             try {
                 this.bluetoothController.startServer(this.context);
@@ -137,7 +129,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     public void onBluetoothServerStop(Config.Antenna antenna) {
-        Log.d(TAG, "onBluetoothServerStop:");
         switch (antenna) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {
@@ -147,7 +138,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     public void startDiscovery(Config.Antenna antenna) {
-        Log.d(TAG, "startDiscovery:");
         switch (antenna) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {

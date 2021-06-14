@@ -44,7 +44,6 @@ public class MeshifyCore {
     });
 
     public MeshifyCore(Context context, Config config) {
-        Log.d(TAG, "MeshifyCore:");
         this.context = context;
         this.config = config;
         this.sharedPreferences = context.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);;
@@ -54,12 +53,10 @@ public class MeshifyCore {
     }
 
     public SharedPreferences getSharedPreferences() {
-        Log.d(TAG, "getEditor:");
         return this.sharedPreferences;
     }
 
     public SharedPreferences.Editor getEditor() {
-        Log.d(TAG, "getEditor:");
         return this.editor;
     }
 

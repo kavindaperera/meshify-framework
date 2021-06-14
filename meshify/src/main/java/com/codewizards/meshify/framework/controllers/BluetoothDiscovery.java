@@ -49,7 +49,6 @@ public class BluetoothDiscovery extends Discovery {
     private FlowableEmitter<Device> emitter;
 
     public BluetoothDiscovery(Context context) {
-        Log.d(TAG, "BluetoothDiscovery:constructor");
         this.context = context;
         this.bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(context);
         this.confirmedBluetoothDevices = new CopyOnWriteArrayList<>();
@@ -67,7 +66,7 @@ public class BluetoothDiscovery extends Discovery {
 
         this.deviceFlowable = Flowable.create(flowableEmitter -> { //emits the discovered devices
             this.emitter = flowableEmitter;
-        }, (BackpressureStrategy)BackpressureStrategy.BUFFER); //BackpressureStrategy.BUFFER, the source will buffer all the events until the subscriber can consume them
+        }, (BackpressureStrategy)BackpressureStrategy.BUFFER); //BackpressureStrategy.BUFFER, the source will buffer all the devices until the subscriber can consume them
 
     }
 
@@ -80,25 +79,23 @@ public class BluetoothDiscovery extends Discovery {
         this.setConfig(config);
         if (!this.bluetoothAdapter.isDiscovering()) {
             Completable.create(completableEmitter -> {
-                if (!this.bluetoothAdapter.startDiscovery()) {
-                    completableEmitter.tryOnError(new Throwable("Discovery start failed"));
+                if (!this.bluetoothAdapter.startDiscovery()) { //starts discovery
+                    completableEmitter.tryOnError(new Throwable("Discovery start failed")); //if discovery start failed call onError of CompletableObserver
                 } else {
                     completableEmitter.onComplete();
                 }
-            })/*.retryWhen(TODO-implement a flatMap Function)*/.subscribe(new CompletableObserver(){
+            }).retryWhen(new RetryWhenLambda(4, 2000)) //2000 milliseconds delay retry
+                    .subscribe(new  CompletableObserver(){
+                        public void onSubscribe(Disposable d2) {
+                        }
 
-                public void onSubscribe(Disposable d2) {
-                    Log.d(TAG, "onSubscribe:");
-                }
+                        public void onComplete() {
+                        }
 
-                public void onComplete() {
-                    Log.d(TAG, "onComplete:");
-                }
-
-                public void onError(Throwable e2) {
-                    Log.d(TAG, "onError:" + e2);
-                    BluetoothDiscovery.this.stopDiscovery(context);
-                }
+                        public void onError(Throwable e2) {
+                            Log.e(TAG, "onError:" + e2);
+                            BluetoothDiscovery.this.stopDiscovery(context); //stop discovery on error
+                        }
             });
         }
     }
@@ -116,7 +113,6 @@ public class BluetoothDiscovery extends Discovery {
 
     @SuppressLint("MissingPermission")
     void DiscoveryFinishedAction(Context context) {
-        Log.i(this.TAG, "DiscoveryFinishedAction: ");
         this.setDiscoveryRunning(false);
         this.devices.clear();
         if (this.bluetoothAdapter.isEnabled()) {
@@ -178,7 +174,6 @@ public class BluetoothDiscovery extends Discovery {
             DeviceManager.addDevice(device);
             this.addIfAbsentConfirmed(bluetoothDevice);
             this.emitter.onNext(device); //notify connection subscriber
-
         } else if (!z && !isBLE) {
             this.addIfAbsentDiscovered(bluetoothDevice);
         }
@@ -221,7 +216,7 @@ public class BluetoothDiscovery extends Discovery {
                 }
                 this.addDevice(bluetoothDevice, matched, false);
             } else {
-                Log.v(this.TAG, "::: ::: ::: Received null UUIDs from Device: " + bluetoothDevice.getName() + "Address: " + bluetoothDevice.getAddress());
+                Log.e(this.TAG, "Received null UUIDs from Device: " + bluetoothDevice.getName() + "Address: " + bluetoothDevice.getAddress());
             }
         }
         this.removeDiscoveredDevice(bluetoothDevice);
