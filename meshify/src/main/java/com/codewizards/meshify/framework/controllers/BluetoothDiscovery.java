@@ -128,12 +128,12 @@ public class BluetoothDiscovery extends Discovery {
                         this.removeDevice(bluetoothDevice);
                         Log.w(TAG, "removed device due to fetch timeout: " + bluetoothDevice.getAddress());
                     }, 20000L, TimeUnit.MILLISECONDS);
-                    if (Build.VERSION.SDK_INT > 23) {
+//                    if (Build.VERSION.SDK_INT > 23) {
                         Log.v(TAG, "fetching " + bluetoothDevice.getAddress() + " (" + bluetoothDevice.getName() + ")");
                         bluetoothDevice.fetchUuidsWithSdp();
                         continue;
-                    }
-                    this.sdpSearch(bluetoothDevice);
+//                    }
+//                    this.sdpSearch(bluetoothDevice);
                 }
                 this.startDiscovery(context, this.getConfig());
             } else {
@@ -199,23 +199,32 @@ public class BluetoothDiscovery extends Discovery {
         return this.discoveredDevices.remove((Object)bluetoothDevice);
     }
 
+    private void removeDiscoveredDevice(BluetoothDevice bluetoothDevice) {
+        this.removeDevice(bluetoothDevice);
+        if (this.discoveredDevices.size() == 0) {
+            this.startDiscovery(this.context, this.getConfig());
+        }
+    }
+
     @SuppressLint("MissingPermission")
     void pair(Intent intent){
         BluetoothDevice bluetoothDevice = (BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         Parcelable[] arrparcelable = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-
-        boolean matched = false;
-        for (Parcelable parcelable : arrparcelable) {
-            Log.v(this.TAG, "::: ::: ::: FETCHED UUID: " + parcelable.toString() + " Device: " + bluetoothDevice.getName() + " Address: " + bluetoothDevice.getAddress());
-
-            if(!(parcelable.toString().equals(BluetoothUtils.getBluetoothUuid().toString()))) continue;
-
-            Log.v(this.TAG, "::: ::: ::: Matching device found!");
-            matched = true;
-
+        if (bluetoothDevice != null && bluetoothDevice.getAddress() != null) {
+            if (arrparcelable != null) {
+                boolean matched = false;
+                for (Parcelable parcelable : arrparcelable) {
+                    Log.v(this.TAG, "::: ::: ::: FETCHED UUID: " + parcelable.toString() + " Device: " + bluetoothDevice.getName() + " Address: " + bluetoothDevice.getAddress());
+                    if (!(parcelable.toString().equals(BluetoothUtils.getBluetoothUuid().toString()))) continue;
+                    Log.v(this.TAG, "::: ::: ::: Matching device found!");
+                    matched = true;
+                }
+                this.addDevice(bluetoothDevice, matched, false);
+            } else {
+                Log.v(this.TAG, "::: ::: ::: Received null UUIDs from Device: " + bluetoothDevice.getName() + "Address: " + bluetoothDevice.getAddress());
+            }
         }
-        this.addDevice(bluetoothDevice, matched, false);
-
+        this.removeDiscoveredDevice(bluetoothDevice);
     }
 
 }

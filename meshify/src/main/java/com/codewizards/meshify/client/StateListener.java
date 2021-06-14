@@ -22,4 +22,6 @@ public class StateListener {
 
     }
 
+    public void onDeviceConnected(Device device, Session session) { }
+
 }
