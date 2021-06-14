@@ -2,8 +2,10 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.ParcelUuid;
 
@@ -126,6 +128,26 @@ public class BluetoothDiscovery extends Discovery {
                 this.startDiscovery(context, this.getConfig());
             }
         }
+    }
+
+    @SuppressLint(value = {"HardwareIds", "MissingPermission"})
+    void addBluetoothDevice(Intent intent) {
+
+        BluetoothDevice bluetoothDevice = (BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        Log.d(TAG, "addBluetoothDevice: " + bluetoothDevice.getName());
+
+        boolean z = true;
+
+        if (bluetoothDevice != null && bluetoothDevice.getAddress() != null && bluetoothDevice.getName() != null && bluetoothDevice.getBluetoothClass() != null) {
+            if (bluetoothDevice.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART) {
+                if (!this.confirmedBluetoothDevices.contains(bluetoothDevice)) {
+
+                } else {
+                    Log.v(TAG, "::: ::: ::: previously known Meshify user.");
+                }
+            }
+        }
+
     }
 
     private boolean removeDevice(BluetoothDevice bluetoothDevice) {

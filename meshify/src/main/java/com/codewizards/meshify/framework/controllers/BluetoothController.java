@@ -79,6 +79,44 @@ public class BluetoothController {
         }
     }
 
+    private void disconnectDevices() {
+        Log.i(TAG, "disconnectDevices: ");
+        switch (this.getConfig().getAntennaType()) {
+            case BLUETOOTH: {
+                //TODO - remove BT sessions
+                break;
+            }
+            case BLUETOOTH_LE: {
+                //TODO - remove BLE sessions
+            }
+        }
+    }
+
+    private void stateChangeAction(Intent intent, Context context) {
+        BluetoothController bluetooth_controller = this;
+        synchronized (bluetooth_controller) {
+            switch (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0)) {
+                case BluetoothAdapter.STATE_ON: {
+                    try {
+                        this.startServer(context.getApplicationContext());
+                    } catch (ConnectionException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case BluetoothAdapter.STATE_OFF: {
+                    try {
+                        stopDiscovery(context.getApplicationContext());
+                        disconnectDevices();
+                        stopServer(context.getApplicationContext());
+                    } catch (Exception e2) {
+                        Log.w(TAG, e2.getMessage());
+                    }
+                }
+
+            }
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private void discover(Context context) {
         Log.d(TAG, "discovering... ");
@@ -122,6 +160,16 @@ public class BluetoothController {
         }
     }
 
+    public void stopDiscovery(Context context) {
+        Log.i(TAG, "stopDiscovery: ");
+        if (this.bluetoothDiscovery != null) {
+            this.bluetoothDiscovery.stopDiscovery(context);
+        }
+
+        //TODO - stop ble discovery
+
+    }
+
     public void startServer(Context context) throws ConnectionException {
         Log.d(TAG, "startServer: " + this.getConfig().getAntennaType());
         switch (this.getConfig().getAntennaType()) {
@@ -151,6 +199,19 @@ public class BluetoothController {
         }
     }
 
+    public void stopServer(Context context) throws ConnectionException {
+        Log.i(TAG, "stopServer: ");
+        switch (this.getConfig().getAntennaType()) {
+            case BLUETOOTH: {
+                this.stopBluetoothServer(context.getApplicationContext());
+                break;
+            }
+            case BLUETOOTH_LE: {
+                //TODO - stop BLE server
+            }
+        }
+    }
+
     private void stopBluetoothServer(Context context) throws ConnectionException {
         ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, false);
         this.threadServer = threadServer;
@@ -169,7 +230,7 @@ public class BluetoothController {
         String action = intent.getAction();
         switch (intent.getAction()) {
             case BluetoothAdapter.ACTION_STATE_CHANGED:
-                //TODO - state change action
+                this.stateChangeAction(intent, context);
                 break;
             case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                 this.discover(context);
@@ -180,7 +241,7 @@ public class BluetoothController {
             case BluetoothDevice.ACTION_FOUND:
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                //TODO - addBluetoothDevice
+                this.bluetoothDiscovery.addBluetoothDevice(intent);
                 break;
             case BluetoothDevice.ACTION_UUID:
                 //TODO - pairing action
