@@ -166,6 +166,11 @@ public class Message implements Parcelable {
         dest.writeInt(hops);
     }
 
+    /**
+     * Converts the given Parcelable object to an array of bytes
+     * @param parcelable  a parcelable object
+     * @return  the raw bytes of the given Parcelable object
+     */
     public static byte[] marshall(Parcelable parcelable) {
 
         Parcel parcel = Parcel.obtain();

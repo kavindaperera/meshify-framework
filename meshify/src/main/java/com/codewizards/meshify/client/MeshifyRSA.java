@@ -17,8 +17,17 @@ import java.util.HashMap;
 
 import javax.crypto.Cipher;
 
+/**
+ * Can be used to generate Public-Private key pairs for RSA,
+ * to encrypt data using Public key and decrypt data using Private key
+ */
 class MeshifyRSA {
 
+    /**
+     * This will generate a Public-Private key pair for RSA and returns them in a HashMap
+     * @return a HashMap containing two key-value pairs for public & private keys
+     * @throws NoSuchAlgorithmException
+     */
     static HashMap<String, String> generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
@@ -31,6 +40,13 @@ class MeshifyRSA {
         return hashMap;
     }
 
+    /**
+     * Encrypts the given byte array using the given Base64 encoded public key and
+     * returns the encrypted data as a byte array
+     * @param base64PublicKey  a public key encoded in Base64
+     * @param bytes  a byte array of the content to be encrypted
+     * @return  a byte array of the encrypted data
+     */
     public static byte[] encrypt (String base64PublicKey, byte[] bytes){
 
         byte[] encryptedBytes = null;
@@ -53,10 +69,15 @@ class MeshifyRSA {
         
         return encryptedBytes;
 
-        //TODO - encrypt
-
     }
 
+    /**
+     * Decrypts the given byte array of encrypted data using the given Base64 encoded private key and
+     * returns the decrypted data as a byte array
+     * @param base64PrivateKey  a private key encoded in Base64
+     * @param encryptedBytes  a byte array of the encrypted data to be decrypted
+     * @return  a byte array of the decrypted data
+     */
     public static byte[] decrypt (String base64PrivateKey, byte[] encryptedBytes){
 
         byte[] decryptedBytes = null;
@@ -79,19 +100,27 @@ class MeshifyRSA {
 
         return decryptedBytes;
 
-        //TODO - decrypt
-
     }
 
 
+    /**
+     * Encodes the given byte array as a Base64 encoded String and returns it
+     * @param byteArray a byte array of data
+     * @return  a String encoded in Base64
+     */
     public static String base64StringFromBytes(byte[] byteArray) { //base64 encode to avoid changes when saving
         return Base64.encodeToString((byte[])byteArray, (int)0);
     }
 
+
+    /**
+     * Given a String encoded in Base64 returns a String decoded from Base64
+     * @param base64 a String encoded in Base64
+     * @return  a String decoded from Base64
+     */
     public static String decodeBase64StringFromString(String base64) { //base64 decode
         byte[] arrby = Base64.decode((String)base64, (int)0);
         return new String(arrby, StandardCharsets.UTF_8);
     }
-
 
 }
