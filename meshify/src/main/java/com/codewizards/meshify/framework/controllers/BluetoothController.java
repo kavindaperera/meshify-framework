@@ -244,7 +244,7 @@ public class BluetoothController {
                 this.bluetoothDiscovery.addBluetoothDevice(intent);
                 break;
             case BluetoothDevice.ACTION_UUID:
-                //TODO - pairing action
+                this.bluetoothDiscovery.pair(intent);
         }
 
     }

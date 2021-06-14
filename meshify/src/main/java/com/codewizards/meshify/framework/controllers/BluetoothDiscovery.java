@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.ParcelUuid;
+import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
@@ -39,7 +40,7 @@ public class BluetoothDiscovery extends Discovery {
 
     private CopyOnWriteArrayList<Device> devices;
 
-    private CopyOnWriteArrayList<BluetoothDevice> bluetoothDevices;
+    private CopyOnWriteArrayList<BluetoothDevice> discoveredDevices;
 
     static String l;
 
@@ -53,7 +54,7 @@ public class BluetoothDiscovery extends Discovery {
         this.bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(context);
         this.confirmedBluetoothDevices = new CopyOnWriteArrayList<>();
         this.devices = new CopyOnWriteArrayList<>();
-        this.bluetoothDevices = new CopyOnWriteArrayList<>();
+        this.discoveredDevices = new CopyOnWriteArrayList<>();
 
         if (Build.VERSION.SDK_INT >= 23) { //check whether sdp search is available
             try {
@@ -119,10 +120,21 @@ public class BluetoothDiscovery extends Discovery {
         this.setDiscoveryRunning(false);
         this.devices.clear();
         if (this.bluetoothAdapter.isEnabled()) {
-            if (!this.bluetoothDevices.isEmpty()) {
+            if (!this.discoveredDevices.isEmpty()) {
 
-                //TODO - do fetchDeviceUuidWithSdp() for devices found
-
+                Log.v(TAG, "fetchUuidsWithSdp() from " + this.discoveredDevices.size() + " discovered devices:");
+                for (BluetoothDevice bluetoothDevice : this.discoveredDevices) {
+                    new ScheduledThreadPoolExecutor(1).schedule(() -> {
+                        this.removeDevice(bluetoothDevice);
+                        Log.w(TAG, "removed device due to fetch timeout: " + bluetoothDevice.getAddress());
+                    }, 20000L, TimeUnit.MILLISECONDS);
+                    if (Build.VERSION.SDK_INT > 23) {
+                        Log.v(TAG, "fetching " + bluetoothDevice.getAddress() + " (" + bluetoothDevice.getName() + ")");
+                        bluetoothDevice.fetchUuidsWithSdp();
+                        continue;
+                    }
+                    this.sdpSearch(bluetoothDevice);
+                }
                 this.startDiscovery(context, this.getConfig());
             } else {
                 this.startDiscovery(context, this.getConfig());
@@ -141,17 +153,69 @@ public class BluetoothDiscovery extends Discovery {
         if (bluetoothDevice != null && bluetoothDevice.getAddress() != null && bluetoothDevice.getName() != null && bluetoothDevice.getBluetoothClass() != null) {
             if (bluetoothDevice.getBluetoothClass().getDeviceClass() == BluetoothClass.Device.PHONE_SMART) {
                 if (!this.confirmedBluetoothDevices.contains(bluetoothDevice)) {
-
+                    Device device = DeviceManager.getDevice(bluetoothDevice.getAddress());
+                    if (device == null || device.getSessionId() == null) {
+                        z = false;
+                    }
                 } else {
-                    Log.v(TAG, "::: ::: ::: previously known Meshify user.");
+                    Log.v(TAG, "Previously known Meshify user.");
                 }
+
+                this.addDevice(bluetoothDevice, z, false);
+
             }
         }
 
     }
 
+    private void addDevice(BluetoothDevice bluetoothDevice, boolean z, boolean isBLE) {
+        Log.d(TAG, "addDevice: isKnown:" + z + " | isBle:" + isBLE);
+
+        Device device = new Device(bluetoothDevice, isBLE);
+        this.devices.addIfAbsent(device);
+
+        if (z) {
+            DeviceManager.addDevice(device);
+            this.addIfAbsentConfirmed(bluetoothDevice);
+            this.emitter.onNext(device); //notify connection subscriber
+
+        } else if (!z && !isBLE) {
+            this.addIfAbsentDiscovered(bluetoothDevice);
+        }
+
+    }
+
+    void addIfAbsentConfirmed(BluetoothDevice bluetoothDevice) {
+        Log.d(TAG, "addDevice: " + bluetoothDevice + " to confirmedBluetoothDevices" );
+        this.confirmedBluetoothDevices.addIfAbsent(bluetoothDevice);
+    }
+
+    private void addIfAbsentDiscovered(BluetoothDevice bluetoothDevice) {
+        Log.d(TAG, "addDevice: " + bluetoothDevice + " to discoveredDevices" );
+        this.discoveredDevices.addIfAbsent(bluetoothDevice);
+    }
+
     private boolean removeDevice(BluetoothDevice bluetoothDevice) {
-        return this.bluetoothDevices.remove((Object)bluetoothDevice);
+        return this.discoveredDevices.remove((Object)bluetoothDevice);
+    }
+
+    @SuppressLint("MissingPermission")
+    void pair(Intent intent){
+        BluetoothDevice bluetoothDevice = (BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        Parcelable[] arrparcelable = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
+
+        boolean matched = false;
+        for (Parcelable parcelable : arrparcelable) {
+            Log.v(this.TAG, "::: ::: ::: FETCHED UUID: " + parcelable.toString() + " Device: " + bluetoothDevice.getName() + " Address: " + bluetoothDevice.getAddress());
+
+            if(!(parcelable.toString().equals(BluetoothUtils.getBluetoothUuid().toString()))) continue;
+
+            Log.v(this.TAG, "::: ::: ::: Matching device found!");
+            matched = true;
+
+        }
+        this.addDevice(bluetoothDevice, matched, false);
+
     }
 
 }
