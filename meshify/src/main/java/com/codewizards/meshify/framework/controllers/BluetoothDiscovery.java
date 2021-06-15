@@ -157,6 +157,7 @@ public class BluetoothDiscovery extends Discovery {
                     Log.v(TAG, "Previously known Meshify user.");
                 }
 
+
                 this.addDevice(bluetoothDevice, z, false);
 
             }
@@ -167,16 +168,16 @@ public class BluetoothDiscovery extends Discovery {
     private void addDevice(BluetoothDevice bluetoothDevice, boolean z, boolean isBLE) {
         Log.d(TAG, "addDevice: isKnown:" + z + " | isBle:" + isBLE);
 
-        Device device = new Device(bluetoothDevice, isBLE);
-        this.devices.addIfAbsent(device);
+            Device device = new Device(bluetoothDevice, isBLE);
+            this.devices.addIfAbsent(device);
 
-        if (z) {
-            DeviceManager.addDevice(device);
-            this.addIfAbsentConfirmed(bluetoothDevice);
-            this.emitter.onNext(device); //notify connection subscriber
-        } else if (!z && !isBLE) {
-            this.addIfAbsentDiscovered(bluetoothDevice);
-        }
+            if (z) {
+                DeviceManager.addDevice(device);
+                this.addIfAbsentConfirmed(bluetoothDevice);
+                this.emitter.onNext(device); //notify connection subscriber
+            } else if (!z && !isBLE) {
+                this.addIfAbsentDiscovered(bluetoothDevice);
+            }
 
     }
 

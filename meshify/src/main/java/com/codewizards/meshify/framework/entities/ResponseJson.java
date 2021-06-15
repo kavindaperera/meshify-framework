@@ -11,6 +11,9 @@ public class ResponseJson implements Parcelable {
     @JsonProperty(value="type")
     private int type;
 
+    @JsonProperty(value="key")
+    private String key;
+
     @JsonProperty(value="uuid")
     private String uuid;
 
@@ -57,6 +60,15 @@ public class ResponseJson implements Parcelable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    @JsonProperty(value="key")
+    public String getKey() {
+        return this.key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String toString() {
