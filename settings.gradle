@@ -1,0 +1,3 @@
+include ':meshify'
+include ':app'
+rootProject.name = "meshify-chat"
