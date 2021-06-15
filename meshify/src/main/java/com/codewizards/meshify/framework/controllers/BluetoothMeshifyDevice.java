@@ -45,14 +45,14 @@ public class BluetoothMeshifyDevice extends MeshifyDevice {
                 }
                 BluetoothSocket bluetoothSocket = this.isSecure ? this.getDevice().getBluetoothDevice().createRfcommSocketToServiceRecord(BluetoothUtils.getBluetoothUuid()) : this.getDevice().getBluetoothDevice().createInsecureRfcommSocketToServiceRecord(BluetoothUtils.getBluetoothUuid());
                 bluetoothSocket.connect();
-                Log.d(TAG, "connected: " + BluetoothUtils.getBluetoothUuid());
+                Log.e(TAG, "connect(): " + BluetoothUtils.getBluetoothUuid());
                 Session session = new Session(bluetoothSocket);
                 session.setSessionId(this.getDevice().getDeviceAddress());
                 session.setClient(true);
                 this.getDevice().setSessionId(session.getSessionId());
                 session.setDevice(this.getDevice());
                 SessionManager.queueSession(session);
-                DeviceManager.addDevice(session.getDevice(), session); //TODO - Remove session
+                DeviceManager.addDevice(session.getDevice());
                 completableEmitter.onComplete(); //call connection subscriber onComplete
             }
             catch (IOException iOException) {

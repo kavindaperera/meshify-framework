@@ -17,7 +17,7 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 public class ConnectionSubscriber extends DisposableSubscriber<Device> {
 
-    private static final String TAG = "[Meshify][Connection_Subscriber]";
+    private static final String TAG = "[Meshify][ConnectionSubscriber]";
 
     public ConnectionSubscriber() {
     }
@@ -55,7 +55,7 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
                     MeshifyDevice meshifyDevice = ConnectionManager.getMeshifyDevice();
                     if (meshifyDevice != null && meshifyDevice.getDevice().equals(device)) {
                         if (meshifyDevice instanceof BluetoothMeshifyDevice) {
-                            ConnectionSubscriber.this.accept(meshifyDevice.getDevice());
+                            ConnectionSubscriber.this.retry(meshifyDevice.getDevice());
                         }
                         ConnectionManager.setMeshifyDevice((MeshifyDevice) null);
                         ConnectionSubscriber.this.request(1L);
@@ -65,7 +65,7 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
 
             if (device.getAntennaType() == Config.Antenna.BLUETOOTH_LE) {
 
-                //TODO - subscribe
+                //TODO - subscribe BLE
 
             } else {
                 meshifyDevice.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver); //completableObserver subscribes meshifyDevice on a new thread
@@ -78,8 +78,15 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
     }
 
     @SuppressLint("MissingPermission")
-    public void accept(Device device) {
-        Log.d(TAG, "accept: " + device.getDeviceName());
+    public void retry(Device device) {
+        Log.d(TAG, "retry: " + device.getDeviceName());
+        ConnectionManager.retry(DeviceManager.getDevice(device.getDeviceAddress()));
+        Log.e(TAG, "retry: Connection failed adding to blacklist");
+        SessionManager.removeSession(device.getDeviceAddress());
+        BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(Meshify.getInstance().getMeshifyCore().getContext());
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.startDiscovery();
+        }
 
     }
 

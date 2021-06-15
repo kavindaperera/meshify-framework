@@ -64,7 +64,7 @@ public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServ
     }
 
     void acceptConnection(BluetoothSocket bluetoothSocket) {
-        Log.d(TAG, "acceptConnection: device " + bluetoothSocket.getRemoteDevice().getAddress());
+        Log.e(TAG, "acceptConnection: device " + bluetoothSocket.getRemoteDevice().getAddress());
         Session session = new Session(bluetoothSocket);
         Device device = DeviceManager.getDevice(bluetoothSocket.getRemoteDevice().getAddress());
         if (device == null) {
@@ -74,7 +74,7 @@ public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServ
         device.setSessionId(session.getSessionId());
         session.setDevice(device);
         SessionManager.queueSession(session);
-        DeviceManager.addDevice(device, session); //TODO - Remove session
+        DeviceManager.addDevice(device);
         Log.d(TAG, "Connected with device: " + new GsonBuilder().setPrettyPrinting().create().toJson((Object)device));
     }
 

@@ -1,10 +1,17 @@
 package com.codewizards.meshify.framework.controllers;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Completable;
 
 /**
  *  <p>This class manages all the connections</p>
@@ -64,5 +71,39 @@ public class ConnectionManager {
 
     }
 
+    static boolean checkConnection(String string) {
+        Connection connection = connections.get(string);
+        return connection != null && !connection.isConnected();
+    }
+
+    static void retry(Device device) {
+        Connection connection = connections.get(device.getDeviceAddress());
+        if (connection != null) {
+            connection.setConnectionRetries(connection.getConnectionRetries() + 1);
+        } else {
+            connection = new Connection(false, Meshify.getInstance().getConfig().getMaxConnectionRetries());
+        }
+        connections.put(device.getDeviceAddress(), connection);
+        ConnectionManager.retryConnection(device);
+    }
+
+    private static void retryConnection(Device device) {
+        Connection connection = connections.get(device.getDeviceAddress());
+        if (connection.getConnectionRetries() <= Meshify.getInstance().getConfig().getMaxConnectionRetries()) {
+            int n2 = connection.getConnectionRetries() * 2 * 1000;
+            Completable.timer((long)n2, (TimeUnit)TimeUnit.MILLISECONDS).subscribe(() -> {
+                Log.i(TAG, "run: opening device " + device.getDeviceAddress() + " for retry");
+                connection.setConnected(true);
+                connections.put(device.getDeviceAddress(), connection);
+            });
+        } else {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getStateListener() != null) {
+                    Log.i(TAG, "onDeviceBlackListed:");
+                    Meshify.getInstance().getMeshifyCore().getStateListener().onDeviceBlackListed(device);
+                }
+            });
+        }
+    }
 
 }

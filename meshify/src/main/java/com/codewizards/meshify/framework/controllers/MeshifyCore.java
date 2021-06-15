@@ -7,7 +7,11 @@ import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify.framework.entities.MeshifyEntity;
+import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
+
+import java.io.IOException;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -59,6 +63,12 @@ public class MeshifyCore {
     public SharedPreferences.Editor getEditor() {
         return this.editor;
     }
+
+    static void sendEntity(Session session, MeshifyEntity bleEntity) throws IOException, MessageException {
+        Log.d(TAG, "sendEntity:");
+        TransactionManager.sendEntity(session, bleEntity);
+    }
+
 
     public void initializeServices() {
         Log.d(TAG, "initializeServices:");

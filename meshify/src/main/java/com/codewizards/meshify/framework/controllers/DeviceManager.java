@@ -43,6 +43,7 @@ public class DeviceManager {
             Log.v(TAG, "::: Adding device: " + device.getDeviceAddress() + " : " + device.getAntennaType() + " to DeviceList size: " + deviceList.size());
         }
         DeviceManager.onDeviceConnected(device, session);
+        DeviceManager.addToScheduledFuture(device);
     }
 
     private static void onDeviceConnected(Device device, Session session) {
@@ -73,6 +74,40 @@ public class DeviceManager {
         }
     }
 
+    static synchronized void removeDevice(Device device) {
+        if (device != null) {
+            Session session = SessionManager.getSession(device.getDeviceAddress());
+            if (session != null && session.getState() == 1) {
+                Log.w(TAG, "removeDevice: won't remove device because it still connecting: " + device.getDeviceAddress());
+            } else if (deviceList.containsKey(device.getDeviceAddress())) {
+                DeviceManager.cancelScheduledFuture(device);
+                try {
+                    device = deviceList.remove(device.getDeviceAddress());
+                    if (device.getUserId() != null) {
+                        Log.i(TAG, "removeDevice: on device lost " + device.getUserId());
+                        DeviceManager.onDeviceLost(device);
+                    } else {
+                        Log.e(TAG, "removeDevice: not calling on device lost becuase userid was null");
+                    }
+                }
+                catch (Exception exception) {
+                    Log.e(TAG, "removeDevice: device could be null " + exception.getMessage());
+                }
+                Log.w(TAG, "Removing device: " + device.getDeviceAddress() + " (" + device.getUserId() + ") " + (Object)((Object)device.getAntennaType()) + ". DeviceList size: " + deviceList.size());
+            }
+        }
+    }
+
+    private static void onDeviceLost(Device device) {
+        Log.i(TAG, "onDeviceLost: ");
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getStateListener() != null) {
+                Log.i(TAG, "onDeviceLost:");
+                Meshify.getInstance().getMeshifyCore().getStateListener().onDeviceLost(device);
+            }
+        });
+    }
+
     public static Device getDevice(String deviceAddress) {
         ConcurrentHashMap<String, Device> concurrentHashMap = deviceList;
         synchronized (concurrentHashMap) {
@@ -81,6 +116,36 @@ public class DeviceManager {
             }
             return deviceList.get(deviceAddress);
         }
+    }
+
+    static synchronized void addToScheduledFuture(Device device) {
+        ScheduledFuture scheduledFuture = DeviceManager.setupLongTimeout(device);
+        futureConcurrentHashMap.put(device.getDeviceAddress(), scheduledFuture);
+    }
+
+    static synchronized void cancelScheduledFuture(Device device) {
+        ScheduledFuture scheduledFuture = futureConcurrentHashMap.remove(device.getDeviceAddress());
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(true);
+        }
+    }
+
+    static synchronized ScheduledFuture setupLongTimeout(Device device) {
+        DeviceManager.cancelScheduledFuture(device);
+        return threadPoolExecutor.schedule(() -> {
+            Device device2 = device;
+            synchronized (device2) {
+                Session session = SessionManager.getSession(device.getSessionId());
+                if (session == null) {
+                    session = SessionManager.getSession(device.getDeviceAddress());
+                }
+                if (device.getSessionId() == null && session == null) {
+                    Log.i(TAG, "setupLongTimeout: remove device because device is unconnected. " + device.getDeviceAddress());
+                    DeviceManager.cancelScheduledFuture(device);
+                    DeviceManager.removeDevice(device);
+                }
+            }
+        }, 20000L, TimeUnit.MILLISECONDS);
     }
 
 }

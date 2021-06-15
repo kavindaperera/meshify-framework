@@ -1,6 +1,7 @@
 package com.codewizards.meshify.framework.controllers;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class SessionManager {
             Log.d(TAG, "queueSession: " + session.getSessionId() + " ::: first time.");
             session.setConnected(true);
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
-                session.create();
+                session.run();
             }
             sessionMap.put(session.getSessionId(), session);
         }
@@ -49,6 +50,29 @@ public class SessionManager {
             return session2;
         }
         return session;
+    }
+
+    static void removeSession(String string) { //removeSession
+
+        Session session = SessionManager.getSession(string);
+        if (session != null && session.getState() != 1) {
+            SessionManager.removeQueueSession(session);
+        }
+    }
+
+    static void removeQueueSession(Session session) {
+        Log.e(TAG, "remove Session: id - " + session.getSessionId());
+
+
+        Device device = session.getDevice();
+        if (session.getEmitter() != null) {
+            Log.i(TAG, "removeQueueSession: dispatching onconnection result disconnected");
+            if (!session.getEmitter().isDisposed()) {
+                session.getEmitter().tryOnError((Throwable)new Exception("Connection closed"));
+            }
+        }
+        sessionMap.remove(session.getSessionId());
+        DeviceManager.removeDevice(device);
     }
 
 }
