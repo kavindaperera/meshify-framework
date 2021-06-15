@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
@@ -30,7 +31,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String TAG = "[Meshify][MainActivity]";
+
+    public static String TAG = "[Meshify][MainActivity]";
     static final String PAYLOAD_DEVICE_TYPE  = "device_type";
     static final String PAYLOAD_DEVICE_NAME  = "device_name";
 
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             super.onDeviceConnected(device, session);
             Log.d(TAG, "onDeviceConnected() " + device);
 
-            Neighbor neighbor = new Neighbor(device.getDeviceAddress(), device.getDeviceName());
+            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
             peersAdapter.addPeer(neighbor);
@@ -115,6 +117,24 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(getApplicationContext(), "Neighbor added: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Neighbor added: " + neighbor.getDeviceName());
+        }
+
+        @Override
+        public void onDeviceBlackListed(Device device) {
+            super.onDeviceBlackListed(device);
+            Log.e(TAG, "onDeviceBlackListed() " + device);
+            peersAdapter.removePeer(device);
+            Toast.makeText(getApplicationContext(), "device " + device.getDeviceName() + " got black listed", Toast.LENGTH_LONG).show();
+
+        }
+
+        @Override
+        public void onDeviceLost(Device device) {
+            super.onDeviceLost(device);
+            Log.e(TAG, "onDeviceLost() " + device);
+            peersAdapter.removePeer(device);
+            Toast.makeText(getApplicationContext(), "Lost Device " + device.getDeviceName(), Toast.LENGTH_LONG).show();
+
         }
     };
 
@@ -151,6 +171,7 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
 
     void addPeer(Neighbor neighbor) {
         int position = getPeerPosition(neighbor.getUuid());
+
         if (position > -1) {
             neighbors.set(position, neighbor);
             notifyItemChanged(position);
@@ -162,6 +183,7 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
 
     void removePeer(Device lostPeer) {
         int position = getPeerPosition(lostPeer.getUserId());
+
         if (position > -1) {
             Neighbor peer = neighbors.get(position);
             peer.setNearby(false);
@@ -209,7 +231,7 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
             }
 
             if (peer.isNearby()) {
-                this.mContentView.setTextColor(Color.BLACK);
+                this.mContentView.setTextColor(Color.parseColor("#006257"));
             } else {
                 this.mContentView.setTextColor(Color.RED);
             }
