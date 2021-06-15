@@ -13,7 +13,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_user_death" />
+        app:srcCompat="@drawable/ic_user_green" />
 
     <TextView
         android:id="@+id/neighborName"
@@ -21,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="Jon Snow's Pixel 3XL" />
+        tools:text="Jon Snow's Pixel 3XL (android)" />
 
 </LinearLayout>

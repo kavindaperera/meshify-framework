@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codewizards.meshify_chat">
-
-
     <!-- Permissions needed to run Wi-Fi Direct -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-
-    <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions needed to run Bluetooth Low Energy -->
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
-    <!-- Permissions needed to run Bluetooth Low Energy -->
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <!--Other Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- Other Permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -30,21 +23,19 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meshifychat">
-        <activity android:name=".MainActivity">
+<!--        <activity android:name=".ux.home.TabbedMainActivity"></activity>-->
+         <activity android:name=".ux.intro.SplashActivity"></activity>
+        <activity android:name=".ux.home.MainActivity" />
+        <activity android:name=".ux.home.TabbedMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-
-        <!-- Meshify API key -->
+        </activity> <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
-
     </application>
-
 
 </manifest>

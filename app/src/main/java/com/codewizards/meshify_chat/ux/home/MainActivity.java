@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat;
+package com.codewizards.meshify_chat.ux.home;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
@@ -24,6 +23,8 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Session;
 import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify_chat.BuildConfig;
+import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.entities.Neighbor;
 
 import java.util.ArrayList;
