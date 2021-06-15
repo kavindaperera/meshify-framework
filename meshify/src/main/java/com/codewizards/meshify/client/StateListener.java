@@ -22,6 +22,16 @@ public class StateListener {
 
     }
 
-    public void onDeviceConnected(Device device, Session session) { }
+    public void onDeviceConnected(Device device, Session session) {
+
+    }
+
+    public void onDeviceBlackListed(Device device) {
+
+    }
+
+    public void onDeviceLost(Device device) {
+
+    }
 
 }
