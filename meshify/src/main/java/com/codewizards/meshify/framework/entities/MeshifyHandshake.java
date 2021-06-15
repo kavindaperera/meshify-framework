@@ -69,9 +69,7 @@ public class MeshifyHandshake implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (rq!=null){
-            dest.writeInt(this.rq);
-        }
+        dest.writeInt(this.rq);
         dest.writeParcelable((Parcelable)((ResponseJson)this.rp), flags);
     }
 }

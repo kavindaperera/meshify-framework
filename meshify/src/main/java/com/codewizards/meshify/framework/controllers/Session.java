@@ -153,8 +153,8 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     private MeshifyHandshake processHandshake(MeshifyHandshake meshifyHandshake) {
         ResponseJson responseJson = null;
-        Integer rq = null;
-        if (meshifyHandshake.getRq() != null) {
+        Integer rq = -1; // rq =1 don't reply
+        if (meshifyHandshake.getRq() != -1) {
             switch (meshifyHandshake.getRq()) {
                 case 0: {
                     Log.e(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
@@ -190,7 +190,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     MeshifyHandshake meshifyHandshake = (MeshifyHandshake) meshifyEntity.getContent();
                     MeshifyHandshake meshifyHandshake2 = this.processHandshake(meshifyHandshake);
 
-                    if (meshifyHandshake2.getRq() != null || meshifyHandshake2.getRp() != null) {
+                    if (meshifyHandshake2.getRq() != -1 || meshifyHandshake2.getRp() != null) {
                         try {
                             MeshifyCore.sendEntity(this, MeshifyEntity.generateHandShake(meshifyHandshake2));
                         }
