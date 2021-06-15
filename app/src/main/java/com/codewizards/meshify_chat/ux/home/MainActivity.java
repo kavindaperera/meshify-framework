@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -214,11 +215,13 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
 
     class PeerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView mContentView;
+        final ImageView mImageView;
         Neighbor neighbor;
 
         PeerViewHolder(View view) {
             super(view);
             mContentView = view.findViewById(R.id.neighborName);
+            mImageView  = view.findViewById(R.id.neighborAvatar);
             view.setOnClickListener(this);
         }
 
@@ -233,8 +236,10 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
 
             if (peer.isNearby()) {
                 this.mContentView.setTextColor(Color.parseColor("#006257"));
+                this.mImageView.setImageResource(R.drawable.ic_user_green);
             } else {
-                this.mContentView.setTextColor(Color.RED);
+                this.mContentView.setTextColor(Color.GRAY);
+                this.mImageView.setImageResource(R.drawable.ic_user_red);
             }
         }
 
