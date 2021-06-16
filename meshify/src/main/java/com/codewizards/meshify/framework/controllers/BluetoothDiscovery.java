@@ -36,7 +36,7 @@ public class BluetoothDiscovery extends Discovery {
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private CopyOnWriteArrayList<BluetoothDevice> confirmedBluetoothDevices; //CopyOnWriteArrayList is a thread-safe variant of ArrayList
+    private CopyOnWriteArrayList<BluetoothDevice> confirmedBluetoothDevices; //CopyOnWriteArrayList is a thread-safe variant of ArrayList. Used in a Thread based environment where read operations are very frequent and update operations are rare.
 
     private CopyOnWriteArrayList<Device> devices;
 

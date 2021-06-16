@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import io.reactivex.CompletableEmitter;
 
-public class AbstractSession {
+public abstract class AbstractSession {
 
     protected final String TAG = "[Meshify][AbstractSession]";
 

@@ -1,6 +1,6 @@
 package com.codewizards.meshify.client;
 
-public class StateListener {
+public abstract class StateListener {
 
     public static final int BLE_NOT_SUPPORTED = -135;
     public static final int INSUFFICIENT_PERMISSIONS = -246;

@@ -1,4 +1,4 @@
 package com.codewizards.meshify.client;
 
-public class MessageListener {
+public abstract class MessageListener {
 }

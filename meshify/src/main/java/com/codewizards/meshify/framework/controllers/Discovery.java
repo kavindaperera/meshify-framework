@@ -9,7 +9,7 @@ import com.codewizards.meshify.logs.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public class Discovery {
+abstract class Discovery {
 
     protected String TAG = "[Meshify][Discovery]";
 
