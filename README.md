@@ -11,5 +11,5 @@
 
 [![Status](https://badgen.net/badge/status/development/red)](https://github.com/kavindaperera/meshify-framework/tree/development)
 [![Build Status](https://badgen.net/badge/build/pending/orange)]()
-[![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/mesh-framework)
+[![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/meshify-framework)
 [![License](https://badgen.net//badge/license/MIT/blue)](/LICENSE)
