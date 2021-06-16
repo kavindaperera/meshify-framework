@@ -9,7 +9,7 @@
 
 [![img.shields.io](https://img.shields.io/badge/powered%20by-codewizards-brightgreen?style=for-the-badge&logo=CodeIgniter)]()
 
-[![Status](https://badgen.net/badge/status/development/red)]()
+[![Status](https://badgen.net/badge/status/development/red)](https://github.com/kavindaperera/meshify-framework/tree/development)
 [![Build Status](https://badgen.net/badge/build/pending/orange)]()
-[![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/mesh-chat)
-[![License](https://badgen.net//badge/license/MIT/blue)]()
+[![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/mesh-framework)
+[![License](https://badgen.net//badge/license/MIT/blue)](/LICENSE)
