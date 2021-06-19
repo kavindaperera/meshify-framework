@@ -153,7 +153,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     private MeshifyHandshake processHandshake(MeshifyHandshake meshifyHandshake) {
         ResponseJson responseJson = null;
-        Integer rq = -1; // rq =1 don't reply
+        Integer rq = -1; // rq = 1 don't reply
         if (meshifyHandshake.getRq() != -1) {
             switch (meshifyHandshake.getRq()) {
                 case 0: {
@@ -161,7 +161,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
                     break;
                 }
-
             }
         }
         if (meshifyHandshake.getRp() != null) {

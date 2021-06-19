@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.StateListener;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -37,13 +39,21 @@ public class MeshifyCore {
 
     private MessageListener messageListener;
 
+    private MessageController messageController;
+
     private MeshifyReceiver meshifyReceiver;
 
     private StateListener stateListener;
 
-    private Completable completable = Completable.create(CompletableEmitter -> {
+    private Completable completable = Completable.create(completableEmitter -> {
 
-        //TODO - cleaning the core
+        if (SessionManager.getSessions().isEmpty()) {
+            Log.w(TAG, "sessions are cleaned up:");
+            completableEmitter.onComplete();
+        } else {
+            Log.i(TAG, "connections are still active: ");
+            completableEmitter.tryOnError((Throwable)new Exception("Connections are still active"));
+        }
 
     });
 
@@ -52,7 +62,7 @@ public class MeshifyCore {
         this.config = config;
         this.sharedPreferences = context.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);;
         this.editor = sharedPreferences.edit();
-
+        this.messageController = new MessageController(context, config);
         this.meshifyReceiver = new MeshifyReceiver(config, context);
     }
 
@@ -77,6 +87,10 @@ public class MeshifyCore {
         this.meshifyReceiver.startDiscovery(this.config.getAntennaType());
     }
 
+    public void sendMessage(Message message, String receiverId, ConfigProfile profile) {
+        Device device = DeviceManager.getDeviceByUserId(receiverId);
+        this.messageController.sendMessage(this.context, message, device, profile);
+    }
 
     MessageListener getMessageListener() {
         Log.d(TAG, "getMessageListener:");

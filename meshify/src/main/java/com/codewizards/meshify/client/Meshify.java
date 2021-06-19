@@ -132,6 +132,28 @@ public class Meshify {
 
     }
 
+    public static String sendMessage(@NonNull Message message) {
+        try {
+            return Meshify.sendMessage(message, getInstance().getConfig().getConfigProfile());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() before trying to send a message");
+            return null;
+        }
+    }
+
+    public static String sendMessage(@NonNull Message message, ConfigProfile configProfile) {
+        Meshify.isMessageNull(message);
+        try {
+            message.setSenderId(getInstance().getMeshifyClient().getUserUuid());
+            getInstance().getMeshifyCore().sendMessage(message, message.getReceiverId(), configProfile);
+            return message.getUuid();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() before trying to send a message" );
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public Config getConfig() {
         return this.config;
@@ -159,6 +181,12 @@ public class Meshify {
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    private static void isMessageNull(Message message) {
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null.");
+        }
     }
 
     private static class Builder {

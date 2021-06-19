@@ -32,7 +32,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Meshify API key -->
+        </activity>
+        <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.entities.Neighbor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     static final String PAYLOAD_DEVICE_TYPE  = "device_type";
     static final String PAYLOAD_DEVICE_NAME  = "device_name";
 
-    NeighborsRecyclerViewAdapter peersAdapter = new NeighborsRecyclerViewAdapter(new ArrayList<>());
+    NeighborsRecyclerViewAdapter neighborAdapter = new NeighborsRecyclerViewAdapter(new ArrayList<>());
 
     ProgressDialog progressDialog;
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
-        recyclerView.setAdapter(peersAdapter);
+        recyclerView.setAdapter(neighborAdapter);
 
         progressDialog = new ProgressDialog(MainActivity.this);
 
@@ -113,19 +115,26 @@ public class MainActivity extends AppCompatActivity {
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-            peersAdapter.addPeer(neighbor);
+            neighborAdapter.addNeighbor(neighbor);
 
             progressDialog.dismiss();
 
             Toast.makeText(getApplicationContext(), "Neighbor added: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Neighbor added: " + neighbor.getDeviceName());
+
+            // send our details to the Device
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(PAYLOAD_DEVICE_NAME, Build.MANUFACTURER + " " + Build.MODEL);
+            map.put(PAYLOAD_DEVICE_TYPE, Neighbor.DeviceType.ANDROID.ordinal());
+            device.sendMessage(map);
+
         }
 
         @Override
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
             Log.e(TAG, "onDeviceBlackListed() " + device);
-            peersAdapter.removePeer(device);
+            neighborAdapter.removeNeighbor(device);
             Toast.makeText(getApplicationContext(), "device " + device.getDeviceName() + " got black listed", Toast.LENGTH_LONG).show();
 
         }
@@ -134,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             Log.e(TAG, "onDeviceLost() " + device);
-            peersAdapter.removePeer(device);
+            neighborAdapter.removeNeighbor(device);
             Toast.makeText(getApplicationContext(), "Lost Device " + device.getDeviceName(), Toast.LENGTH_LONG).show();
 
         }
@@ -155,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
 }
 
 /**
- * Recycler View
+ * Neighbors Recycler View
  */
 
-class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecyclerViewAdapter.PeerViewHolder> {
+class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecyclerViewAdapter.NeighborViewHolder> {
 
     private final List<Neighbor> neighbors;
 
@@ -171,8 +180,8 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
         return neighbors.size();
     }
 
-    void addPeer(Neighbor neighbor) {
-        int position = getPeerPosition(neighbor.getUuid());
+    void addNeighbor(Neighbor neighbor) {
+        int position = getNeighborPosition(neighbor.getUuid());
 
         if (position > -1) {
             neighbors.set(position, neighbor);
@@ -183,58 +192,58 @@ class NeighborsRecyclerViewAdapter extends RecyclerView.Adapter<NeighborsRecycle
         }
     }
 
-    void removePeer(Device lostPeer) {
-        int position = getPeerPosition(lostPeer.getUserId());
+    void removeNeighbor(Device lostNeighbor) {
+        int position = getNeighborPosition(lostNeighbor.getUserId());
 
         if (position > -1) {
-            Neighbor peer = neighbors.get(position);
-            peer.setNearby(false);
-            neighbors.set(position, peer);
+            Neighbor neighbor = neighbors.get(position);
+            neighbor.setNearby(false);
+            neighbors.set(position, neighbor);
             notifyItemChanged(position);
         }
     }
 
-    private int getPeerPosition(String peerId) {
+    private int getNeighborPosition(String neighborId) {
         for (int i = 0; i < neighbors.size(); i++) {
-            if (neighbors.get(i).getUuid().equals(peerId))
+            if (neighbors.get(i).getUuid().equals(neighborId))
                 return i;
         }
         return -1;
     }
 
     @Override
-    public PeerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NeighborViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.neighbor_row, parent, false);
-        return new PeerViewHolder(view);
+        return new NeighborViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final PeerViewHolder peerHolder, int position) {
-        peerHolder.setPeer(neighbors.get(position));
+    public void onBindViewHolder(final NeighborViewHolder neighborHolder, int position) {
+        neighborHolder.setNeighbor(neighbors.get(position));
     }
 
-    class PeerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class NeighborViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView mContentView;
         final ImageView mImageView;
         Neighbor neighbor;
 
-        PeerViewHolder(View view) {
+        NeighborViewHolder(View view) {
             super(view);
             mContentView = view.findViewById(R.id.neighborName);
             mImageView  = view.findViewById(R.id.neighborAvatar);
             view.setOnClickListener(this);
         }
 
-        void setPeer(Neighbor peer) {
-            this.neighbor = peer;
+        void setNeighbor(Neighbor neighbor) {
+            this.neighbor = neighbor;
 
-            switch (peer.getDeviceType()) {
+            switch (neighbor.getDeviceType()) {
                 case ANDROID:
-                    this.mContentView.setText(peer.getDeviceName() + " (android)");
+                    this.mContentView.setText(neighbor.getDeviceName() + " (android)");
                     break;
             }
 
-            if (peer.isNearby()) {
+            if (neighbor.isNearby()) {
                 this.mContentView.setTextColor(Color.parseColor("#006257"));
                 this.mImageView.setImageResource(R.drawable.ic_user_green);
             } else {

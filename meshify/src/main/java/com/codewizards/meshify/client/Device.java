@@ -5,7 +5,11 @@ import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
+
+import java.util.HashMap;
 
 public class Device implements Parcelable {
 
@@ -73,6 +77,12 @@ public class Device implements Parcelable {
         dest.writeParcelable(this.bluetoothDevice, flags);
         dest.writeString(this.sessionId);
         dest.writeValue(this.antennaType);
+    }
+
+    public String sendMessage(@NonNull HashMap<String, Object> content) {
+        Message.Builder builder = new Message.Builder();
+        builder.setContent(content).setReceiverId(this.userId);
+        return Meshify.sendMessage(builder.build());
     }
 
     /*getters*/
