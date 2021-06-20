@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
 import com.codewizards.meshify.client.StateListener;
 import com.codewizards.meshify_chat.BuildConfig;
@@ -76,10 +78,17 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
 
-        Meshify.start(null, stateListener, builder.build());
+        Meshify.start(messageListener, stateListener, builder.build());
 
     }
 
+    MessageListener messageListener = new MessageListener() {
+        @Override
+        public void onMessageReceived(Message message) {
+            super.onMessageReceived(message);
+            Log.e(TAG, "onMessageReceived()" + message);
+        }
+    };
 
     StateListener stateListener = new StateListener(){
 
@@ -110,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             super.onDeviceConnected(device, session);
-            Log.d(TAG, "onDeviceConnected() " + device);
+            Log.d(TAG, "onDeviceConnected() " + device + " session: " + session);
 
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
@@ -120,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.dismiss();
 
             Toast.makeText(getApplicationContext(), "Neighbor added: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Neighbor added: " + neighbor.getDeviceName());
 
             // send our details to the Device
             HashMap<String, Object> map = new HashMap<>();
