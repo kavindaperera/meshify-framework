@@ -8,7 +8,6 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
-import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 
@@ -17,13 +16,16 @@ public class MessageController {
     public final String TAG = "[Meshify][MessageController]";
 
     private Config config;
+    private MessageNotifier messageNotifier;
 
     MessageController(Context context, Config config) {
-
+        this.config = config;
+        this.messageNotifier = new MessageNotifier(config);
     }
 
-    void messageReceived(Session session) {
-        Log.e(TAG, "messageReceived: ");
+    void messageReceived(Message message, Session session) {
+        message.setMesh(false);
+        this.messageNotifier.onMessageReceived(message);
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {

@@ -1,5 +1,9 @@
 package com.codewizards.meshify_chat.ux.chat;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -7,6 +11,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +20,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.entities.Message;
 import com.codewizards.meshify_chat.ux.adapter.MessageAdapter;
+import com.codewizards.meshify_chat.ux.home.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +59,15 @@ public class ChatActivity extends AppCompatActivity {
             actionBar.setTitle(deviceName);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Message message = new Message(intent.getStringExtra(MainActivity.INTENT_EXTRA_MSG));
+                        message.setDirection(Message.INCOMING_MESSAGE);
+                        adapter.addMessage(message);
+                    }
+                }, new IntentFilter(deviceId));
 
         RecyclerView messagesRecyclerView = findViewById(R.id.messages);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);

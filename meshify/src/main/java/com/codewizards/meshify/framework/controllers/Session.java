@@ -15,6 +15,8 @@ import com.codewizards.meshify.framework.entities.ResponseJson;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.framework.utils.Utils;
 import com.codewizards.meshify.logs.Log;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -222,12 +224,22 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
                 case 1: {
                     this.setConnected(true);
-                    MeshifyContent meshifyContent =  (MeshifyContent) meshifyEntity.getContent();
-
-                    if (meshifyContent.getPayload() != null) {
-                        Log.e(TAG, "getPayload():" + meshifyContent.getPayload());
+                    MeshifyContent content =  (MeshifyContent) meshifyEntity.getContent();
+                    Object object;
+                    HashMap hashMap = null;
+                    if (content.getPayload() != null) {
+                        object = new Gson().toJson(content.getPayload());
+                        hashMap = (HashMap) new Gson().fromJson((String) object, new TypeToken<HashMap<String, Object>>(){}.getType());
                     }
-                    Meshify.getInstance().getMeshifyCore().getMessageController().messageReceived(this);
+
+                    object = new Message.Builder();
+                    ((Message.Builder)object).setContent(hashMap);
+                    Message message = ((Message.Builder)object).build();
+                    message.setReceiverId(Meshify.getInstance().getMeshifyClient().getUserUuid());
+                    message.setSenderId(this.getUserId());
+                    message.setUuid(content.getId());
+
+                    Meshify.getInstance().getMeshifyCore().getMessageController().messageReceived(message, this);
                     break;
                 }
             }

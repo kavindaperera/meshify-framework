@@ -84,7 +84,7 @@ public class BluetoothDiscovery extends Discovery {
                 } else {
                     completableEmitter.onComplete();
                 }
-            }).retryWhen(new RetryWhenLambda(4, 2000)) //2000 milliseconds delay retry
+            }).retryWhen(new RetryWhenLambda(3, 1000)) //2000 milliseconds delay retry
                     .subscribe(new  CompletableObserver(){
                         public void onSubscribe(Disposable d2) {
                         }
@@ -217,7 +217,7 @@ public class BluetoothDiscovery extends Discovery {
                 }
                 this.addDevice(bluetoothDevice, matched, false);
             } else {
-                Log.e(this.TAG, "Received null UUIDs from Device: " + bluetoothDevice.getName() + "Address: " + bluetoothDevice.getAddress());
+                Log.e(this.TAG, "Received null UUIDs from Device: " + bluetoothDevice.getName() + " Address: " + bluetoothDevice.getAddress());
             }
         }
         this.removeDiscoveredDevice(bluetoothDevice);

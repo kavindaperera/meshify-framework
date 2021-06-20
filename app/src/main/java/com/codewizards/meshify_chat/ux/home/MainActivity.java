@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String INTENT_EXTRA_NAME = "deviceName";
     public static final String INTENT_EXTRA_UUID = "deviceUuid";
     public static final String PAYLOAD_TEXT = "text";
+    public static final String INTENT_EXTRA_MSG  = "message";
 
     NeighborAdapter adapter = new NeighborAdapter(new ArrayList<>());
 
@@ -46,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessageReceived(Message message) {
             super.onMessageReceived(message);
-            Log.e(TAG, "onMessageReceived()" + message);
+
+            String msg = (String) message.getContent().get("text");
+            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(new Intent(message.getSenderId()).putExtra(INTENT_EXTRA_MSG, msg));
         }
     };
 
@@ -138,6 +142,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     /**

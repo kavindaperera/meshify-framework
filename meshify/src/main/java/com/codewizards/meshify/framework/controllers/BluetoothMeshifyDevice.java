@@ -59,6 +59,6 @@ public class BluetoothMeshifyDevice extends MeshifyDevice {
                 Log.e(TAG, "connect: fail [ " + iOException.getMessage() + " ]");
                 completableEmitter.tryOnError((Throwable)iOException); //call connection subscriber onError
             }
-        }).retryWhen(new RetryWhenLambda(4, 2000));
+        }).retryWhen(new RetryWhenLambda(3, 1000));
     }
 }
