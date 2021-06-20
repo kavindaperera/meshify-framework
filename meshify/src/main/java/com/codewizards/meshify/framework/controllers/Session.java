@@ -8,6 +8,7 @@ import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.entities.ResponseJson;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 
 import io.reactivex.CompletableEmitter;
@@ -217,7 +219,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     if (!this.isClient() || this.getEmitter() == null) break;
                     this.getEmitter().onComplete();
                     break;
+                }
+                case 1: {
+                    this.setConnected(true);
+                    MeshifyContent meshifyContent =  (MeshifyContent) meshifyEntity.getContent();
 
+                    if (meshifyContent.getPayload() != null) {
+                        Log.e(TAG, "getPayload():" + meshifyContent.getPayload());
+                    }
+                    Meshify.getInstance().getMeshifyCore().getMessageController().messageReceived(this);
+                    break;
                 }
             }
         }
