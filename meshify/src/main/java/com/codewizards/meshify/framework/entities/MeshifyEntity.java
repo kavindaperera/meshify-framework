@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.utils.Utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,6 +41,11 @@ public class MeshifyEntity<T> implements Parcelable {
         switch (entity) {
             case 0: {
                 this.content = in.readParcelable(MeshifyHandshake.class.getClassLoader());
+                break;
+            }
+            case 1: {
+                this.content = in.readParcelable(MeshifyContent.class.getClassLoader());
+                break;
             }
         }
     }
@@ -55,6 +61,10 @@ public class MeshifyEntity<T> implements Parcelable {
             return new MeshifyEntity[size];
         }
     };
+
+    public static  MeshifyEntity message(Message message) {
+        return new MeshifyEntity<MeshifyContent>(1, new MeshifyContent(message.getContent(), message.getUuid()));
+    }
 
     public static MeshifyEntity generateHandShake() {
         return new MeshifyEntity<MeshifyHandshake>(0, new MeshifyHandshake(0, ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid())));
@@ -107,6 +117,9 @@ public class MeshifyEntity<T> implements Parcelable {
         dest.writeInt(this.entity);
         if (this.content instanceof MeshifyHandshake) {
             dest.writeParcelable((Parcelable)((MeshifyHandshake)this.content), flags);
+        }
+        else if (this.content instanceof MeshifyContent) {
+            dest.writeParcelable((Parcelable)((MeshifyContent)this.content), flags);
         }
     }
 }
