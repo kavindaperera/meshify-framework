@@ -26,10 +26,9 @@
         <activity android:name=".ux.chat.ChatActivity"  android:parentActivityName=".ux.home.MainActivity"></activity>
         <activity android:name=".ux.intro.SplashActivity" />
         <activity android:name=".ux.home.MainActivity" android:launchMode="singleTop" />
-        <activity android:name=".ux.home.TabbedMainActivity" android:launchMode="singleTop">
+        <activity android:name=".ux.home.HomeActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Meshify API key -->
