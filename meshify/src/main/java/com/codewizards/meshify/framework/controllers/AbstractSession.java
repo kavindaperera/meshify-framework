@@ -142,7 +142,9 @@ public abstract class AbstractSession {
         return this.isClient;
     }
 
-
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public void setSocket(Socket socket) {
         this.socket = socket;

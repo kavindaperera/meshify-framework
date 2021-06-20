@@ -161,6 +161,12 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
                     break;
                 }
+                case 1: {
+                    Log.e(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
+                    Log.e(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
+                    responseJson = ResponseJson.ResponseTypeKey(Meshify.getInstance().getMeshifyClient().getPublicKey());
+                    break;
+                }
             }
         }
         if (meshifyHandshake.getRp() != null) {
@@ -172,7 +178,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     this.getDevice().setUserId(meshifyHandshake.getRp().getUuid());
                     DeviceManager.addDevice(this.getDevice());
 
+                    if (Meshify.getInstance().getConfig().isEncryption()) {
+                        Log.e(TAG, "processHandshake: response type 1: asking for key" );
+                        rq = 1;
+                    }
                     break;
+                }
+                case 1: {
+                    Log.e(TAG, "processHandshake: a key received " + meshifyHandshake.getRp().getKey());
+                    this.setPublicKey(meshifyHandshake.getRp().getKey());
+
                 }
             }
         }
