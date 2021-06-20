@@ -74,9 +74,9 @@ public class MeshifyCore {
         return this.editor;
     }
 
-    static void sendEntity(Session session, MeshifyEntity bleEntity) throws MessageException, IOException {
-        Log.d(TAG, "sendEntity:");
-        TransactionManager.sendEntity(session, bleEntity);
+    static void sendEntity(Session session, MeshifyEntity meshifyEntity) throws MessageException, IOException {
+        Log.d(TAG, "sendEntity:" + meshifyEntity );
+        TransactionManager.sendEntity(session, meshifyEntity);
     }
 
 
@@ -117,4 +117,5 @@ public class MeshifyCore {
     public MessageController getMessageController() {
         return this.messageController;
     }
+
 }

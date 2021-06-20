@@ -1,15 +1,15 @@
 package com.codewizards.meshify_chat.ux.intro;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.WindowManager;
 
-import com.codewizards.meshify_chat.ux.home.MainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.ux.home.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
