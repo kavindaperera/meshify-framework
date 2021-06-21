@@ -44,8 +44,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     private Timer timer; //schedule background timer
 
-    private long crc; //Cyclic Redundancy Check - not added
-
     private String sessionId;
 
     public Session(BluetoothSocket bluetoothSocket) {
@@ -106,8 +104,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     }
 
-
-
     private void setCreateTime() {
         this.createTime = System.currentTimeMillis();
     }
@@ -152,8 +148,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         this.setDataInputStream(new DataInputStream(inputStream));
         this.requestHandShake(session);
     }
-
-
 
     private MeshifyHandshake processHandshake(MeshifyHandshake meshifyHandshake) {
         ResponseJson responseJson = null;
@@ -278,14 +272,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         }
     }
 
-    public void setCrc(long crc) {
-        this.crc = crc;
-    }
-
-    @Override
-    public long getCrc() {
-        return this.crc;
-    }
 
     @Override
     public void disconnect() {
@@ -301,7 +287,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     @Override
     public int compareTo(Session session) {
-        return String.valueOf(this.getCrc()).compareTo(String.valueOf(session.getCrc()));
+        return String.valueOf(this.getSessionId()).compareTo(String.valueOf(session.getSessionId()));
     }
 
     public String getSessionId() {

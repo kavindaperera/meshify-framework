@@ -48,11 +48,11 @@ public class MeshifyCore {
     private Completable completable = Completable.create(completableEmitter -> {
 
         if (SessionManager.getSessions().isEmpty()) {
-            Log.w(TAG, "sessions are cleaned up:");
+            Log.w(TAG, "all sessions cleaned:");
             completableEmitter.onComplete();
         } else {
-            Log.i(TAG, "connections are still active: ");
-            completableEmitter.tryOnError((Throwable)new Exception("Connections are still active"));
+            Log.i(TAG, "active connections: ");
+            completableEmitter.tryOnError((Throwable) new Exception("Active Connections Found"));
         }
 
     });
@@ -112,7 +112,6 @@ public class MeshifyCore {
     StateListener getStateListener() {
         return this.stateListener;
     }
-
 
     public MessageController getMessageController() {
         return this.messageController;
