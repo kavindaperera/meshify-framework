@@ -26,6 +26,7 @@ public class MeshifyCore {
     public static final String PREFS_API_KEY = "com.codewizards.meshify.API_KEY";
     public static final String PREFS_PUBLIC_KEY ="com.codewizards.meshify.key.public";
     public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.private";
+    public static final String PREFS_KEY_PAIRS ="com.codewizards.meshify.key.pairs";
 
     private static final String TAG = "[Meshify][MeshifyCore]";
 

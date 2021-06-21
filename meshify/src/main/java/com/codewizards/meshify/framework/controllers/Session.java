@@ -2,6 +2,7 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 
 import com.codewizards.meshify.client.Config;
@@ -23,6 +24,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -177,19 +179,43 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     DeviceManager.addDevice(this.getDevice());
 
                     if (Meshify.getInstance().getConfig().isEncryption()) {
-                        Log.i(TAG, "processHandshake: response type 1: asking for key" );
+                        Log.i(TAG, "processHandshake: asking for key" );
                         rq = 1;
                     }
                     break;
                 }
                 case 1: {
-                    Log.i(TAG, "processHandshake: a key received " + meshifyHandshake.getRp().getKey());
+                    Log.i(TAG, "processHandshake: response type 1 : public key received " + meshifyHandshake.getRp().getKey());
                     this.setPublicKey(meshifyHandshake.getRp().getKey());
-
+                    Session.saveKey(this.getUserId(), meshifyHandshake.getRp().getKey());
                 }
             }
         }
         return new MeshifyHandshake(rq, responseJson);
+    }
+
+    private static SharedPreferences getSharedPreferences() {
+        return Meshify.getInstance().getMeshifyCore().getSharedPreferences();
+    }
+
+    private static SharedPreferences.Editor getEditor() {
+        return Meshify.getInstance().getMeshifyCore().getEditor();
+    }
+
+    static HashMap<String, String> getKeys() {
+        String string = Session.getSharedPreferences().getString(MeshifyCore.PREFS_KEY_PAIRS, null);
+        if (string != null) {
+            Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
+            return (HashMap) new Gson().fromJson(string, type);
+        }
+        return new HashMap<String, String>();
+    }
+
+    public static void saveKey(String userId, String key) {
+        HashMap<String, String> hashMap = Session.getKeys();
+        hashMap.put(userId, key);
+        String string = new Gson().toJson(hashMap);
+        Session.getEditor().putString(MeshifyCore.PREFS_KEY_PAIRS, string).commit();
     }
 
     void processEntity(MeshifyEntity meshifyEntity) {
