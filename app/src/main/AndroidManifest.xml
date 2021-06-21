@@ -23,15 +23,26 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meshifychat">
-        <activity android:name=".ux.chat.ChatActivity"  android:parentActivityName=".ux.home.MainActivity"></activity>
+        <activity
+            android:name=".ux.chat.ChatActivity"
+            android:parentActivityName=".ux.home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ux.home.MainActivity" />
+        </activity>
         <activity android:name=".ux.intro.SplashActivity" />
-        <activity android:name=".ux.home.MainActivity" android:launchMode="singleTop" />
-        <activity android:name=".ux.home.HomeActivity" android:launchMode="singleTop">
+        <activity
+            android:name=".ux.home.MainActivity"
+            android:alwaysRetainTaskState="true" />
+        <activity
+            android:name=".ux.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Meshify API key -->
+        </activity>
+
+        <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />

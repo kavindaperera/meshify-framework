@@ -68,10 +68,10 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     observableEmitter.tryOnError((Throwable) ioException);
                 }
             }
-        }).subscribeOn(Schedulers.newThread()).subscribe((Observer)  new Observer<byte[]>() {
+        }).subscribeOn(Schedulers.newThread()).subscribe((Observer) new Observer<byte[]>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-                Log.d(TAG, "run: Start runnable of session " + Session.this.getSessionId() + " device: " + Session.this.getDevice().getDeviceAddress());
+                Log.d(TAG, "run: Start session " + Session.this.getSessionId() + " device: " + Session.this.getDevice().getDeviceAddress());
                 if (Session.this.getAntennaType() == Config.Antenna.BLUETOOTH) {
                     try {
                         Session.this.initialize(Session.this, Session.this.getBluetoothSocket().getOutputStream(), Session.this.getBluetoothSocket().getInputStream());
@@ -87,7 +87,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                 Parcel parcel = ChunkUtils.unmarshall(bytes);
                 MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
-                Log.e(TAG, "Received -> " + meshifyEntity);
+                Log.e(TAG, "Received: " + meshifyEntity);
                 Session.this.processEntity(meshifyEntity);
 
             }
@@ -161,13 +161,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         if (meshifyHandshake.getRq() != -1) {
             switch (meshifyHandshake.getRq()) {
                 case 0: {
-                    Log.e(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
+                    Log.i(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
                     break;
                 }
                 case 1: {
-                    Log.e(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
-                    Log.e(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
+                    Log.i(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
+                    Log.i(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
                     responseJson = ResponseJson.ResponseTypeKey(Meshify.getInstance().getMeshifyClient().getPublicKey());
                     break;
                 }
@@ -176,28 +176,26 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         if (meshifyHandshake.getRp() != null) {
             switch (meshifyHandshake.getRp().getType()) {
                 case 0: {
-                    Log.e(TAG, "processHandshake: response type 0 device: " + this.getDevice().getDeviceAddress() );
+                    Log.i(TAG, "processHandshake: response type 0 device: " + this.getDevice().getDeviceAddress() );
                     this.setUserId(meshifyHandshake.getRp().getUuid());
 
                     this.getDevice().setUserId(meshifyHandshake.getRp().getUuid());
                     DeviceManager.addDevice(this.getDevice());
 
                     if (Meshify.getInstance().getConfig().isEncryption()) {
-                        Log.e(TAG, "processHandshake: response type 1: asking for key" );
+                        Log.i(TAG, "processHandshake: response type 1: asking for key" );
                         rq = 1;
                     }
                     break;
                 }
                 case 1: {
-                    Log.e(TAG, "processHandshake: a key received " + meshifyHandshake.getRp().getKey());
+                    Log.i(TAG, "processHandshake: a key received " + meshifyHandshake.getRp().getKey());
                     this.setPublicKey(meshifyHandshake.getRp().getKey());
 
                 }
             }
         }
-
         return new MeshifyHandshake(rq, responseJson);
-
     }
 
     void processEntity(MeshifyEntity meshifyEntity) {
@@ -216,7 +214,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                             exception.printStackTrace();
                         }
                     }
-
                     DeviceManager.addDevice(this.getDevice(), this);
                     if (!this.isClient() || this.getEmitter() == null) break;
                     this.getEmitter().onComplete();
@@ -258,8 +255,8 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
         }
         catch (IOException | NullPointerException exception) {
-            Log.e(TAG, "Outputstream or session was null, removing session: " + this.getSessionId(), exception);
-            this.removeSession(); //remove the session
+            Log.e(TAG, "Output stream or session was null, removing session: " + this.getSessionId(), exception);
+            this.removeSession();
         }
     }
 
@@ -316,7 +313,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
     }
 
     private void requestHandShake(Session session) {
-        Log.d(TAG, "client: " + session.isClient() + " requestHandShake: " + session.getSessionId());
+        Log.e(TAG, "isClient?: " + session.isClient() + " requestHandShake: " + session.getSessionId());
         if (session.isClient()) {
             try {
                 Log.e(this.TAG, "1 -> Handshake request type general - UUID |  session: " + getSessionId());
