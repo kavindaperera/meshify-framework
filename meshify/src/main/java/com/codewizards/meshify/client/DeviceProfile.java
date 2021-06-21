@@ -12,13 +12,13 @@ public class DeviceProfile {
 
     private int rating;
 
-    private DeviceCharacteristicsProfile deviceCharacteristicsProfile;
+    private CharacteristicsProfile characteristicsProfile;
 
-    enum DeviceCharacteristicsProfile {
-        DeviceSupportsBluetoothClassic,
-        DeviceSupportsBluetoothLeCentral,
-        DeviceSupportsBluetoothLePeripheral,
-        DeviceSupportsAllCharacteristics
+    enum CharacteristicsProfile {
+        SupportsBluetoothClassic,
+        SupportsBluetoothLeCentral,
+        SupportsBluetoothLePeripheral,
+        SupportsAllCharacteristics
     }
 
     public DeviceProfile(Context context) {

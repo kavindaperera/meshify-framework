@@ -68,11 +68,6 @@ public class DeviceManager {
             } else if (device2.getUserId() != null) {
                 device.setUserId(device2.getUserId());
             }
-            if (device.getCrc() > 0L) {
-                device2.setCrc(device.getCrc());
-            } else if (device2.getCrc() > 0L) {
-                device.setCrc(device2.getCrc());
-            }
         }
     }
 

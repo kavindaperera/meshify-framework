@@ -132,6 +132,18 @@ public class Meshify {
 
     }
 
+    public static boolean stop() {
+        return false;
+    }
+
+    public static boolean pause() {
+        return false;
+    }
+
+    public static boolean resume() {
+        return false;
+    }
+
     public static String sendMessage(@NonNull Message message) {
         try {
             return Meshify.sendMessage(message, getInstance().getConfig().getConfigProfile());

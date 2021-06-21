@@ -23,9 +23,10 @@ public class Device implements Parcelable {
 
     private Config.Antenna antennaType;
 
-    private long crc;
-
     private String sessionId;
+
+    public Device() {
+    }
 
     protected Device(Parcel in) {
         this.deviceName = in.readString();
@@ -85,6 +86,13 @@ public class Device implements Parcelable {
         return Meshify.sendMessage(builder.build());
     }
 
+    public String sendMessage(@NonNull HashMap<String, Object> content, byte[] data) {
+        Message.Builder builder = new Message.Builder();
+        builder.setContent(content).setReceiverId(this.userId);
+        builder.setData(data);
+        return Meshify.sendMessage(builder.build());
+    }
+
     /*getters*/
 
     public Config.Antenna getAntennaType() {
@@ -93,10 +101,6 @@ public class Device implements Parcelable {
 
     public BluetoothDevice getBluetoothDevice() {
         return this.bluetoothDevice;
-    }
-
-    public long getCrc() {
-        return crc;
     }
 
     public String getDeviceAddress() {
@@ -123,10 +127,7 @@ public class Device implements Parcelable {
 
     public void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
         this.bluetoothDevice = bluetoothDevice;
-    }
-
-    public void setCrc(long crc) {
-        this.crc = crc;
+        this.deviceAddress = bluetoothDevice.getAddress();
     }
 
     public void setDeviceAddress(String deviceAddress) {
