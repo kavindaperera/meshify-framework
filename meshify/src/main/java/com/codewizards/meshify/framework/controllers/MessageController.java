@@ -31,7 +31,7 @@ public class MessageController {
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
-        Log.e(TAG, "sendMessage: to device -> " + device );
+        Log.d(TAG, "sendMessage: to device -> " + device );
 
         if (this.config.isEncryption() && !Session.getKeys().containsKey(message.getReceiverId())) {
             Meshify.getInstance().getMeshifyCore().getMessageListener().onMessageFailed(message, new MessageException("Missing public key of " + message.getReceiverId()));
@@ -40,7 +40,15 @@ public class MessageController {
         if (device != null) {
             this.sendMessage(context, message, device);
         } else if (profile != ConfigProfile.NoForwarding) {
-            //TODO
+
+            Log.e(TAG, "Device not found. Forwarding the Message....");
+
+            //TODO - implement forwarding
+
+            if (DeviceManager.getDeviceList().isEmpty()) {
+                this.messageNotifier.onMessageFailed(message, new MessageException("No Nearby Neighbors found!"));
+            }
+
         }
 
 

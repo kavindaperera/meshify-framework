@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
 import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.entities.Neighbor;
@@ -51,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
             String msg = (String) message.getContent().get("text");
             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(new Intent(message.getSenderId()).putExtra(INTENT_EXTRA_MSG, msg));
+        }
+
+        @Override
+        public void onMessageFailed(Message message, MessageException exception) {
+            super.onMessageFailed(message, exception);
+
+            Log.e(TAG, "onMessageFailed:" + exception + " Message: " + message);
+            Toast.makeText(getApplicationContext(), exception.toString() , Toast.LENGTH_SHORT).show();
         }
     };
 
