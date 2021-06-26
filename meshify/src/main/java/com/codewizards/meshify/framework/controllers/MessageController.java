@@ -5,6 +5,7 @@ import android.content.Context;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
@@ -31,9 +32,17 @@ public class MessageController {
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
         Log.e(TAG, "sendMessage: to device -> " + device );
+
+        if (this.config.isEncryption() && !Session.getKeys().containsKey(message.getReceiverId())) {
+            Meshify.getInstance().getMeshifyCore().getMessageListener().onMessageFailed(message, new MessageException("Missing public key of " + message.getReceiverId()));
+        }
+
         if (device != null) {
             this.sendMessage(context, message, device);
+        } else if (profile != ConfigProfile.NoForwarding) {
+            //TODO
         }
+
 
     }
 
