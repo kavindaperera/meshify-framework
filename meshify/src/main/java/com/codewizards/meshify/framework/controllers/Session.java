@@ -1,6 +1,5 @@
 package com.codewizards.meshify.framework.controllers;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.os.Parcel;
@@ -14,7 +13,6 @@ import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.entities.ResponseJson;
 import com.codewizards.meshify.framework.expections.MessageException;
-import com.codewizards.meshify.framework.utils.Utils;
 import com.codewizards.meshify.logs.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,11 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 
-import io.reactivex.CompletableEmitter;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -85,7 +81,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
             @Override
             public void onNext(@NonNull byte[] bytes) {
                 try {
-                    Parcel parcel = ChunkUtils.unmarshall(bytes);
+                    Parcel parcel = MeshifyUtils.unmarshall(bytes);
                     MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
                     Log.e(TAG, "Received: " + meshifyEntity);
                     Session.this.processEntity(meshifyEntity);
@@ -269,7 +265,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         try {
             Log.e(TAG, "Flushed:" + meshifyEntity);
 
-            byte[] arrby = ChunkUtils.marshall(meshifyEntity);
+            byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
 
             this.getDataOutputStream().writeInt(arrby.length);
             this.getDataOutputStream().write(arrby);

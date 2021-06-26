@@ -27,13 +27,13 @@ public class TransactionManager {
             Transaction transaction = new Transaction(session, meshifyEntity, transactionManager);
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
                 transactions.put(transaction, Boolean.TRUE);
-                transactionManager.start();
+                transactionManager.startInBackground();
             }
 
         }
     }
 
-    private static void start() {
+    private static void startInBackground() {
         new AsyncTask(){
             protected synchronized Object doInBackground(Object[] params) {
                 if (transactions.size() > 0) {
@@ -43,17 +43,17 @@ public class TransactionManager {
 
                     }
                     catch (IOException iOException) {
-                        Log.e(TAG, "IOException: ", iOException);
+                        Log.e(TAG, "doInBackground:IOException ", iOException);
                         iOException.printStackTrace();
 
                     }
                     catch (MessageException messageException) {
-                        Log.e(TAG, "MessageException: ", messageException);
+                        Log.e(TAG, "doInBackground:MessageException ", messageException);
                         messageException.printStackTrace();
 
                     }
                     catch (InterruptedException interruptedException) {
-                        Log.e(TAG, "doInBackground: ", interruptedException);
+                        Log.e(TAG, "doInBackground:InterruptedException ", interruptedException);
 
                     }
                 }
