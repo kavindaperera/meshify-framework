@@ -60,18 +60,18 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
             this.setCreateTime();
             while (this.isConnected()){
                 try {
-                    int n2 = this.getDataInputStream().readInt();
-                    byte[] arrby = new byte[n2];
+                    int readInt = this.getDataInputStream().readInt();
+                    byte[] arrby = new byte[readInt];
                     this.getDataInputStream().readFully(arrby);
-                    observableEmitter.onNext((Object) arrby);
+                    observableEmitter.onNext(arrby);
                 } catch (IOException ioException) {
-                    observableEmitter.tryOnError((Throwable) ioException);
+                    observableEmitter.tryOnError(ioException);
                 }
             }
         }).subscribeOn(Schedulers.newThread()).subscribe((Observer) new Observer<byte[]>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-                Log.d(TAG, "run: Start session " + Session.this.getSessionId() + " device: " + Session.this.getDevice().getDeviceAddress());
+                Log.d(TAG, "run: start session " + Session.this.getSessionId() + " device: " + Session.this.getDevice().getDeviceAddress());
                 if (Session.this.getAntennaType() == Config.Antenna.BLUETOOTH) {
                     try {
                         Session.this.initialize(Session.this, Session.this.getBluetoothSocket().getOutputStream(), Session.this.getBluetoothSocket().getInputStream());
@@ -84,12 +84,14 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
             @Override
             public void onNext(@NonNull byte[] bytes) {
-
-                Parcel parcel = ChunkUtils.unmarshall(bytes);
-                MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
-                Log.e(TAG, "Received: " + meshifyEntity);
-                Session.this.processEntity(meshifyEntity);
-
+                try {
+                    Parcel parcel = ChunkUtils.unmarshall(bytes);
+                    MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
+                    Log.e(TAG, "Received: " + meshifyEntity);
+                    Session.this.processEntity(meshifyEntity);
+                } catch (Exception exception) {
+                    Log.e(TAG, "Received: reading entity failed " + exception.getMessage(), exception);
+                }
             }
 
             @Override
@@ -121,7 +123,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     if (this.getBluetoothSocket() != null) {
                         this.getBluetoothSocket().close();
                     }
-                    this.setBluetoothSocket((BluetoothSocket)null);
+                    this.setBluetoothSocket(null);
                 }
                 catch (Exception exception) {
                     exception.printStackTrace();

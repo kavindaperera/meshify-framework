@@ -66,9 +66,7 @@ public class ConnectionManager {
 
             }
         }
-
         return meshifyDevice;
-
     }
 
     static boolean checkConnection(String string) {
@@ -91,8 +89,8 @@ public class ConnectionManager {
         Connection connection = connections.get(device.getDeviceAddress());
         if (connection.getConnectionRetries() <= Meshify.getInstance().getConfig().getMaxConnectionRetries()) {
             int n2 = connection.getConnectionRetries() * 2 * 1000;
-            Completable.timer((long)n2, (TimeUnit)TimeUnit.MILLISECONDS).subscribe(() -> {
-                Log.i(TAG, "run: opening device " + device.getDeviceAddress() + " for retry");
+            Completable.timer(n2, TimeUnit.MILLISECONDS).subscribe(() -> {
+                Log.i(TAG, "run: opening connection of device: " + device.getDeviceAddress() + " to retry");
                 connection.setConnected(true);
                 connections.put(device.getDeviceAddress(), connection);
             });
@@ -105,5 +103,4 @@ public class ConnectionManager {
             });
         }
     }
-
 }

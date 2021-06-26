@@ -148,7 +148,7 @@ public class Meshify {
         try {
             return Meshify.sendMessage(message, getInstance().getConfig().getConfigProfile());
         } catch (NullPointerException e) {
-            Log.e(TAG, "Meshify must be started with Meshify.start() before trying to send a message");
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message");
             return null;
         }
     }
@@ -160,7 +160,7 @@ public class Meshify {
             getInstance().getMeshifyCore().sendMessage(message, message.getReceiverId(), configProfile);
             return message.getUuid();
         } catch (NullPointerException e) {
-            Log.e(TAG, "Meshify must be started with Meshify.start() before trying to send a message" );
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message" );
             e.printStackTrace();
             return null;
         }

@@ -1,5 +1,7 @@
 package com.codewizards.meshify.framework.controllers;
 
+import com.codewizards.meshify.logs.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -8,6 +10,8 @@ import io.reactivex.functions.Function;
 
 class RetryWhenLambda implements Function<Flowable<? extends Throwable>, Flowable<?>> {
 
+
+    private static final String TAG = "[Meshify][RetryWhen]";
     private final int retries;
 
     private final int delay;

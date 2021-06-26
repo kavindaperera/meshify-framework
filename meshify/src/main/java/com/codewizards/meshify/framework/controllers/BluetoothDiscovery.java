@@ -87,13 +87,15 @@ public class BluetoothDiscovery extends Discovery {
             }).retryWhen(new RetryWhenLambda(3, 1000)) //2000 milliseconds delay retry
                     .subscribe(new  CompletableObserver(){
                         public void onSubscribe(Disposable d2) {
+                            Log.d(TAG, "onSubscribe: ");
                         }
 
                         public void onComplete() {
+                            Log.d(TAG, "onComplete: ");
                         }
 
                         public void onError(Throwable e2) {
-                            Log.e(TAG, "onError:" + e2);
+                            Log.e(TAG, "onError: " + e2);
                             BluetoothDiscovery.this.stopDiscovery(context); //stop discovery on error
                         }
             });

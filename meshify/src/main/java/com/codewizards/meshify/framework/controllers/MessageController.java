@@ -8,6 +8,7 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ public class MessageController {
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
+        Log.e(TAG, "sendMessage: to device -> " + device );
         if (device != null) {
             this.sendMessage(context, message, device);
         }
