@@ -176,9 +176,14 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     this.getDevice().setUserId(meshifyHandshake.getRp().getUuid());
                     DeviceManager.addDevice(this.getDevice());
 
-                    if (Meshify.getInstance().getConfig().isEncryption()) {
-                        Log.i(TAG, "processHandshake: asking for key" );
-                        rq = 1;
+                    // check whether public key already exists
+                    HashMap<String,String> publicKeysMap = getKeys();
+                    if (!publicKeysMap.containsKey(meshifyHandshake.getRp().getUuid())) {
+
+                        if (Meshify.getInstance().getConfig().isEncryption()) {
+                            Log.i(TAG, "processHandshake: asking for key");
+                            rq = 1;
+                        }
                     }
                     break;
                 }
