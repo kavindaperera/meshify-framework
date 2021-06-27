@@ -10,6 +10,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.entities.ResponseJson;
 import com.codewizards.meshify.framework.expections.MessageException;
@@ -262,6 +263,14 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     Meshify.getInstance().getMeshifyCore().getMessageController().messageReceived(message, this);
                     break;
                 }
+                case 2: {
+                    MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
+                    if (forwardTransaction.getMesh() != null) {
+
+                    }
+
+                }
+
             }
         }
     }
