@@ -279,7 +279,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         try {
             Log.e(TAG, "Flushed:" + meshifyEntity);
 
-            byte[] arrby = MeshifyUtils.marshall(meshifyEntity,getUserId());
+            byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
 
             this.getDataOutputStream().writeInt(arrby.length);
             this.getDataOutputStream().write(arrby);
