@@ -340,7 +340,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         Log.e(TAG, "isClient?: " + session.isClient() + " requestHandShake: " + session.getSessionId());
         if (session.isClient()) {
             try {
-                Log.e(this.TAG, "1 -> Handshake request type general - UUID |  session: " + getSessionId());
+                Log.e(this.TAG, "Handshake request type 0 |  session: " + getSessionId());
                 MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
 
                 MeshifyCore.sendEntity(session, meshifyEntity);

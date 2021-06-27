@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             super.onMessageFailed(message, exception);
 
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
-            Toast.makeText(getApplicationContext(), exception.toString() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), exception.getMessage() , Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
 
-            Toast.makeText(getApplicationContext(), "Neighbor added: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Neighbor found" + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Device " + device.getDeviceName() + " got Blacklisted", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_LONG).show();
 
         }
 
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Lost Device " + device.getDeviceName(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_LONG).show();
 
         }
     };
