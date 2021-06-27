@@ -36,36 +36,28 @@ public class TransactionManager {
 
     private static void startInBackground() {
 
-        Executor executor = new Executor() {
-            @Override
-            public void execute(Runnable command) {
-                command.run();
-            }
-        };
+        Executor executor = command -> command.run();
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (transactions.size() > 0) {
-                    Transaction transaction = (Transaction) transactions.pollFirstEntry().getKey();
-                    try {
-                        transaction.getSession().flush(transaction.getMeshifyEntity());
+        executor.execute((Runnable) () -> {
+            if (transactions.size() > 0) {
+                Transaction transaction = (Transaction) transactions.pollFirstEntry().getKey();
+                try {
+                    transaction.getSession().flush(transaction.getMeshifyEntity());
 
-                    }
-                    catch (IOException iOException) {
-                        Log.e(TAG, "startInBackground:IOException ", iOException);
-                        iOException.printStackTrace();
+                }
+                catch (IOException iOException) {
+                    Log.e(TAG, "startInBackground:IOException ", iOException);
+                    iOException.printStackTrace();
 
-                    }
-                    catch (MessageException messageException) {
-                        Log.e(TAG, "startInBackground:MessageException ", messageException);
-                        messageException.printStackTrace();
+                }
+                catch (MessageException messageException) {
+                    Log.e(TAG, "startInBackground:MessageException ", messageException);
+                    messageException.printStackTrace();
 
-                    }
-                    catch (InterruptedException interruptedException) {
-                        Log.e(TAG, "startInBackground:InterruptedException ", interruptedException);
+                }
+                catch (InterruptedException interruptedException) {
+                    Log.e(TAG, "startInBackground:InterruptedException ", interruptedException);
 
-                    }
                 }
             }
         });
