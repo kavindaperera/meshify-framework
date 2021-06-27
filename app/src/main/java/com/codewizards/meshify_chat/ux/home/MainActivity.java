@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         public void onMessageFailed(Message message, MessageException exception) {
             super.onMessageFailed(message, exception);
 
-            Log.e(TAG, "onMessageFailed:" + exception + " Message: " + message);
+            Log.e(TAG, "onMessageFailed:" + exception.getMessage());
             Toast.makeText(getApplicationContext(), exception.toString() , Toast.LENGTH_SHORT).show();
         }
     };
