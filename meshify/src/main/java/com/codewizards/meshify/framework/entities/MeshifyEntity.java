@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @JsonInclude(value=JsonInclude.Include.NON_NULL)
@@ -47,6 +48,10 @@ public class MeshifyEntity<T> implements Parcelable {
                 this.content = in.readParcelable(MeshifyContent.class.getClassLoader());
                 break;
             }
+            case 2: {
+                this.content = in.readParcelable(MeshifyForwardTransaction.class.getClassLoader());
+                break;
+            }
         }
     }
 
@@ -61,6 +66,12 @@ public class MeshifyEntity<T> implements Parcelable {
             return new MeshifyEntity[size];
         }
     };
+
+
+    public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> forwardEntities, String sender) {
+        MeshifyForwardTransaction forwardTransaction = new MeshifyForwardTransaction(sender, forwardEntities);
+        return new MeshifyEntity<MeshifyForwardTransaction>(2, forwardTransaction);
+    }
 
     public static  MeshifyEntity message(Message message) {
         return new MeshifyEntity<MeshifyContent>(1, new MeshifyContent(message.getContent(), message.getUuid()));
@@ -116,10 +127,13 @@ public class MeshifyEntity<T> implements Parcelable {
         dest.writeString(this.id);
         dest.writeInt(this.entity);
         if (this.content instanceof MeshifyHandshake) {
-            dest.writeParcelable((Parcelable)((MeshifyHandshake)this.content), flags);
+            dest.writeParcelable((MeshifyHandshake)this.content, flags);
         }
         else if (this.content instanceof MeshifyContent) {
-            dest.writeParcelable((Parcelable)((MeshifyContent)this.content), flags);
+            dest.writeParcelable((MeshifyContent)this.content, flags);
+        }
+        else if (this.content instanceof MeshifyForwardTransaction) {
+            dest.writeParcelable((MeshifyForwardTransaction)this.content, flags);
         }
     }
 }

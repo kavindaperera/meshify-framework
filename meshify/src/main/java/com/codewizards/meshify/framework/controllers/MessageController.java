@@ -8,6 +8,7 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
 
@@ -18,16 +19,24 @@ public class MessageController {
     public final String TAG = "[Meshify][MessageController]";
 
     private Config config;
+
     private MessageNotifier messageNotifier;
+
+    private ForwardController forwardController;
 
     MessageController(Context context, Config config) {
         this.config = config;
         this.messageNotifier = new MessageNotifier(config);
+        this.forwardController = new ForwardController();
     }
 
     void messageReceived(Message message, Session session) {
         message.setMesh(false);
         this.messageNotifier.onMessageReceived(message);
+    }
+
+    private void forward(MeshifyForwardEntity forwardEntity) {
+        this.forwardController.startForwarding(forwardEntity, true);
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
@@ -40,11 +49,8 @@ public class MessageController {
         if (device != null) {
             this.sendMessage(context, message, device);
         } else if (profile != ConfigProfile.NoForwarding) {
-
-            Log.e(TAG, "Device not found. Forwarding the Message....");
-
-            //TODO - implement forwarding
-
+            Log.d(TAG, "Device not found. Forwarding the Message....");
+            this.forward(new MeshifyForwardEntity(message, profile));
             if (DeviceManager.getDeviceList().isEmpty()) {
                 this.messageNotifier.onMessageFailed(message, new MessageException("No Nearby Neighbors found!"));
             }
