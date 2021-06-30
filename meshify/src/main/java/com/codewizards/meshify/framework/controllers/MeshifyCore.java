@@ -8,7 +8,7 @@ import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
@@ -16,7 +16,6 @@ import com.codewizards.meshify.logs.Log;
 import java.io.IOException;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
 
 public class MeshifyCore {
 
@@ -44,7 +43,7 @@ public class MeshifyCore {
 
     private MeshifyReceiver meshifyReceiver;
 
-    private StateListener stateListener;
+    private ConnectionListener connectionListener;
 
     private Completable completable = Completable.create(completableEmitter -> {
 
@@ -102,16 +101,16 @@ public class MeshifyCore {
         this.messageListener = messageListener;
     }
 
-    public void setStateListener(StateListener stateListener) {
-        this.stateListener = stateListener;
+    public void setStateListener(ConnectionListener connectionListener) {
+        this.connectionListener = connectionListener;
     }
 
     public Context getContext() {
         return this.context;
     }
 
-    StateListener getStateListener() {
-        return this.stateListener;
+    ConnectionListener getStateListener() {
+        return this.connectionListener;
     }
 
     public MessageController getMessageController() {
