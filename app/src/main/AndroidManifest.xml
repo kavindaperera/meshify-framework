@@ -33,6 +33,7 @@
         <activity android:name=".ux.intro.SplashActivity" />
         <activity
             android:name=".ux.home.MainActivity"
+            android:launchMode="singleTop"
             android:alwaysRetainTaskState="true" />
         <activity
             android:name=".ux.home.HomeActivity">
