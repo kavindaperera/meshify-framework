@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,12 +17,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.Constants;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
-import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
             super.onMessageFailed(message, exception);
 
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
-            Toast.makeText(getApplicationContext(), exception.toString() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), exception.getMessage() , Toast.LENGTH_SHORT).show();
         }
     };
 
-    StateListener stateListener = new StateListener() {
+    ConnectionListener connectionListener = new ConnectionListener() {
 
         @Override
         public void onStarted() {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             super.onStartError(message, errorCode);
             progressDialog.dismiss();
 
-            if (errorCode == stateListener.INSUFFICIENT_PERMISSIONS) {
+            if (errorCode == Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
         }
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
 
-            Toast.makeText(getApplicationContext(), "Neighbor added: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Neighbor found" + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Device " + device.getDeviceName() + " got Blacklisted", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_LONG).show();
 
         }
 
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Lost Device " + device.getDeviceName(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_LONG).show();
 
         }
     };
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
 
-        Meshify.start(messageListener, stateListener, builder.build());
+        Meshify.start(messageListener, connectionListener, builder.build());
 
     }
 

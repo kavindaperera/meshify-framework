@@ -47,7 +47,7 @@ public class MeshifyUtils {
             case BLUETOOTH_LE: {
                 MeshifyUtils.checkPermissions(context);
                 if (config.getAntennaType() == Config.Antenna.BLUETOOTH_LE && !MeshifyUtils.checkHardware(context)) {
-                    throw new MeshifyException(StateListener.BLE_NOT_SUPPORTED, StateListener.BLE_NOT_SUPPORTED_STRING);
+                    throw new MeshifyException(Constants.BLE_NOT_SUPPORTED, Constants.BLE_NOT_SUPPORTED_STRING);
                 }
             }
         }
@@ -74,14 +74,14 @@ public class MeshifyUtils {
     private static void checkPermissions(Context context) throws MeshifyException {
         if (Build.VERSION.SDK_INT >= 23) {
             if (!checkLocationPermissions(context)) {
-                throw new MeshifyException(StateListener.INSUFFICIENT_PERMISSIONS, StateListener.INSUFFICIENT_LOCATION_PERMISSIONS_STRING);
+                throw new MeshifyException(Constants.INSUFFICIENT_PERMISSIONS, Constants.INSUFFICIENT_LOCATION_PERMISSIONS_STRING);
             } else if (!isLocationAvailable(context)) {
-                throw new MeshifyException(StateListener.LOCATION_SERVICES_DISABLED, StateListener.LOCATION_SERVICES_STRING);
+                throw new MeshifyException(Constants.LOCATION_SERVICES_DISABLED, Constants.LOCATION_SERVICES_STRING);
             }
         }
 
         if (!checkBluetoothPermission(context)) {
-            throw new MeshifyException( StateListener.INSUFFICIENT_PERMISSIONS, StateListener.INSUFFICIENT_BLUETOOTH_PERMISSIONS_STRING);
+            throw new MeshifyException( Constants.INSUFFICIENT_PERMISSIONS, Constants.INSUFFICIENT_BLUETOOTH_PERMISSIONS_STRING);
         }
     }
 

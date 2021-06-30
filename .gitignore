@@ -14,3 +14,15 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea/compiler.xml
+.project
+.idea/gradle.xml
+.idea/misc.xml
+.idea/codeStyles/Project.xml
+.settings/org.eclipse.buildship.core.prefs
+app/.classpath
+app/.project
+app/.settings/org.eclipse.buildship.core.prefs
+meshify/.classpath
+meshify/.project
+meshify/.settings/org.eclipse.buildship.core.prefs

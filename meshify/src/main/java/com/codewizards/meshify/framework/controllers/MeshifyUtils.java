@@ -1,13 +1,7 @@
 package com.codewizards.meshify.framework.controllers;
 
-import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.MeshifyRSA;
-
-import java.util.HashMap;
 
 public class MeshifyUtils {
 
@@ -16,37 +10,18 @@ public class MeshifyUtils {
      * @param parcelable  a parcelable object
      * @return  the raw bytes of the given Parcelable object
      */
-    public static byte[] marshall(Parcelable parcelable, String userId) {
+    public static byte[] marshall(Parcelable parcelable) {
         Parcel parcel = Parcel.obtain();
         parcelable.writeToParcel(parcel, 0);
         byte[] parcelableBytes = parcel.marshall();
         parcel.recycle();
-
-        if (Meshify.getInstance().getConfig().isEncryption()) {
-            HashMap<String, String> publicKeysMap = Session.getKeys();
-            byte[] encryptedBytes = MeshifyRSA.encrypt(publicKeysMap.get(userId), parcelableBytes);
-            return encryptedBytes;
-        } else {
-            return parcelableBytes;
-        }
+        return parcelableBytes;
     }
 
     public static Parcel unmarshall(byte[] bytes) {
         Parcel parcel = Parcel.obtain();
-
-        if (Meshify.getInstance().getConfig().isEncryption()) {
-
-            SharedPreferences sharedPreferences = Meshify.getInstance().getContext().getSharedPreferences(MeshifyCore.PREFS_NAME, 0);
-            String secretKey = sharedPreferences.getString(MeshifyCore.PREFS_PRIVATE_KEY, (String) null);
-            if (secretKey != null) {
-                byte[] decryptedBytes = MeshifyRSA.decrypt(secretKey, bytes);
-                parcel.unmarshall(decryptedBytes, 0, decryptedBytes.length);
-            }
-        } else {
-            parcel.unmarshall(bytes, 0, bytes.length);
-        }
-
-        parcel.setDataPosition(0);
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0); // This is extremely important!
         return parcel;
     }
 

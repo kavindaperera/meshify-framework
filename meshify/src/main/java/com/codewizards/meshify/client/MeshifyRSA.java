@@ -21,7 +21,7 @@ import javax.crypto.Cipher;
  * Can be used to generate Public-Private key pairs for RSA,
  * to encrypt data using Public key and decrypt data using Private key
  */
-public class MeshifyRSA {
+class MeshifyRSA {
 
     /**
      * This will generate a Public-Private key pair for RSA and returns them in a HashMap
