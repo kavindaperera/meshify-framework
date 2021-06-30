@@ -10,8 +10,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 
 import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.DeviceProfile;
-import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;

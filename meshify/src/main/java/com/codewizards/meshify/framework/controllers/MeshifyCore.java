@@ -101,7 +101,7 @@ public class MeshifyCore {
         this.messageListener = messageListener;
     }
 
-    public void setStateListener(ConnectionListener connectionListener) {
+    public void setConnectionListener(ConnectionListener connectionListener) {
         this.connectionListener = connectionListener;
     }
 
@@ -109,7 +109,7 @@ public class MeshifyCore {
         return this.context;
     }
 
-    ConnectionListener getStateListener() {
+    ConnectionListener getConnectionListener() {
         return this.connectionListener;
     }
 
