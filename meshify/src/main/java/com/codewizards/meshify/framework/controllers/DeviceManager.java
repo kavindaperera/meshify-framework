@@ -7,6 +7,8 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -65,11 +67,6 @@ public class DeviceManager {
                 device2.setUserId(device.getUserId());
             } else if (device2.getUserId() != null) {
                 device.setUserId(device2.getUserId());
-            }
-            if (device.getCrc() > 0L) {
-                device2.setCrc(device.getCrc());
-            } else if (device2.getCrc() > 0L) {
-                device.setCrc(device2.getCrc());
             }
         }
     }
@@ -146,6 +143,18 @@ public class DeviceManager {
                 }
             }
         }, 20000L, TimeUnit.MILLISECONDS);
+    }
+
+    static List<Device> getDeviceList() {
+        return new ArrayList<Device>(deviceList.values());
+    }
+
+    static Device getDeviceByUserId(String userId) {
+        for (Device device : DeviceManager.getDeviceList()) {
+            if (device.getUserId() == null || !device.getUserId().equals(userId)) continue;
+            return device;
+        }
+        return null;
     }
 
 }

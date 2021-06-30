@@ -4,8 +4,6 @@ public interface Session {
 
     String getPublicKey();
 
-    long getCrc();
-
     String getUserId();
 
     Config.Antenna getAntennaType();

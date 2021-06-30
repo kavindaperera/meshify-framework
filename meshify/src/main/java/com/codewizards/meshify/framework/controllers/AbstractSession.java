@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import io.reactivex.CompletableEmitter;
 
-public class AbstractSession {
+public abstract class AbstractSession {
 
     protected final String TAG = "[Meshify][AbstractSession]";
 
@@ -142,7 +142,9 @@ public class AbstractSession {
         return this.isClient;
     }
 
-
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
     public void setSocket(Socket socket) {
         this.socket = socket;

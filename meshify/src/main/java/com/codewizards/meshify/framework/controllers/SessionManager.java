@@ -13,9 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class SessionManager {
     private static final String TAG = "[Meshify][SessionManager]";
 
-    private static final int availableProcessors = Runtime.getRuntime().availableProcessors();
-
-    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(3, 9, 3L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+//    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 9, 3L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     static ConcurrentSkipListMap<String, Session> sessionMap = new ConcurrentSkipListMap<>();
 
@@ -28,7 +26,7 @@ public class SessionManager {
 
     static void queueSession(Session session) {
         if (!sessionMap.containsKey(session.getSessionId())) {
-            Log.d(TAG, "queueSession: " + session.getSessionId() + " ::: first time.");
+            Log.d(TAG, "queueSession: " + session.getSessionId() + " -> first time.");
             session.setConnected(true);
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
                 session.run();
@@ -52,7 +50,7 @@ public class SessionManager {
         return session;
     }
 
-    static void removeSession(String string) { //removeSession
+    static void removeSession(String string) {
 
         Session session = SessionManager.getSession(string);
         if (session != null && session.getState() != 1) {
@@ -61,14 +59,13 @@ public class SessionManager {
     }
 
     static void removeQueueSession(Session session) {
-        Log.e(TAG, "remove Session: id - " + session.getSessionId());
-
+        Log.e(TAG, "Remove Session: id - " + session.getSessionId());
 
         Device device = session.getDevice();
         if (session.getEmitter() != null) {
-            Log.i(TAG, "removeQueueSession: dispatching onconnection result disconnected");
+            Log.i(TAG, "removeQueueSession: disconnected");
             if (!session.getEmitter().isDisposed()) {
-                session.getEmitter().tryOnError((Throwable)new Exception("Connection closed"));
+                session.getEmitter().tryOnError(new Exception("Connection closed"));
             }
         }
         sessionMap.remove(session.getSessionId());

@@ -3,8 +3,7 @@ package com.codewizards.meshify.framework.controllers;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ChunkUtils {
-
+public class MeshifyUtils {
 
     /**
      * Converts the given Parcelable object to an array of bytes

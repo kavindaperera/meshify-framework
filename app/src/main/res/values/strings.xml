@@ -2,4 +2,6 @@
     <string name="app_name">Meshify</string>
     <string name="is_nearby">Nearby</string>
     <string name="powered_by">Powered by Meshify</string>
+    <string name="placeholder">Write a message</string>
+    <string name="placeholder_message">Hello Placeholder Message</string>
 </resources>

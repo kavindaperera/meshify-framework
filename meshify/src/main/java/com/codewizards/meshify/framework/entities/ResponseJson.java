@@ -23,6 +23,7 @@ public class ResponseJson implements Parcelable {
     protected ResponseJson(Parcel in) {
         type = in.readInt();
         uuid = in.readString();
+        key = in.readString();
     }
 
     public static final Creator<ResponseJson> CREATOR = new Creator<ResponseJson>() {
@@ -41,6 +42,13 @@ public class ResponseJson implements Parcelable {
         ResponseJson responseJson = new ResponseJson();
         responseJson.setUuid(uuid);
         responseJson.setType(0);
+        return responseJson;
+    }
+
+    public static ResponseJson ResponseTypeKey(String key) {
+        ResponseJson responseJson = new ResponseJson();
+        responseJson.setType(1);
+        responseJson.setKey(key);
         return responseJson;
     }
 
@@ -84,5 +92,6 @@ public class ResponseJson implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.type);
         dest.writeString(this.uuid);
+        dest.writeString(this.key);
     }
 }

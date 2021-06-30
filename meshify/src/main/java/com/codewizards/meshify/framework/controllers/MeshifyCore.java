@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.StateListener;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
@@ -14,7 +16,6 @@ import com.codewizards.meshify.logs.Log;
 import java.io.IOException;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
 
 public class MeshifyCore {
 
@@ -23,7 +24,8 @@ public class MeshifyCore {
     public static final String PREFS_USER_UUID = "com.codewizards.meshify.uuid";
     public static final String PREFS_API_KEY = "com.codewizards.meshify.API_KEY";
     public static final String PREFS_PUBLIC_KEY ="com.codewizards.meshify.key.public";
-    public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.public";
+    public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.private";
+    public static final String PREFS_KEY_PAIRS ="com.codewizards.meshify.key.pairs";
 
     private static final String TAG = "[Meshify][MeshifyCore]";
 
@@ -37,13 +39,21 @@ public class MeshifyCore {
 
     private MessageListener messageListener;
 
+    private MessageController messageController;
+
     private MeshifyReceiver meshifyReceiver;
 
-    private StateListener stateListener;
+    private ConnectionListener connectionListener;
 
-    private Completable completable = Completable.create(CompletableEmitter -> {
+    private Completable completable = Completable.create(completableEmitter -> {
 
-        //TODO - cleaning the core
+        if (SessionManager.getSessions().isEmpty()) {
+            Log.w(TAG, "all sessions cleaned:");
+            completableEmitter.onComplete();
+        } else {
+            Log.i(TAG, "active connections: ");
+            completableEmitter.tryOnError((Throwable) new Exception("Active Connections Found"));
+        }
 
     });
 
@@ -52,7 +62,7 @@ public class MeshifyCore {
         this.config = config;
         this.sharedPreferences = context.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);;
         this.editor = sharedPreferences.edit();
-
+        this.messageController = new MessageController(context, config);
         this.meshifyReceiver = new MeshifyReceiver(config, context);
     }
 
@@ -64,9 +74,9 @@ public class MeshifyCore {
         return this.editor;
     }
 
-    static void sendEntity(Session session, MeshifyEntity bleEntity) throws IOException, MessageException {
-        Log.d(TAG, "sendEntity:");
-        TransactionManager.sendEntity(session, bleEntity);
+    static void sendEntity(Session session, MeshifyEntity meshifyEntity) throws MessageException, IOException {
+        Log.d(TAG, "sendEntity:" + meshifyEntity );
+        TransactionManager.sendEntity(session, meshifyEntity);
     }
 
 
@@ -77,6 +87,10 @@ public class MeshifyCore {
         this.meshifyReceiver.startDiscovery(this.config.getAntennaType());
     }
 
+    public void sendMessage(Message message, String receiverId, ConfigProfile profile) {
+        Device device = DeviceManager.getDeviceByUserId(receiverId);
+        this.messageController.sendMessage(this.context, message, device, profile);
+    }
 
     MessageListener getMessageListener() {
         Log.d(TAG, "getMessageListener:");
@@ -87,19 +101,20 @@ public class MeshifyCore {
         this.messageListener = messageListener;
     }
 
-    public void setStateListener(StateListener stateListener) {
-        this.stateListener = stateListener;
+    public void setStateListener(ConnectionListener connectionListener) {
+        this.connectionListener = connectionListener;
     }
 
     public Context getContext() {
         return this.context;
     }
 
-    StateListener getStateListener() {
-        Log.d(TAG, "getStateListener:");
-        return this.stateListener;
+    ConnectionListener getStateListener() {
+        return this.connectionListener;
     }
 
-
+    public MessageController getMessageController() {
+        return this.messageController;
+    }
 
 }

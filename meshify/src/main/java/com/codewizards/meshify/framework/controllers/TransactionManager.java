@@ -10,6 +10,7 @@ import com.codewizards.meshify.logs.Log;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.Executor;
 
 public class TransactionManager {
     private static String TAG = "[Meshify][TransactionManager]";
@@ -27,39 +28,66 @@ public class TransactionManager {
             Transaction transaction = new Transaction(session, meshifyEntity, transactionManager);
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
                 transactions.put(transaction, Boolean.TRUE);
-                transactionManager.start();
+                transactionManager.startInBackground();
             }
 
         }
     }
 
-    private static void start() {
-        new AsyncTask(){
-            protected synchronized Object doInBackground(Object[] params) {
-                if (transactions.size() > 0) {
-                    Transaction transaction = (Transaction) transactions.pollFirstEntry().getKey();
-                    try {
-                        transaction.getSession().flush(transaction.getMeshifyEntity());
+    private static void startInBackground() {
 
-                    }
-                    catch (IOException iOException) {
-                        Log.e(TAG, "IOException: ", iOException);
-                        iOException.printStackTrace();
+        Executor executor = command -> command.run();
 
-                    }
-                    catch (MessageException messageException) {
-                        Log.e(TAG, "MessageException: ", messageException);
-                        messageException.printStackTrace();
+        executor.execute((Runnable) () -> {
+            if (transactions.size() > 0) {
+                Transaction transaction = (Transaction) transactions.pollFirstEntry().getKey();
+                try {
+                    transaction.getSession().flush(transaction.getMeshifyEntity());
 
-                    }
-                    catch (InterruptedException interruptedException) {
-                        Log.e(TAG, "doInBackground: ", interruptedException);
-
-                    }
                 }
-                return null;
+                catch (IOException iOException) {
+                    Log.e(TAG, "startInBackground:IOException ", iOException);
+                    iOException.printStackTrace();
+
+                }
+                catch (MessageException messageException) {
+                    Log.e(TAG, "startInBackground:MessageException ", messageException);
+                    messageException.printStackTrace();
+
+                }
+                catch (InterruptedException interruptedException) {
+                    Log.e(TAG, "startInBackground:InterruptedException ", interruptedException);
+
+                }
             }
-        }.execute(new Object[0]);
+        });
+
+//        new AsyncTask(){
+//            protected synchronized Object doInBackground(Object[] params) {
+//                if (transactions.size() > 0) {
+//                    Transaction transaction = (Transaction) transactions.pollFirstEntry().getKey();
+//                    try {
+//                        transaction.getSession().flush(transaction.getMeshifyEntity());
+//
+//                    }
+//                    catch (IOException iOException) {
+//                        Log.e(TAG, "doInBackground:IOException ", iOException);
+//                        iOException.printStackTrace();
+//
+//                    }
+//                    catch (MessageException messageException) {
+//                        Log.e(TAG, "doInBackground:MessageException ", messageException);
+//                        messageException.printStackTrace();
+//
+//                    }
+//                    catch (InterruptedException interruptedException) {
+//                        Log.e(TAG, "doInBackground:InterruptedException ", interruptedException);
+//
+//                    }
+//                }
+//                return null;
+//            }
+//        }.execute(new Object[0]);
     }
 
 }

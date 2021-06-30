@@ -96,11 +96,11 @@ public class Meshify {
         return providedApiKey;
     }
 
-    public static void start(@Nullable MessageListener messageListener, @Nullable StateListener stateListener) {
-        Meshify.start(messageListener, stateListener, new Config.Builder().build());
+    public static void start(@Nullable MessageListener messageListener, @Nullable ConnectionListener connectionListener) {
+        Meshify.start(messageListener, connectionListener, new Config.Builder().build());
     }
 
-    public static void start(@Nullable MessageListener messageListener, @Nullable StateListener stateListener, Config config) {
+    public static void start(@Nullable MessageListener messageListener, @Nullable ConnectionListener connectionListener, Config config) {
 
         try {
             if (getInstance().getMeshifyCore() == null) {
@@ -108,28 +108,62 @@ public class Meshify {
                 getInstance().setConfig(config);
                 getInstance().setMeshifyCore(new MeshifyCore(getInstance().getContext(), config));
                 getInstance().getMeshifyCore().setMessageListener(messageListener);
-                getInstance().getMeshifyCore().setStateListener(stateListener);
+                getInstance().getMeshifyCore().setStateListener(connectionListener);
                 getInstance().getMeshifyCore().initializeServices();
 
-                if (stateListener != null) {
-                    stateListener.onStarted();
+                if (connectionListener != null) {
+                    connectionListener.onStarted();
                 }
 
             }
         } catch (NullPointerException nullPointerException) {
-            if (stateListener != null) {
-                stateListener.onStartError(stateListener.INITIALIZATION_ERROR_STRING, stateListener.INITIALIZATION_ERROR);
+            if (connectionListener != null) {
+                connectionListener.onStartError(Constants.INITIALIZATION_ERROR_STRING, Constants.INITIALIZATION_ERROR);
             } else {
                 nullPointerException.printStackTrace();
             }
         }  catch (MeshifyException meshifyException) {
-            if (stateListener != null) {
-                stateListener.onStartError(meshifyException.getMessage(), meshifyException.getErrorCode());
+            if (connectionListener != null) {
+                connectionListener.onStartError(meshifyException.getMessage(), meshifyException.getErrorCode());
             } else {
                 meshifyException.printStackTrace();
             }
         }
 
+    }
+
+    public static boolean stop() {
+        return false;
+    }
+
+    public static boolean pause() {
+        return false;
+    }
+
+    public static boolean resume() {
+        return false;
+    }
+
+    public static String sendMessage(@NonNull Message message) {
+        try {
+            return Meshify.sendMessage(message, getInstance().getConfig().getConfigProfile());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message");
+            return null;
+        }
+    }
+
+    public static String sendMessage(@NonNull Message message, ConfigProfile configProfile) {
+        Meshify.isMessageNull(message);
+        try {
+            message.setSenderId(getInstance().getMeshifyClient().getUserUuid());
+            getInstance().getMeshifyCore().sendMessage(message, message.getReceiverId(), configProfile);
+            return message.getUuid();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message" );
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -159,6 +193,12 @@ public class Meshify {
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    private static void isMessageNull(Message message) {
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null.");
+        }
     }
 
     private static class Builder {

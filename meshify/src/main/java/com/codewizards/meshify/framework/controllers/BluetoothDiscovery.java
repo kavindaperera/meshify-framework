@@ -36,7 +36,7 @@ public class BluetoothDiscovery extends Discovery {
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private CopyOnWriteArrayList<BluetoothDevice> confirmedBluetoothDevices; //CopyOnWriteArrayList is a thread-safe variant of ArrayList
+    private CopyOnWriteArrayList<BluetoothDevice> confirmedBluetoothDevices; //CopyOnWriteArrayList is a thread-safe variant of ArrayList. Used in a Thread based environment where read operations are very frequent and update operations are rare.
 
     private CopyOnWriteArrayList<Device> devices;
 
@@ -84,16 +84,18 @@ public class BluetoothDiscovery extends Discovery {
                 } else {
                     completableEmitter.onComplete();
                 }
-            }).retryWhen(new RetryWhenLambda(4, 2000)) //2000 milliseconds delay retry
+            }).retryWhen(new RetryWhenLambda(3, 1000)) //2000 milliseconds delay retry
                     .subscribe(new  CompletableObserver(){
                         public void onSubscribe(Disposable d2) {
+                            Log.d(TAG, "onSubscribe: ");
                         }
 
                         public void onComplete() {
+                            Log.d(TAG, "onComplete: ");
                         }
 
                         public void onError(Throwable e2) {
-                            Log.e(TAG, "onError:" + e2);
+                            Log.e(TAG, "onError: " + e2);
                             BluetoothDiscovery.this.stopDiscovery(context); //stop discovery on error
                         }
             });
@@ -217,7 +219,7 @@ public class BluetoothDiscovery extends Discovery {
                 }
                 this.addDevice(bluetoothDevice, matched, false);
             } else {
-                Log.e(this.TAG, "Received null UUIDs from Device: " + bluetoothDevice.getName() + "Address: " + bluetoothDevice.getAddress());
+                Log.e(this.TAG, "Received null UUIDs from Device: " + bluetoothDevice.getName() + " Address: " + bluetoothDevice.getAddress());
             }
         }
         this.removeDiscoveredDevice(bluetoothDevice);
