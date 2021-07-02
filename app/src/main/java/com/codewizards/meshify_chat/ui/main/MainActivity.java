@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
                 neighbor.setNearby(true);
                 neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
                 adapter.addNeighbor(neighbor);
+
+                hideProgressBar();
+
+                Toast.makeText(getApplicationContext(), "Neighbor Found: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
+
             } else {
                 String msg = (String) message.getContent().get("text");
                 LocalBroadcastManager
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStarted() {
             super.onStarted();
-            showProgressBar();
+//            showProgressBar();
         }
 
         @Override
@@ -99,10 +104,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             super.onDeviceConnected(device, session);
-            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
-            neighbor.setNearby(true);
-            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-            adapter.addNeighbor(neighbor);
+//            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
+//            neighbor.setNearby(true);
+//            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+//            adapter.addNeighbor(neighbor);
 
             //send username and phone number
             username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             map.put(Constants.PAYLOAD_DEVICE_NAME, username);
             device.sendMessage(map);
 
-            Toast.makeText(getApplicationContext(), "Neighbor found: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
+            showProgressBar();
 
         }
 
