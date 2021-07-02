@@ -12,10 +12,9 @@ public class Neighbor {
     private DeviceType deviceType;
     private Device device;
 
-    public Neighbor(String uuid, String device_name,@Nullable Device device) {
+    public Neighbor(String uuid, String device_name) {
         this.uuid = uuid;
         this.device_name = device_name;
-        this.device = device;
     }
 
     public static Neighbor create(String json) {

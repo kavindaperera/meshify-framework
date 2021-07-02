@@ -20,7 +20,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
-import com.codewizards.meshify_chat.ui.main.MainActivity;
+import com.codewizards.meshify_chat.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.codewizards.meshify_chat.ui.main.MainActivity.INTENT_EXTRA_NAME;
-import static com.codewizards.meshify_chat.ui.main.MainActivity.INTENT_EXTRA_UUID;
-import static com.codewizards.meshify_chat.ui.main.MainActivity.PAYLOAD_TEXT;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -47,8 +44,8 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        deviceName = getIntent().getStringExtra(INTENT_EXTRA_NAME);
-        deviceId = getIntent().getStringExtra(INTENT_EXTRA_UUID);
+        deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
+        deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,7 +60,7 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        Message message = new Message(intent.getStringExtra(MainActivity.INTENT_EXTRA_MSG));
+                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG));
                         message.setDirection(Message.INCOMING_MESSAGE);
                         adapter.addMessage(message);
                     }
@@ -95,7 +92,7 @@ public class ChatActivity extends AppCompatActivity {
             adapter.addMessage(message);
 
             HashMap<String, Object> content = new HashMap<>();
-            content.put(PAYLOAD_TEXT, messageString);
+            content.put(Constants.PAYLOAD_TEXT, messageString);
 
             com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
             builder.setContent(content).setReceiverId(deviceId);

@@ -2,7 +2,7 @@
     <string name="app_name">Meshify</string>
     <string name="sign_up_text">Welcome to Meshify!</string>
     <string name="username_text">Please select a nickname.</string>
-    <string name="user_entry">M5E4S3H2I1F0Y</string>
+    <string name="user_entry">Type Here...</string>
     <string name="action_sign_up">Register</string>
     <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
     <string name="is_nearby">Nearby</string>

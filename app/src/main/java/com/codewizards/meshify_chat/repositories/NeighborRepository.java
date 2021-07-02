@@ -26,12 +26,12 @@ public class NeighborRepository {
     }
 
     private void setNeighbors(){
-        Neighbor n1 = new Neighbor("e44c9042-7a79-44b8-aac6-63b18ba87466","Saved Contact", null);
+        Neighbor n1 = new Neighbor("e44c9042-7a79-44b8-aac6-63b18ba87466","Saved Contact");
         n1.setNearby(false);
         n1.setDeviceType(Neighbor.DeviceType.ANDROID);
         dataSet.add(n1);
 
-        Neighbor n2 = new Neighbor("uuid2","Saved Contact 2", null);
+        Neighbor n2 = new Neighbor("e44c9042-7a79-44b8-aac6-63b18ba87466","Saved Contact 2");
         n2.setNearby(false);
         n2.setDeviceType(Neighbor.DeviceType.ANDROID);
         dataSet.add(n2);
