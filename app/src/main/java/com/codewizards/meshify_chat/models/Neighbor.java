@@ -1,4 +1,6 @@
-package com.codewizards.meshify_chat.entities;
+package com.codewizards.meshify_chat.models;
+
+import androidx.annotation.Nullable;
 
 import com.codewizards.meshify.client.Device;
 import com.google.gson.Gson;
@@ -10,7 +12,7 @@ public class Neighbor {
     private DeviceType deviceType;
     private Device device;
 
-    public Neighbor(String uuid, String device_name, Device device) {
+    public Neighbor(String uuid, String device_name,@Nullable Device device) {
         this.uuid = uuid;
         this.device_name = device_name;
         this.device = device;

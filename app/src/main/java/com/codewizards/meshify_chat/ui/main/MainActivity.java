@@ -1,17 +1,20 @@
-package com.codewizards.meshify_chat.ux.home;
+package com.codewizards.meshify_chat.ui.main;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +30,11 @@ import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.entities.Neighbor;
-import com.codewizards.meshify_chat.ux.adapter.NeighborAdapter;
-import com.codewizards.meshify_chat.ux.chat.ChatActivity;
+import com.codewizards.meshify_chat.models.Neighbor;
+import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,9 +45,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String PAYLOAD_TEXT = "text";
     public static final String INTENT_EXTRA_MSG  = "message";
 
-    NeighborAdapter adapter = new NeighborAdapter(new ArrayList<>());
+    NeighborAdapter adapter;
 
-    ProgressDialog progressDialog;
+    private ProgressBar mProgressBar;
+
+    private MainViewModel mainViewModel;
 
     MessageListener messageListener = new MessageListener() {
         @Override
@@ -69,17 +74,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStarted() {
             super.onStarted();
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setContentView(R.layout.progress_dialog);
-            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            showProgressBar();
 
         }
 
         @Override
         public void onStartError(String message, int errorCode) {
             super.onStartError(message, errorCode);
-            progressDialog.dismiss();
+            hideProgressBar();
 
             if (errorCode == Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
@@ -89,12 +91,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             super.onDeviceConnected(device, session);
+
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName(), device);
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
             adapter.addNeighbor(neighbor);
 
-            progressDialog.dismiss();
+            hideProgressBar();
 
             Toast.makeText(getApplicationContext(), "Neighbor found" + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
 
@@ -123,34 +126,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         /*Configure the Toolbar*/
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
+        /*ViewModel*/
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mainViewModel.init();
+        mainViewModel.getNeighbors().observe(this, new Observer<List<Neighbor>>() {
+            @Override
+            public void onChanged(List<Neighbor> neighbors) {
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        mProgressBar = findViewById(R.id.progress_bar);
 
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
+        adapter = new NeighborAdapter(this, mainViewModel.getNeighbors().getValue());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setAdapter(adapter);
 
-        progressDialog = new ProgressDialog(MainActivity.this);
-
         Meshify.debug = BuildConfig.DEBUG;
-
         Meshify.initialize(getApplicationContext());
 
         startMeshify();
 
-        adapter.setOnItemClickListener(new NeighborAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Neighbor neighbor) {
-                startActivity(new Intent(getApplicationContext(), ChatActivity.class)
-                        .putExtra(INTENT_EXTRA_NAME, neighbor.getDeviceName())
-                        .putExtra(INTENT_EXTRA_UUID, neighbor.getUuid()));
-            }
-        });
+        adapter.setOnItemClickListener(neighbor -> startActivity(new Intent(getApplicationContext(), ChatActivity.class)
+                .putExtra(INTENT_EXTRA_NAME, neighbor.getDeviceName())
+                .putExtra(INTENT_EXTRA_UUID, neighbor.getUuid())));
 
     }
 
@@ -180,6 +187,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Location permissions is needed to start discovery!", Toast.LENGTH_SHORT).show(); //close app on deny permissions
             finish();
         }
+    }
 
+    private void showProgressBar(){
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar(){
+        mProgressBar.setVisibility(View.GONE);
     }
 }

@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ux.chat;
+package com.codewizards.meshify_chat.ui.chat;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.entities.Message;
-import com.codewizards.meshify_chat.ux.adapter.MessageAdapter;
-import com.codewizards.meshify_chat.ux.home.MainActivity;
+import com.codewizards.meshify_chat.models.Message;
+import com.codewizards.meshify_chat.adapters.MessageAdapter;
+import com.codewizards.meshify_chat.ui.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.codewizards.meshify_chat.ux.home.MainActivity.INTENT_EXTRA_NAME;
-import static com.codewizards.meshify_chat.ux.home.MainActivity.INTENT_EXTRA_UUID;
-import static com.codewizards.meshify_chat.ux.home.MainActivity.PAYLOAD_TEXT;
+import static com.codewizards.meshify_chat.ui.main.MainActivity.INTENT_EXTRA_NAME;
+import static com.codewizards.meshify_chat.ui.main.MainActivity.INTENT_EXTRA_UUID;
+import static com.codewizards.meshify_chat.ui.main.MainActivity.PAYLOAD_TEXT;
 
 public class ChatActivity extends AppCompatActivity {
 

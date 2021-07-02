@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ux.intro;
+package com.codewizards.meshify_chat.ui.signup;
 
 import androidx.appcompat.app.AppCompatActivity;
 

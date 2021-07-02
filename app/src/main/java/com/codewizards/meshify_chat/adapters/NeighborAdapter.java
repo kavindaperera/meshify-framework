@@ -1,5 +1,6 @@
-package com.codewizards.meshify_chat.ux.adapter;
+package com.codewizards.meshify_chat.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.entities.Neighbor;
+import com.codewizards.meshify_chat.models.Neighbor;
 
 import java.util.List;
 
 public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.NeighborViewHolder> {
 
     private final List<Neighbor> neighbors;
+    private Context context;
 
     private OnItemClickListener listener;
 
-    public NeighborAdapter(List<Neighbor> neighbors) {
+    public NeighborAdapter(Context context, List<Neighbor> neighbors) {
         this.neighbors = neighbors;
+        this.context = context;
     }
 
     @NonNull
