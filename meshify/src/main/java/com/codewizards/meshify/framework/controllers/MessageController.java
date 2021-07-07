@@ -1,6 +1,7 @@
 package com.codewizards.meshify.framework.controllers;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
@@ -9,10 +10,13 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageController {
 
@@ -30,9 +34,47 @@ public class MessageController {
         this.forwardController = new ForwardController();
     }
 
-    void messageReceived(Message message, Session session) {
+    public void messageReceived(Message message, Session session) {
         message.setMesh(false);
         this.messageNotifier.onMessageReceived(message);
+    }
+
+    public void incomingMeshMessageAction(Session session, MeshifyEntity meshifyEntity) {
+        MeshifyEntity meshifyEntity1 = meshifyEntity;
+        MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
+        List<MeshifyForwardEntity> mesh = forwardTransaction.getMesh();
+        if(mesh != null){
+            for (MeshifyForwardEntity forwardEntity : mesh) {
+                forwardEntity.decreaseHops();
+                if (((String) forwardEntity.getReceiver()).trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){
+                    Message message = this.getMessageFromForwardEntity(forwardEntity);
+                    if (message != null && message.getContent() == null) {
+                        //Error Message
+                    } else {
+                        this.messageNotifier.onMessageReceived(message);
+                    }
+                    continue;
+                }
+                Log.e(TAG, "incomingMeshMessageAction: remaining hops " + forwardEntity.getHops() );
+                continue;
+            }
+
+            //TODO - forward again
+        }
+    }
+
+    private Message getMessageFromForwardEntity(MeshifyForwardEntity forwardEntity) {
+        Message message = new Message(
+                forwardEntity.getPayload(),
+                forwardEntity.getReceiver(),
+                forwardEntity.getSender(),
+                true,
+                forwardEntity.getHops());
+
+        if (forwardEntity.getId() != null) {
+            message.setUuid(forwardEntity.getId());
+        }
+        return message;
     }
 
     private void forward(MeshifyForwardEntity forwardEntity) {
@@ -50,14 +92,13 @@ public class MessageController {
             this.sendMessage(context, message, device);
         } else if (profile != ConfigProfile.NoForwarding) {
             Log.d(TAG, "Device not found. Forwarding the Message....");
+            //TODO - Auto connect check
             this.forward(new MeshifyForwardEntity(message, profile));
             if (DeviceManager.getDeviceList().isEmpty()) {
                 this.messageNotifier.onMessageFailed(message, new MessageException("No Nearby Neighbors found!"));
             }
 
         }
-
-
     }
 
     private void sendMessage(Context context, Message message, Device device) {

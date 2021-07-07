@@ -27,6 +27,8 @@ public class ForwardController {
             MeshifyForwardEntity forwardEntity1 = forwardEntity;
             if (forwardEntity1 != null) {
                 this.concurrentNavigableMap.put(forwardEntity1, true);
+            } else {
+                //
             }
         }
         if (z) {
