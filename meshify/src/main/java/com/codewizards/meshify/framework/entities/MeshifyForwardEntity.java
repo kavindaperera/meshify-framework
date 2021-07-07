@@ -128,6 +128,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.hops = hops;
     }
 
+    public int decreaseHops(){
+        return --this.hops;
+    }
+
     @JsonProperty(value="profile")
     public int getProfile() {
         return this.profile;
