@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -34,6 +37,7 @@ import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
+import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.utils.Constants;
 
 import java.util.HashMap;
@@ -184,6 +188,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            case R.id.action_settings:{
+                startActivity(new Intent(this, SettingsActivity.class));
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

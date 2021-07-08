@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codewizards.meshify_chat">
-
     <!-- Permissions needed to run Wi-Fi Direct -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-    <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Permissions needed to run Bluetooth Low Energy -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions needed to run Bluetooth Low Energy -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <!-- Other Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- Other Permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -32,9 +23,14 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meshifychat">
-
-        <activity android:name=".ui.signup.SignupActivity"/>
-
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:parentActivityName=".ui.main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <activity android:name=".ui.signup.SignupActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
             android:parentActivityName=".ui.main.MainActivity">
@@ -42,23 +38,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.MainActivity" />
         </activity>
-
         <activity android:name=".ui.splash.SplashActivity" />
-
         <activity
             android:name=".ui.main.MainActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop" />
-
         <activity android:name=".ui.base.BaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Meshify API key -->
+        </activity> <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
