@@ -44,6 +44,9 @@ public class MessageController {
         MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
         List<MeshifyForwardEntity> mesh = forwardTransaction.getMesh();
         if(mesh != null){
+
+            ArrayList<MeshifyForwardEntity> entityArrayList = new ArrayList<MeshifyForwardEntity>();
+
             for (MeshifyForwardEntity forwardEntity : mesh) {
                 forwardEntity.decreaseHops();
                 if (((String) forwardEntity.getReceiver()).trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){
@@ -55,11 +58,20 @@ public class MessageController {
                     }
                     continue;
                 }
+
+                if (forwardEntity != null && forwardEntity.getHops() > 0) {
+                    entityArrayList.add(forwardEntity);
+                }
+
                 Log.e(TAG, "incomingMeshMessageAction: remaining hops " + forwardEntity.getHops() );
                 continue;
             }
 
-            //TODO - forward again
+            if (!entityArrayList.isEmpty()){
+                Log.e(TAG, "incomingMeshMessageAction: forwarding again....");
+                this.forwardController.forwardAgain(entityArrayList, session);
+            }
+
         }
     }
 

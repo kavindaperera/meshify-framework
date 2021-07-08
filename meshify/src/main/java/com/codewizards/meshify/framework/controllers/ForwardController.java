@@ -9,6 +9,7 @@ import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -48,6 +49,13 @@ public class ForwardController {
         return arrayList;
     }
 
+    void forwardAgain(ArrayList<MeshifyForwardEntity> entityArrayList, Session session) {
+        for (MeshifyForwardEntity forwardEntity : entityArrayList) {
+//            this.startForwarding(forwardEntity, false);
+        }
+        this.sendEntity(SessionManager.getSessions(), false);
+    }
+
 
     private class sendEntityToSession extends AsyncTask<Session, Void, Void> {
         private boolean z = false;
@@ -66,7 +74,7 @@ public class ForwardController {
                 }
                 for (Session session : arrayList) {
                     List list = ForwardController.this.getMessageList();
-                    Log.d(TAG, "Sending " + list.size() + " messages to: " + session.getDevice().getDeviceName());
+                    Log.e(TAG, "Sending " + list.size() + " messages to: " + session.getDevice().getDeviceName());
                     if (list.size() > 0 || this.z) {
                         MeshifyEntity<MeshifyForwardTransaction> meshifyEntity = MeshifyEntity.meshMessage((ArrayList)list, Meshify.getInstance().getMeshifyClient().getUserUuid());
                         try {
