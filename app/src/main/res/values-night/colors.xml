@@ -11,6 +11,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="neighbor_row">#FFFFFFFF</color>
-    <color name="more_menu">#FF000000</color>
+    <color name="neighbor_row">#1C1C1E</color>
+    <color name="more_menu">#E6E6E6</color>
 </resources>
