@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
@@ -119,7 +120,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                     // call method to save
                                     return true;
                                 case R.id.action_popup_disconnect:
-                                    // call method to disconnect
+                                    Meshify.getInstance().getMeshifyCore().disconnectDevice(neighbor.getDevice());
                                     return true;
                                 default:
                                     return false;

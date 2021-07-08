@@ -59,14 +59,13 @@ public class MainActivity extends AppCompatActivity {
         public void onMessageReceived(Message message) {
             super.onMessageReceived(message);
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
-                Neighbor neighbor = new Neighbor(message.getSenderId(),(String) message.getContent().get(PAYLOAD_DEVICE_NAME));
-                neighbor.setNearby(true);
-                neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-                adapter.addNeighbor(neighbor);
+//                Neighbor neighbor = new Neighbor(message.getSenderId(),(String) message.getContent().get(PAYLOAD_DEVICE_NAME));
+//                neighbor.setNearby(true);
+//                neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+//                adapter.addNeighbor(neighbor);
 
                 hideProgressBar();
 
-                Toast.makeText(getApplicationContext(), "Neighbor Found: " + neighbor.getDeviceName(), Toast.LENGTH_SHORT).show();
 
             } else {
                 String msg = (String) message.getContent().get("text");
@@ -104,10 +103,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             super.onDeviceConnected(device, session);
-//            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
-//            neighbor.setNearby(true);
-//            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-//            adapter.addNeighbor(neighbor);
+            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
+            neighbor.setNearby(true);
+            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+            neighbor.setDevice(device);
+            adapter.addNeighbor(neighbor);
 
             //send username and phone number
             username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);

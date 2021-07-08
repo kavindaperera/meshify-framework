@@ -319,7 +319,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     @Override
     public void disconnect() {
-
+        SessionManager.removeQueueSession(this);
     }
 
     public boolean equals(Object obj) {
