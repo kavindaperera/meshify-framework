@@ -119,9 +119,14 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                 case R.id.action_popup_save:
                                     // call method to save
                                     return true;
-                                case R.id.action_popup_disconnect:
-                                    Meshify.getInstance().getMeshifyCore().disconnectDevice(neighbor.getDevice());
+                                case R.id.action_popup_disconnect:{
+                                    Device device = neighbor.getDevice();
+                                    if (device!=null) {
+                                        neighbor.setDevice(null);
+                                        Meshify.getInstance().getMeshifyCore().disconnectDevice(device);
+                                    }
                                     return true;
+                                }
                                 default:
                                     return false;
                             }
