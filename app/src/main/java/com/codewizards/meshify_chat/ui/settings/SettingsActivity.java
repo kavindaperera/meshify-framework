@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
 
 import com.codewizards.meshify_chat.R;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +23,14 @@ public class SettingsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
-            actionBar.setTitle("Settings");
+            actionBar.setTitle(R.string.settings);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settings_container, new SettingsFragment())
+                .commit();
     }
+
 }

@@ -25,6 +25,7 @@
         android:theme="@style/Theme.Meshifychat">
         <activity
             android:name=".ui.settings.SettingsActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

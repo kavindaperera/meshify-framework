@@ -14,4 +14,18 @@
     <string name="disconnect">Disconnect</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="share">Share</string>
+
+    <!-- Preference Titles -->
+    <string name="settings_category_account">ACCOUNT</string>
+    <string name="settings_category_messages">NOTIFICATIONS</string>
+    <string name="settings_category_help">HELP</string>
+
+    <!-- Notification Preferences -->
+    <string name="settings_messages_notifications_title">Enable message notifications</string>
+    <string name="notification_sound">Notification sound</string>
+
+    <!-- Account Preferences -->
+    <string name="settings_category_user_name">Username</string>
+
 </resources>

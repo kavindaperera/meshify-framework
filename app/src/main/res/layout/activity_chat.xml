@@ -45,8 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/placeholder"
-            android:textColor="#CFD8DC"
-            android:textColorHint="#CFD8DC" />
+            android:textColor="@color/black"
+            android:inputType="none|text|textCapSentences|textMultiLine|textShortMessage"
+            android:textColorHint="@color/colorAccent" />
 
         <ImageView
             android:id="@+id/btnSend"
