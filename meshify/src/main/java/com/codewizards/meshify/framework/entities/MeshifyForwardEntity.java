@@ -142,8 +142,8 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) o;
-        return 0;
+    public int compareTo(Object object) {
+        MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) object;
+        return (forwardEntity.getId()).compareTo(this.getId());
     }
 }
