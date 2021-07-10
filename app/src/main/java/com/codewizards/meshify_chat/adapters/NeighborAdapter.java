@@ -64,6 +64,16 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         }
     }
 
+    public void updateNeighbor(String senderId, String userName) {
+        int position = getNeighborPosition(senderId);
+        if (position > -1) {
+            Neighbor neighbor = neighbors.get(position);
+            neighbor.setDeviceName(userName);
+            notifyItemChanged(position);
+        }
+
+    }
+
     public void removeNeighbor(Device lostNeighbor) {
         int position = getNeighborPosition(lostNeighbor.getUserId());
 

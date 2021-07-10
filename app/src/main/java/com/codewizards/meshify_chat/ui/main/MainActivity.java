@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
 //                neighbor.setNearby(true);
 //                neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
 //                adapter.addNeighbor(neighbor);
+                String senderId = message.getSenderId();
+                String userName = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
+                adapter.updateNeighbor(senderId, userName);
 
                 hideProgressBar();
 

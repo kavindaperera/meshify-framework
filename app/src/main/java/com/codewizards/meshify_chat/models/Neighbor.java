@@ -21,6 +21,10 @@ public class Neighbor {
         return new Gson().fromJson(json, Neighbor.class);
     }
 
+    public void setDeviceName(String deviceName) {
+        this.device_name = deviceName;
+    }
+
     public String getDeviceName() {
         return device_name;
     }
