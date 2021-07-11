@@ -27,5 +27,10 @@
 
     <!-- Account Preferences -->
     <string name="settings_category_user_name">Username</string>
+    <string name="settings_category_mesh_forwarding">MESH FORWARDING</string>
+    <string name="settings_profile_title">Mesh Profile</string>
+    <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
+    <string name="settings_feedback_summary">Report technical issues or suggest new features</string>
+    <string name="settings_feedback_title">Send feedback</string>
 
 </resources>
