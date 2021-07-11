@@ -1,7 +1,31 @@
 <resources>
     <string name="app_name">Meshify</string>
+    <string name="sign_up_text">Welcome to Meshify!</string>
+    <string name="username_text">Please select a nickname.</string>
+    <string name="user_entry">Type Here...</string>
+    <string name="action_sign_up">Register</string>
+    <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
     <string name="is_nearby">Nearby</string>
     <string name="powered_by">Powered by Meshify</string>
-    <string name="placeholder">Write a message</string>
+    <string name="placeholder">Type a message</string>
     <string name="placeholder_message">Hello Placeholder Message</string>
+    <string name="placeholder_device_name">Jon Snow\'s Pixel 3XL (android)</string>
+    <string name="add_to_contacts">Add to Contacts</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="share">Share</string>
+
+    <!-- Preference Titles -->
+    <string name="settings_category_account">ACCOUNT</string>
+    <string name="settings_category_messages">NOTIFICATIONS</string>
+    <string name="settings_category_help">HELP</string>
+
+    <!-- Notification Preferences -->
+    <string name="settings_messages_notifications_title">Enable message notifications</string>
+    <string name="notification_sound">Notification sound</string>
+
+    <!-- Account Preferences -->
+    <string name="settings_category_user_name">Username</string>
+
 </resources>

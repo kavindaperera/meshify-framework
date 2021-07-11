@@ -108,7 +108,7 @@ public class Meshify {
                 getInstance().setConfig(config);
                 getInstance().setMeshifyCore(new MeshifyCore(getInstance().getContext(), config));
                 getInstance().getMeshifyCore().setMessageListener(messageListener);
-                getInstance().getMeshifyCore().setStateListener(connectionListener);
+                getInstance().getMeshifyCore().setConnectionListener(connectionListener);
                 getInstance().getMeshifyCore().initializeServices();
 
                 if (connectionListener != null) {

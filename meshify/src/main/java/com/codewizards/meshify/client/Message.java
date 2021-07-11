@@ -26,6 +26,16 @@ public class Message implements Parcelable {
 
     private int hops = 0;
 
+    public Message(HashMap<String, Object> content, String receiverId, String senderId, boolean mesh, int hop) {
+        this.content = content;
+        this.receiverId = receiverId;
+        this.senderId = senderId;
+        this.dateSent = System.currentTimeMillis();
+        this.uuid = UUID.randomUUID().toString();
+        this.isMesh = mesh;
+        this.hop = hop;
+    }
+
     protected Message(Parcel parcel) {
         receiverId = parcel.readString();
         senderId = parcel.readString();

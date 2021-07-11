@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ux.adapter;
+package com.codewizards.meshify_chat.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.entities.Message;
+import com.codewizards.meshify_chat.models.Message;
 
 import java.util.List;
 

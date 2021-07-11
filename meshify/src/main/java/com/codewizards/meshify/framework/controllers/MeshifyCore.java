@@ -117,4 +117,15 @@ public class MeshifyCore {
         return this.messageController;
     }
 
+    public void connectDevice(Device device) {
+        //
+    }
+
+    public void disconnectDevice(Device device) {
+        Log.e(TAG, "Disconnect Device: " + device);
+        Session session = SessionManager.getSession(device.getDeviceAddress());
+        if (session != null) {
+            session.disconnect();
+        }
+    }
 }
