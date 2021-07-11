@@ -34,7 +34,7 @@ public class ForwardController {
         }
         if (z) {
             this.sendEntity(SessionManager.getSessions(), false);
-        }
+        } 
     }
 
     void sendEntity(ArrayList<Session> arrayList, boolean z) {
@@ -51,7 +51,11 @@ public class ForwardController {
 
     void forwardAgain(ArrayList<MeshifyForwardEntity> entityArrayList, Session session) {
         for (MeshifyForwardEntity forwardEntity : entityArrayList) {
-//            this.startForwarding(forwardEntity, false);
+            if (this.concurrentNavigableMap.containsKey(forwardEntity)) {
+                Log.d(TAG, "forwardAgain: not forwarding duplicated entity " + forwardEntity);
+            } else {
+                this.startForwarding(forwardEntity, false);
+            }
         }
         this.sendEntity(SessionManager.getSessions(), false);
     }

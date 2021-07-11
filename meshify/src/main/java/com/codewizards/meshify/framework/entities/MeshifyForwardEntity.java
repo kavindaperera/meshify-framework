@@ -16,6 +16,8 @@ import java.util.UUID;
 
 public class MeshifyForwardEntity implements Parcelable, Comparable {
 
+    private static  int[] hopLimits = new int[]{ 50, 0};
+
     @JsonProperty(value="id")
     String id;
 
@@ -40,7 +42,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.sender = message.getSenderId();
         this.receiver = message.getReceiverId();
         this.payload = message.getContent();
-        this.hops = 10;
+        this.hops = this.getHopLimitForConfigProfile();
     }
 
     protected MeshifyForwardEntity(Parcel in) {
@@ -139,6 +141,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
 
     public void setProfile(int profile) {
         this.profile = profile;
+    }
+
+    public int getHopLimitForConfigProfile() {
+        return hopLimits[this.profile];
     }
 
     @Override
