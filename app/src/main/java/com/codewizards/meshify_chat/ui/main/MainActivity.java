@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -205,6 +206,17 @@ public class MainActivity extends AppCompatActivity {
         switch (itemId){
             case R.id.action_settings:{
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            }
+            case R.id.action_invite: {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Hey, I'm using Meshify, Join me! \nDownload it here: https://www.meshify.xyz/");
+                sendIntent.setType("text/plain");
+
+                // Show the Sharesheet
+                startActivity(Intent.createChooser(sendIntent, null));
+                break;
             }
         }
         return super.onOptionsItemSelected(item);
