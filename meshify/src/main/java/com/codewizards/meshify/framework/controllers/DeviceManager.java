@@ -50,8 +50,8 @@ public class DeviceManager {
 
     private static void onDeviceConnected(Device device, Session session) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (Meshify.getInstance().getMeshifyCore() != null && session != null && Meshify.getInstance().getMeshifyCore().getStateListener() != null) {
-                Meshify.getInstance().getMeshifyCore().getStateListener().onDeviceConnected(device, session);
+            if (Meshify.getInstance().getMeshifyCore() != null && session != null && Meshify.getInstance().getMeshifyCore().getConnectionListener() != null) {
+                Meshify.getInstance().getMeshifyCore().getConnectionListener().onDeviceConnected(device, session);
             }
         });
     }
@@ -98,9 +98,9 @@ public class DeviceManager {
     private static void onDeviceLost(Device device) {
         Log.i(TAG, "onDeviceLost: ");
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getStateListener() != null) {
+            if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getConnectionListener() != null) {
                 Log.i(TAG, "onDeviceLost:");
-                Meshify.getInstance().getMeshifyCore().getStateListener().onDeviceLost(device);
+                Meshify.getInstance().getMeshifyCore().getConnectionListener().onDeviceLost(device);
             }
         });
     }

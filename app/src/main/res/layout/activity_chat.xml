@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ux.chat.ChatActivity">
+    tools:context=".ui.chat.ChatActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -45,8 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/placeholder"
-            android:textColor="#CFD8DC"
-            android:textColorHint="#CFD8DC" />
+            android:textColor="@color/black"
+            android:inputType="none|text|textCapSentences|textMultiLine|textShortMessage"
+            android:textColorHint="@color/colorAccent" />
 
         <ImageView
             android:id="@+id/btnSend"

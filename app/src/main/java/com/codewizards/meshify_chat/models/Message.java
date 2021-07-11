@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.entities;
+package com.codewizards.meshify_chat.models;
 
 import com.google.gson.Gson;
 

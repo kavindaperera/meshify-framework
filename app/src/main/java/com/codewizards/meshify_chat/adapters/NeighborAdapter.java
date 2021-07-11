@@ -1,29 +1,36 @@
-package com.codewizards.meshify_chat.ux.adapter;
+package com.codewizards.meshify_chat.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.entities.Neighbor;
+import com.codewizards.meshify_chat.models.Neighbor;
 
 import java.util.List;
 
 public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.NeighborViewHolder> {
 
     private final List<Neighbor> neighbors;
+    private Context context;
 
     private OnItemClickListener listener;
 
-    public NeighborAdapter(List<Neighbor> neighbors) {
+    public NeighborAdapter(Context context, List<Neighbor> neighbors) {
         this.neighbors = neighbors;
+        this.context = context;
     }
 
     @NonNull
@@ -55,6 +62,16 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             neighbors.add(neighbor);
             notifyItemInserted(neighbors.size() - 1);
         }
+    }
+
+    public void updateNeighbor(String senderId, String userName) {
+        int position = getNeighborPosition(senderId);
+        if (position > -1) {
+            Neighbor neighbor = neighbors.get(position);
+            neighbor.setDeviceName(userName);
+            notifyItemChanged(position);
+        }
+
     }
 
     public void removeNeighbor(Device lostNeighbor) {
@@ -91,12 +108,43 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
     class NeighborViewHolder extends RecyclerView.ViewHolder {
         final TextView mContentView;
         final ImageView mImageView;
+        final ImageView mPopupMenu;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
             super(view);
             mContentView = view.findViewById(R.id.neighborName);
             mImageView = view.findViewById(R.id.neighborAvatar);
+            mPopupMenu = view.findViewById(R.id.popupMenu);
+
+            mPopupMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                    popupMenu.inflate(R.menu.popup_menu);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()){
+                                case R.id.action_popup_save:
+                                    // call method to save
+                                    return true;
+                                case R.id.action_popup_disconnect:{
+                                    Device device = neighbor.getDevice();
+                                    if (device!=null) {
+                                        neighbor.setDevice(null);
+                                        Meshify.getInstance().getMeshifyCore().disconnectDevice(device);
+                                    }
+                                    return true;
+                                }
+                                default:
+                                    return false;
+                            }
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

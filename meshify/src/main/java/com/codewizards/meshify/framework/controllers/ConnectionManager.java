@@ -96,9 +96,9 @@ public class ConnectionManager {
             });
         } else {
             new Handler(Looper.getMainLooper()).post(() -> {
-                if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getStateListener() != null) {
+                if (Meshify.getInstance().getMeshifyCore() != null && Meshify.getInstance().getMeshifyCore().getConnectionListener() != null) {
                     Log.i(TAG, "onDeviceBlackListed:");
-                    Meshify.getInstance().getMeshifyCore().getStateListener().onDeviceBlackListed(device);
+                    Meshify.getInstance().getMeshifyCore().getConnectionListener().onDeviceBlackListed(device);
                 }
             });
         }
