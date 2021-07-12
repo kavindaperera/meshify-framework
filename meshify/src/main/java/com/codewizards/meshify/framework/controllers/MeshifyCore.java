@@ -118,7 +118,8 @@ public class MeshifyCore {
     }
 
     public void connectDevice(Device device) {
-        //
+        Log.e(TAG, "Connect to Device: " + device);
+        ConnectionManager.connect(device);
     }
 
     public void disconnectDevice(Device device) {

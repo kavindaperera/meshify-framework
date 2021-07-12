@@ -4,6 +4,9 @@
         android:id="@+id/action_popup_save"
         android:title="@string/add_to_contacts" />
     <item
+        android:id="@+id/action_popup_connect"
+        android:title="@string/connect" />
+    <item
         android:id="@+id/action_popup_disconnect"
         android:title="@string/disconnect" />
 </menu>

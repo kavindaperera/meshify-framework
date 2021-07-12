@@ -32,5 +32,6 @@
     <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
     <string name="settings_feedback_summary">Report technical issues or suggest new features</string>
     <string name="settings_feedback_title">Send feedback</string>
+    <string name="connect">Connect</string>
 
 </resources>

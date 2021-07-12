@@ -37,6 +37,7 @@ public class ForwardController {
         } 
     }
 
+    @SuppressWarnings("deprecation")
     void sendEntity(ArrayList<Session> arrayList, boolean z) {
         new sendEntityToSession(z).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList.toArray(new Session[arrayList.size()]));
     }
@@ -54,13 +55,14 @@ public class ForwardController {
             if (this.concurrentNavigableMap.containsKey(forwardEntity)) {
                 Log.d(TAG, "forwardAgain: not forwarding duplicated entity " + forwardEntity);
             } else {
-                this.startForwarding(forwardEntity, false);
+                this.startForwarding(forwardEntity, false); //adding all message entities without start forwarding
             }
         }
-        this.sendEntity(SessionManager.getSessions(), false);
+        this.sendEntity(SessionManager.getSessions(), false); //start forwarding all message entities
     }
 
 
+    @SuppressWarnings("deprecation")
     private class sendEntityToSession extends AsyncTask<Session, Void, Void> {
         private boolean z = false;
 

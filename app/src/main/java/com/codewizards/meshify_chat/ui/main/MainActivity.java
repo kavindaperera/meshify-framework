@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
+        builder.setAutoConnect(false);
 
         Meshify.start(messageListener, connectionListener, builder.build());
 
