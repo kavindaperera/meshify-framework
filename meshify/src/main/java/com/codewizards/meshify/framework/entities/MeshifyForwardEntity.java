@@ -30,6 +30,9 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     @JsonProperty(value="receiver")
     String receiver;
 
+    @JsonProperty(value="created_at")
+    long created_at;
+
     @JsonProperty(value="hops")
     int hops;
 
@@ -37,12 +40,13 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     int profile;
 
     public MeshifyForwardEntity(Message message, ConfigProfile profile) {
-        this.profile = profile.ordinal();
         this.id = message.getUuid() == null ? UUID.randomUUID().toString() : message.getUuid();
+        this.payload = message.getContent();
         this.sender = message.getSenderId();
         this.receiver = message.getReceiverId();
-        this.payload = message.getContent();
+        this.created_at = message.getDateSent();
         this.hops = this.getHopLimitForConfigProfile();
+        this.profile = profile.ordinal();
     }
 
     protected MeshifyForwardEntity(Parcel in) {
@@ -50,6 +54,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.payload = new Gson().fromJson(in.readString(), new TypeToken<HashMap<String, Object>>(){}.getType());
         this.sender = in.readString();
         this.receiver = in.readString();
+        this.created_at = in.readLong();
         this.hops = in.readInt();
         this.profile = in.readInt();
     }
@@ -77,6 +82,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         dest.writeString(new Gson().toJson(this.payload));
         dest.writeString(this.sender);
         dest.writeString(this.receiver);
+        dest.writeLong(this.created_at);
         dest.writeInt(this.hops);
         dest.writeInt(this.profile);
     }
@@ -121,6 +127,15 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.receiver = receiver;
     }
 
+    @JsonProperty(value="created_at")
+    public long getCreatedAt() {
+        return this.created_at;
+    }
+
+    public void setCreatedAt(long date_sent) {
+        this.created_at = date_sent;
+    }
+
     @JsonProperty(value="hops")
     public int getHops() {
         return this.hops;
@@ -150,6 +165,6 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     @Override
     public int compareTo(Object object) {
         MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) object;
-        return (forwardEntity.getId()).compareTo(this.getId());
+        return ("" + forwardEntity.getCreatedAt()).compareTo("" + this.getCreatedAt());
     }
 }
