@@ -27,7 +27,7 @@ public class MeshifyUtils {
         parcel.recycle();
 
         if (Meshify.getInstance().getConfig().isEncryption() && willEncrypt) {
-            while (Session.getKeys().isEmpty());
+            //while (Session.getKeys().isEmpty());
             HashMap<String, String> publicKeysMap = Session.getKeys();
             byte[] encryptedBytes = MeshifyRSA.encrypt(publicKeysMap.get(userId), parcelableBytes);
             // adding one byte (1) in front to show that this is encrypted
