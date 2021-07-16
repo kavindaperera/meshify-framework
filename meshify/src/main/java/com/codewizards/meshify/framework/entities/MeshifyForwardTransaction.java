@@ -42,6 +42,10 @@ public class MeshifyForwardTransaction implements Parcelable {
         }
     };
 
+    public MeshifyForwardTransaction() {
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

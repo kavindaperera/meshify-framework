@@ -84,7 +84,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 try {
                     Parcel parcel = MeshifyUtils.unmarshall(bytes);
                     MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
-                    Log.e(TAG, "Received: " + meshifyEntity);
+                    Log.d(TAG, "Received: " + meshifyEntity);
                     Session.this.processEntity(meshifyEntity);
                 } catch (Exception exception) {
                     Log.e(TAG, "Received: reading entity failed " + exception.getMessage(), exception);
@@ -265,7 +265,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
                 case 2: {
                     MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
-                    if (forwardTransaction.getMesh() != null && forwardTransaction.getMesh().size() == 0 ) {
+
+
+                    if (forwardTransaction.getReach() != null || (forwardTransaction.getMesh() != null && forwardTransaction.getMesh().size() == 0) ) {
+                        Meshify.getInstance()
+                                .getMeshifyCore()
+                                .getMessageController()
+                                .incomingReachAction(forwardTransaction.getReach());
                         return;
                     }
 
@@ -283,7 +289,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     void flush(MeshifyEntity meshifyEntity) throws IOException, MessageException, InterruptedException {
         try {
-            Log.e(TAG, "Flushed:" + meshifyEntity);
+            Log.d(TAG, "Flushed:" + meshifyEntity);
 
             byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
 

@@ -54,6 +54,7 @@ public class MessageController {
                     } else {
                         this.messageNotifier.onMessageReceived(message);
                     }
+                    this.forwardController.sendReach(forwardEntity);
                     continue;
                 }
 
@@ -128,10 +129,14 @@ public class MessageController {
             }
         }
 
-
     }
 
     public Config getConfig() {
         return this.config;
+    }
+
+    public void incomingReachAction(String reach) {
+        Log.e(TAG, "incomingReachAction: reached " + reach );
+        this.forwardController.processReach(reach);
     }
 }

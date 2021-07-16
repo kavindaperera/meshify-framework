@@ -68,9 +68,16 @@ public class MeshifyEntity<T> implements Parcelable {
     };
 
 
-    public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> forwardEntities, String sender) {
-        MeshifyForwardTransaction forwardTransaction = new MeshifyForwardTransaction(sender, forwardEntities);
-        return new MeshifyEntity<MeshifyForwardTransaction>(2, forwardTransaction);
+    public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> meshifyForwardEntities, String sender) {
+        MeshifyForwardTransaction meshifyForwardTransaction = new MeshifyForwardTransaction(sender, meshifyForwardEntities);
+        return new MeshifyEntity<MeshifyForwardTransaction>(2, meshifyForwardTransaction);
+    }
+
+    public static MeshifyEntity<MeshifyForwardTransaction> reachMessage(String uuid) {
+        MeshifyForwardTransaction meshifyForwardTransaction = new MeshifyForwardTransaction();
+        meshifyForwardTransaction.setReach(uuid);
+        meshifyForwardTransaction.setMesh(null);
+        return new MeshifyEntity<MeshifyForwardTransaction>(2, meshifyForwardTransaction);
     }
 
     public static  MeshifyEntity message(Message message) {
