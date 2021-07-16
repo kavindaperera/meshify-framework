@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  *  <p>This class manages all the connections</p>
@@ -146,8 +147,8 @@ public class ConnectionManager {
             };
 
             if (meshifyDevice1 !=null) {
-                Log.e(TAG, "Sending to connect: " + meshifyDevice1.getDevice().toString());
-                meshifyDevice1.create().subscribe(completableObserver);
+                Log.e(TAG, "Sending to connect: " + meshifyDevice1.getDevice().toString() );
+                meshifyDevice1.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver);
             }
 
         } else if (meshifyDevice != null) {
