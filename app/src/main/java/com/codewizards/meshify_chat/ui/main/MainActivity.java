@@ -99,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
 //            showProgressBar();
         }
 
+
+        @Override
+        public void onDeviceDiscovered(Device device) {
+            super.onDeviceDiscovered(device);
+            Toast.makeText(getApplicationContext(), "Device Discovered " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Device Discovered " +  device.toString());
+        }
+
         @Override
         public void onStartError(String message, int errorCode) {
             super.onStartError(message, errorCode);
@@ -111,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             super.onDeviceConnected(device, session);
+            Log.e(TAG, "Device Connected " +  device.toString());
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
