@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
+import com.codewizards.meshify_chat.ui.home.MainActivity;
 import com.codewizards.meshify_chat.utils.Constants;
 
 import java.util.ArrayList;
@@ -94,11 +97,17 @@ public class ChatActivity extends AppCompatActivity {
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
-            com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
-            builder.setContent(content).setReceiverId(deviceId);
+            if (deviceId.equals(Constants.BROADCAST_CHAT)){
+                content.put(Constants.PAYLOAD_DEVICE_NAME, Build.MANUFACTURER + " " + Build.MODEL);
+                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+                builder.setContent(content);
+                Meshify.sendBroadcastMessage(builder.build(), ConfigProfile.Default);
 
-            Meshify.sendMessage(builder.build(), ConfigProfile.Default);
-
+            } else {
+                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+                builder.setContent(content).setReceiverId(deviceId);
+                Meshify.sendMessage(builder.build(), ConfigProfile.Default);
+            }
         }
     }
 }

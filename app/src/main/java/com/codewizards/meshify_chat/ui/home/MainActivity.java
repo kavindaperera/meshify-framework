@@ -43,7 +43,9 @@ import com.codewizards.meshify_chat.utils.Constants;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.codewizards.meshify_chat.utils.Constants.BROADCAST_CHAT;
 import static com.codewizards.meshify_chat.utils.Constants.PAYLOAD_DEVICE_NAME;
+import static com.codewizards.meshify_chat.utils.Constants.PAYLOAD_TEXT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, msg));
             }
+        }
+
+        @Override
+        public void onBroadcastMessageReceived(Message message) {
+            super.onBroadcastMessageReceived(message);
+            String Msg = (String) message.getContent().get(PAYLOAD_TEXT);
+            String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
+
+            Log.e(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
+            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(
+                    new Intent(BROADCAST_CHAT)
+                            .putExtra(Constants.INTENT_EXTRA_NAME, deviceName)
+                            .putExtra(Constants.INTENT_EXTRA_MSG,  Msg));
         }
 
         @Override
@@ -235,6 +250,12 @@ public class MainActivity extends AppCompatActivity {
                 // Show the Sharesheet
                 startActivity(Intent.createChooser(sendIntent, null));
                 break;
+            }
+            case R.id.action_broadcast: {
+                startActivity(new Intent(getBaseContext(), ChatActivity.class)
+                        .putExtra(Constants.INTENT_EXTRA_NAME, BROADCAST_CHAT)
+                        .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
+                return true;
             }
         }
         return super.onOptionsItemSelected(item);

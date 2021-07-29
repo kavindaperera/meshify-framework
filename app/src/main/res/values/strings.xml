@@ -39,5 +39,6 @@
     <string name="channel_name">Meshify</string>
     <string name="foreground_notification_content_title">Expand to stop background service</string>
     <string name="foreground_notification_action_stop">Stop</string>
+    <string name="action_broadcast">Broadcast</string>
 
 </resources>

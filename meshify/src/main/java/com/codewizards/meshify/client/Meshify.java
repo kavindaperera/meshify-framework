@@ -166,6 +166,19 @@ public class Meshify {
         }
     }
 
+    public static String sendBroadcastMessage(@NonNull Message message, ConfigProfile configProfile) {
+        Meshify.isMessageNull(message);
+        message.setReceiverId(null);
+        try {
+            getInstance().getMeshifyCore().sendBroadcastMessage(message, configProfile);
+            return message.getUuid();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message" );
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public Config getConfig() {
         return this.config;

@@ -92,6 +92,11 @@ public class MeshifyCore {
         this.messageController.sendMessage(this.context, message, device, profile);
     }
 
+    public void sendBroadcastMessage(Message message, ConfigProfile profile) {
+        profile = profile == null ? ConfigProfile.Default : profile;
+        this.messageController.sendMessage( message, profile);
+    }
+
     MessageListener getMessageListener() {
         Log.d(TAG, "getMessageListener:");
         return this.messageListener;

@@ -15,4 +15,5 @@ public class Constants {
     public static final String PAYLOAD_DEVICE_NAME  = "device_name";
     public static final String PAYLOAD_TEXT = "text";
 
+    public static final String BROADCAST_CHAT = "Broadcast";
 }

@@ -47,7 +47,7 @@ public class MessageController {
             ArrayList<MeshifyForwardEntity> entityArrayList = new ArrayList<MeshifyForwardEntity>();
             for (MeshifyForwardEntity forwardEntity : mesh) {
                 forwardEntity.decreaseHops();
-                if (forwardEntity.getReceiver().trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){
+                if (forwardEntity.getReceiver() != null && forwardEntity.getReceiver().trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){
                     Message message = this.getMessageFromForwardEntity(forwardEntity);
                     if (message != null && message.getContent() == null) {
                         //Error Message
@@ -63,7 +63,11 @@ public class MessageController {
                 }
 
                 Log.d(TAG, "incomingMeshMessageAction: remaining hops " + forwardEntity.getHops() );
-                continue;
+
+                Message message = this.getMessageFromForwardEntity(forwardEntity);
+                if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {
+                    this.messageNotifier.onBroadcastMessageReceived(message);
+                }
             }
 
             if (!entityArrayList.isEmpty()){
@@ -129,6 +133,10 @@ public class MessageController {
             }
         }
 
+    }
+
+    void sendMessage(Message message, ConfigProfile profile) {
+        this.forwardController.startForwarding(new MeshifyForwardEntity(message, profile),true);
     }
 
     public Config getConfig() {
