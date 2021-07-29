@@ -15,7 +15,7 @@
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/settings_category_messages">
-        <CheckBoxPreference
+        <SwitchPreference
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="settings_notifications_enabled"

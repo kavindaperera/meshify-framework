@@ -37,6 +37,7 @@ import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessageReceived(Message message) {
             super.onMessageReceived(message);
+
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
 //                Neighbor neighbor = new Neighbor(message.getSenderId(),(String) message.getContent().get(PAYLOAD_DEVICE_NAME));
 //                neighbor.setNearby(true);
@@ -79,10 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
 
             } else {
-                String msg = (String) message.getContent().get("text");
+                String text = (String) message.getContent().get("text");
                 LocalBroadcastManager
                         .getInstance(getBaseContext())
-                        .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, msg));
+                        .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
+
+                MeshifyNotifications.getInstance().createChatNotification(message, text); //Remove
+
             }
         }
 
