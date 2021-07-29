@@ -5,6 +5,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.IBinder;
@@ -39,9 +41,7 @@ public class MeshifyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
-
-
-
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), MeshifyConstants.drawable.mf_launcher);
         switch (action) {
             case Constants.MESHIFY_APP_FOREGROUND: {
                 meshifyStopForeground();
@@ -58,8 +58,10 @@ public class MeshifyService extends Service {
                         .setTicker(getString(MeshifyConstants.string.app_name))
                         .setContentText(getString(MeshifyConstants.string.foreground_notification_content_title))
                         .setSmallIcon(MeshifyConstants.drawable.mf)
+                        .setLargeIcon(largeIcon)
                         .setContentIntent(activity)
-                        .setOngoing(true)
+//                        .setOngoing(true)
+                        .setPriority(Notification.PRIORITY_MAX)
                         .addAction(1, getString(MeshifyConstants.string.foreground_notification_action_stop), PendingIntent.getService(this, 0, stopIntent, 0))
                         .build();
                 startForeground(Constants.FOREGROUND_SERVICE, notification);

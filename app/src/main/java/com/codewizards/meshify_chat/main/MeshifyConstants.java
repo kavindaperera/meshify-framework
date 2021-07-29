@@ -12,5 +12,6 @@ public class MeshifyConstants {
     }
     public static final class drawable {
         public static final int mf = R.drawable.ic_notification;
+        public static final int mf_launcher = R.drawable.ic_launcher;
     }
 }

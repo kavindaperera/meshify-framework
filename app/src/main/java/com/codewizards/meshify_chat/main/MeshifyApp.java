@@ -3,6 +3,7 @@ package com.codewizards.meshify_chat.main;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.SharedPreferences;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -17,14 +18,21 @@ public class MeshifyApp extends Application {
         return meshifyApp;
     }
 
+    SharedPreferences sharedPreferences;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         meshifyApp = this;
+
+        if (this.sharedPreferences.getLong(Constants.PREFS_FIRST_DATE, 0) == 0) {
+            this.sharedPreferences.edit().putLong(Constants.PREFS_FIRST_DATE, System.currentTimeMillis()).apply();
+        }
+
         if (Build.VERSION.SDK_INT >= 26) {
             createNotificationChannel();
         }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

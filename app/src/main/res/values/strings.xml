@@ -9,7 +9,7 @@
     <string name="powered_by">Powered by Meshify</string>
     <string name="placeholder">Type a message</string>
     <string name="placeholder_message">Hello Placeholder Message</string>
-    <string name="placeholder_device_name">Jon Snow\'s Pixel 3XL (android)</string>
+    <string name="placeholder_device_name">Jon Snow</string>
     <string name="add_to_contacts">Add to Contacts</string>
     <string name="disconnect">Disconnect</string>
     <string name="settings">Settings</string>
@@ -37,8 +37,9 @@
 
     <string name="channel_description">Meshify Notifications</string>
     <string name="channel_name">Meshify</string>
-    <string name="foreground_notification_content_title">Expand to stop background service</string>
+    <string name="foreground_notification_content_title">Meshify is now running in the background</string>
     <string name="foreground_notification_action_stop">Stop</string>
     <string name="action_broadcast">Broadcast</string>
+    <string name="placeholder_last_message">I am the fire that burns against the cold.</string>
 
 </resources>

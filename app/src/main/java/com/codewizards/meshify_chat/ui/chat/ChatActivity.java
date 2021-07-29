@@ -41,11 +41,15 @@ public class ChatActivity extends AppCompatActivity {
     private String deviceName;
     private String deviceId;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+
+        this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
         deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
@@ -98,7 +102,13 @@ public class ChatActivity extends AppCompatActivity {
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
             if (deviceId.equals(Constants.BROADCAST_CHAT)){
-                content.put(Constants.PAYLOAD_DEVICE_NAME, Build.MANUFACTURER + " " + Build.MODEL);
+
+                String username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
+                if (username == null) {
+                    username = Build.MANUFACTURER + " " + Build.MODEL;
+                }
+                content.put(Constants.PAYLOAD_DEVICE_NAME, username);
+
                 com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
                 builder.setContent(content);
                 Meshify.sendBroadcastMessage(builder.build(), ConfigProfile.Default);

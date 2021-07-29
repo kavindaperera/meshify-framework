@@ -41,6 +41,7 @@ dependencies {
     implementation 'androidx.cardview:cardview'
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'org.apache.commons:commons-lang3:3.11'
 
     def lifecycle_version = "2.4.0-alpha02"
     def arch_version = "2.1.0"

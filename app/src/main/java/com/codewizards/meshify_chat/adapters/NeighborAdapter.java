@@ -2,12 +2,14 @@ package com.codewizards.meshify_chat.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
+import com.codewizards.meshify_chat.utils.MeshifyUtils;
 
 import java.util.List;
 
@@ -107,14 +110,16 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 
     class NeighborViewHolder extends RecyclerView.ViewHolder {
         final TextView mContentView;
-        final ImageView mImageView;
+//        final ImageView mImageView;
+        final TextView mInitialsTextView;
         final ImageView mPopupMenu;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
             super(view);
             mContentView = view.findViewById(R.id.neighborName);
-            mImageView = view.findViewById(R.id.neighborAvatar);
+//            mImageView = view.findViewById(R.id.neighborAvatar);
+            mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
 
             mPopupMenu.setOnClickListener(new View.OnClickListener() {
@@ -168,14 +173,19 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             switch (neighbor.getDeviceType()) {
                 case ANDROID:
                     this.mContentView.setText(neighbor.getDeviceName());
+                    this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDeviceName()));
+//                    ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor("#006257"));
                     break;
             }
             if (neighbor.isNearby()) {
                 this.mContentView.setTextColor(Color.parseColor("#006257"));
-                this.mImageView.setImageResource(R.drawable.ic_user_green);
+//                this.mImageView.setImageResource(R.drawable.ic_user_green);
+                ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor(MeshifyUtils.getRandomColor()));
+
             } else {
                 this.mContentView.setTextColor(Color.GRAY);
-                this.mImageView.setImageResource(R.drawable.ic_user_red);
+//                this.mImageView.setImageResource(R.drawable.ic_user_red);
+                ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.RED);
             }
         }
     }
