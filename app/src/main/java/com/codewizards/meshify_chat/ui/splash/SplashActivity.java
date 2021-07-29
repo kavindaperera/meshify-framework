@@ -6,16 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.WindowManager;
-import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.ui.main.MainActivity;
+import com.codewizards.meshify_chat.ui.home.MainActivity;
 import com.codewizards.meshify_chat.ui.signup.SignupActivity;
 import com.codewizards.meshify_chat.utils.Constants;
-
-import butterknife.BindView;
 
 public class SplashActivity extends AppCompatActivity {
 

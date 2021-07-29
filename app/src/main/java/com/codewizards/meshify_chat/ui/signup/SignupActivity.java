@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.ui.main.MainActivity;
+import com.codewizards.meshify_chat.ui.home.MainActivity;
 import com.codewizards.meshify_chat.utils.Constants;
 
 import butterknife.BindView;

@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ui.main;
+package com.codewizards.meshify_chat.ui.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

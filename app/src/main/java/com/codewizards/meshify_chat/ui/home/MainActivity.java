@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ui.main;
+package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.ShareCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -37,6 +35,7 @@ import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.utils.Constants;
@@ -196,6 +195,16 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (Build.VERSION.SDK_INT >= 26) {
+            startForegroundService(new Intent(this, MeshifyService.class).setAction(Constants.MESHIFY_APP_BACKGROUND));
+        } else {
+            startService(new Intent(this, MeshifyService.class).setAction(Constants.MESHIFY_APP_BACKGROUND));
+        }
     }
 
     @Override

@@ -34,4 +34,10 @@
     <string name="settings_feedback_title">Send feedback</string>
     <string name="connect">Connect</string>
 
+
+    <string name="channel_description">Meshify Notifications</string>
+    <string name="channel_name">Meshify</string>
+    <string name="foreground_notification_content_title">Expand to stop background service</string>
+    <string name="foreground_notification_action_stop">Stop</string>
+
 </resources>

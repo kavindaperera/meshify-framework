@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codewizards.meshify_chat">
-    <!-- Permissions needed to run Wi-Fi Direct -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- Permissions needed to run both Wi-Fi Direct and Infrastructure Wi-Fi -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions needed to run Bluetooth Low Energy -->
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Permissions needed to run both Bluetooth Low Energy and Bluetooth Classic -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION "/>
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- Other Permissions -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
     <application
+        android:name=".main.MeshifyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,22 +33,22 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".ui.main.MainActivity">
+            android:parentActivityName=".ui.home.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
+                android:value=".ui.home.MainActivity" />
         </activity>
         <activity android:name=".ui.signup.SignupActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
-            android:parentActivityName=".ui.main.MainActivity">
+            android:parentActivityName=".ui.home.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
+                android:value=".ui.home.MainActivity" />
         </activity>
         <activity android:name=".ui.splash.SplashActivity" />
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.home.MainActivity"
             android:alwaysRetainTaskState="true"
             android:launchMode="singleTop" />
         <activity android:name=".ui.base.BaseActivity">
@@ -50,10 +57,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Meshify API key -->
+        </activity>
+
+        <service android:label="Meshify Service" android:name=".service.MeshifyService" />
+
+        <!--        <service android:label="Meshify Service"-->
+<!--            android:name=".service.MeshifyService" -->
+<!--            android:permission="android.permission.BIND_JOB_SERVICE" -->
+<!--            android:foregroundServiceType="8"-->
+<!--            />-->
+
+
+        <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
+
     </application>
 
 </manifest>
