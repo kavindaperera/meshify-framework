@@ -40,6 +40,6 @@
     <string name="foreground_notification_content_title">Meshify is now running in the background</string>
     <string name="foreground_notification_action_stop">Stop</string>
     <string name="action_broadcast">Broadcast</string>
-    <string name="placeholder_last_message">I am the fire that burns against the cold.</string>
+    <string name="placeholder_last_message">Last Message Here...</string>
 
 </resources>

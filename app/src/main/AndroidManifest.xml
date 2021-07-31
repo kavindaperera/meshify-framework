@@ -50,29 +50,17 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:alwaysRetainTaskState="true"
-            android:launchMode="singleTop" />
-        <activity android:name=".ui.base.BaseActivity">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service android:label="Meshify Service" android:name=".service.MeshifyService" />
-
-        <!--        <service android:label="Meshify Service"-->
-<!--            android:name=".service.MeshifyService" -->
-<!--            android:permission="android.permission.BIND_JOB_SERVICE" -->
-<!--            android:foregroundServiceType="8"-->
-<!--            />-->
-
-
-        <!-- Meshify API key -->
         <meta-data
             android:name="com.codewizards.meshify.API_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
-
     </application>
 
 </manifest>

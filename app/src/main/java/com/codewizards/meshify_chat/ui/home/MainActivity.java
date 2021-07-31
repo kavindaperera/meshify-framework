@@ -35,12 +35,14 @@ import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
+import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.utils.Constants;
 
 import java.util.HashMap;
@@ -181,6 +183,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (MeshifySession.isLoggedIn()) {
+            init(savedInstanceState);
+            return;
+        }
+        showSplashActivity();
+    }
+
+    private void showSplashActivity() {
+        startActivity(new Intent(this, SplashActivity.class));
+        finish();
+    }
+
+    private void init(Bundle bundle) {
         setContentView(R.layout.activity_main);
 
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
@@ -216,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(neighbor -> startActivity(new Intent(getApplicationContext(), ChatActivity.class)
                 .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
-
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.utils.Constants;
 
 public class MeshifyApp extends Application {
@@ -33,6 +34,9 @@ public class MeshifyApp extends Application {
         if (Build.VERSION.SDK_INT >= 26) {
             createNotificationChannel();
         }
+
+        MeshifySession.loadSession(this);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
