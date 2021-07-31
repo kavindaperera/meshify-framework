@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.logs.Log;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,7 +40,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     @JsonProperty(value="profile")
     int profile;
 
-    public MeshifyForwardEntity(Message message, ConfigProfile profile) {
+    @JsonProperty(value="mesh_type")
+    int mesh_type;
+
+    public MeshifyForwardEntity(Message message,int mesh_type, ConfigProfile profile) {
         this.id = message.getUuid() == null ? UUID.randomUUID().toString() : message.getUuid();
         this.payload = message.getContent();
         this.sender = message.getSenderId();
@@ -47,6 +51,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.created_at = message.getDateSent();
         this.hops = this.getHopLimitForConfigProfile();
         this.profile = profile.ordinal();
+        this.mesh_type = mesh_type;
     }
 
     protected MeshifyForwardEntity(Parcel in) {
@@ -57,6 +62,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.created_at = in.readLong();
         this.hops = in.readInt();
         this.profile = in.readInt();
+        this.mesh_type = in.readInt();
     }
 
     public static final Creator<MeshifyForwardEntity> CREATOR = new Creator<MeshifyForwardEntity>() {
@@ -85,6 +91,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         dest.writeLong(this.created_at);
         dest.writeInt(this.hops);
         dest.writeInt(this.profile);
+        dest.writeInt(this.mesh_type);
     }
 
     public String toString() {
@@ -132,6 +139,11 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         return this.created_at;
     }
 
+    @JsonProperty(value="mesh_type")
+    public int getMeshType() {
+        return this.mesh_type;
+    }
+
     public void setCreatedAt(long date_sent) {
         this.created_at = date_sent;
     }
@@ -166,5 +178,14 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     public int compareTo(Object object) {
         MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) object;
         return ("" + forwardEntity.getCreatedAt()).compareTo("" + this.getCreatedAt());
+    }
+
+    public boolean expired() {
+        Log.e("[Meshify]", "expired check: " + this.getId());
+        if (this.getHops() <= 0) {
+            Log.i("[Meshify]", "expired because: " + this.getId() + " hops " + this.getHops());
+            return true;
+        }
+        return false;
     }
 }

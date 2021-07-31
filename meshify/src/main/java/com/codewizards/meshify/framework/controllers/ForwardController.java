@@ -9,6 +9,7 @@ import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -24,12 +25,14 @@ public class ForwardController {
     }
 
     void startForwarding(MeshifyForwardEntity forwardEntity, boolean z) {
-
         if ( this.reachedNavigableMap.containsKey(forwardEntity.getId())) {
             return;
         }
-
         synchronized (meshNavigableMap) {
+            if (this.checkAvailability(forwardEntity) != null) {
+                return;
+            }
+            this.discardExpiredEntities(); //remove expire entities
             MeshifyForwardEntity forwardEntity1 = forwardEntity;
             if (forwardEntity1 != null) {
                 this.meshNavigableMap.put(forwardEntity1, true);
@@ -42,12 +45,49 @@ public class ForwardController {
         } 
     }
 
-    MeshifyForwardEntity getEntityFromUuid(String string) {
-        for (MeshifyForwardEntity meshifyForwardEntity : this.meshNavigableMap.descendingKeySet()) {
-            if (!meshifyForwardEntity.getId().equalsIgnoreCase(string.trim())) continue;
-            return meshifyForwardEntity;
+    private void discardExpiredEntities() {
+
+        synchronized (meshNavigableMap) {
+
+            ArrayList<MeshifyForwardEntity> removeArrayList = new ArrayList<MeshifyForwardEntity>();
+
+            for (MeshifyForwardEntity entity : this.meshNavigableMap.descendingKeySet()) {
+                if (!entity.expired()) continue;
+                removeArrayList.add(entity);
+            }
+
+            if (removeArrayList.size() > 0) {
+                Log.e(TAG, "discardExpiredEntities: remove MeshifyForwardEntities: " + removeArrayList.size());
+            }
+
+            ArrayList discardArrayList = new ArrayList();
+            for (MeshifyForwardEntity forwardEntity : removeArrayList) {
+                this.meshNavigableMap.remove(forwardEntity);
+                discardArrayList.add(forwardEntity.getId());
+            }
+
+            Iterator iterator = discardArrayList.iterator();
+            while (iterator.hasNext()) {
+                String entityId = (String)iterator.next();
+                this.reachedNavigableMap.put(entityId, Boolean.TRUE);
+                Log.e(TAG, "discardExpiredEntities: discard id" + entityId);
+            }
+        }
+    }
+
+
+    private MeshifyForwardEntity checkAvailability(MeshifyForwardEntity forwardEntity) {
+        if (this.meshNavigableMap.containsKey(forwardEntity)) {
+            for (MeshifyForwardEntity forwardEntity1 : this.meshNavigableMap.descendingKeySet()) {
+                if (!forwardEntity1.equals(forwardEntity1)) continue;
+                return forwardEntity1;
+            }
         }
         return null;
+    }
+
+    public void processReach(String reach) {
+        this.processReach(this.getEntityFromUuid(reach), true);
     }
 
     private void processReach(MeshifyForwardEntity meshifyForwardEntity, boolean bl) {
@@ -57,22 +97,25 @@ public class ForwardController {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    void sendEntity(ArrayList<Session> arrayList, boolean z) {
-        new sendEntityToSession(z).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList.toArray(new Session[arrayList.size()]));
-    }
-
-
-    public void processReach(String reach) {
-        this.processReach(this.getEntityFromUuid(reach), true);
-    }
-
     private List<MeshifyForwardEntity> getMessageList() {
         ArrayList<MeshifyForwardEntity> arrayList = new ArrayList<>();
         for (MeshifyForwardEntity forwardEntity : this.meshNavigableMap.descendingKeySet()) {
             arrayList.add(forwardEntity);
         }
         return arrayList;
+    }
+
+    MeshifyForwardEntity getEntityFromUuid(String string) {
+        for (MeshifyForwardEntity meshifyForwardEntity : this.meshNavigableMap.descendingKeySet()) {
+            if (!meshifyForwardEntity.getId().equalsIgnoreCase(string.trim())) continue;
+            return meshifyForwardEntity;
+        }
+        return null;
+    }
+
+    @SuppressWarnings("deprecation")
+    void sendEntity(ArrayList<Session> arrayList, boolean z) {
+        new sendEntityToSession(z).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList.toArray(new Session[arrayList.size()]));
     }
 
     void forwardAgain(ArrayList<MeshifyForwardEntity> entityArrayList, Session session) {
@@ -97,8 +140,6 @@ public class ForwardController {
             }
         }
     }
-
-
 
     @SuppressWarnings("deprecation")
     private class sendEntityToSession extends AsyncTask<Session, Void, Void> {

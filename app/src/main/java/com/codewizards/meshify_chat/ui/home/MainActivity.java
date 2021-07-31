@@ -40,6 +40,7 @@ import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
+import com.codewizards.meshify_chat.ui.about.AboutActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
@@ -276,6 +277,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(getBaseContext(), ChatActivity.class)
                         .putExtra(Constants.INTENT_EXTRA_NAME, BROADCAST_CHAT)
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
+                return true;
+            }
+            case R.id.action_about: {
+                startActivity(new Intent(getBaseContext(), AboutActivity.class));
                 return true;
             }
         }

@@ -93,7 +93,7 @@ public class MeshifyCore {
     }
 
     public void sendBroadcastMessage(Message message, ConfigProfile profile) {
-        profile = profile == null ? ConfigProfile.Default : profile;
+//        profile = profile == null ? ConfigProfile.Default : profile;
         this.messageController.sendMessage( message, profile);
     }
 
