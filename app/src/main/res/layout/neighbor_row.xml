@@ -6,6 +6,7 @@
     android:layout_marginLeft="3dp"
     android:layout_marginRight="3dp"
     android:background="@drawable/bottom_border"
+    android:backgroundTint="@color/neighbor_row"
     android:orientation="horizontal">
 
     <LinearLayout

@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/chat_background"
     tools:context=".ui.chat.ChatActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/MeshifyTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/MeshifyTheme.PopupOverlay" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,15 +33,16 @@
 
     <LinearLayout
         android:id="@+id/textbox"
-        android:layout_margin="4dp"
+        android:layout_margin="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/neighbor_row"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/txtMessage"
+            android:layout_margin="1dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -53,7 +55,7 @@
             android:id="@+id/btnSend"
             android:layout_width="55dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
+            android:layout_marginTop="10sp"
             android:src="@drawable/ic_send" />
     </LinearLayout>
 

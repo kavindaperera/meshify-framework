@@ -13,7 +13,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
         <!-- Customize your theme here. -->
         <item name="android:navigationBarColor" tools:targetApi="l">@color/colorPrimary</item>
+
+
     </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="MeshifyTheme.AppBarOverlay" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="MeshifyTheme.PopupOverlay" parent="@style/ThemeOverlay.AppCompat.Light" />
 </resources>
