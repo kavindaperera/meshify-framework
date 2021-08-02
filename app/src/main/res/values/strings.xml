@@ -1,45 +1,36 @@
 <resources>
-    <string name="app_name">Meshify</string>
-    <string name="sign_up_text">Welcome to Meshify!</string>
-    <string name="username_text">Please select a nickname.</string>
-    <string name="user_entry">Type Here...</string>
-    <string name="action_sign_up">Register</string>
-    <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
-    <string name="is_nearby">Nearby</string>
-    <string name="powered_by">Powered by Meshify</string>
-    <string name="placeholder">Type a message</string>
-    <string name="placeholder_message">Hello Placeholder Message</string>
-    <string name="placeholder_device_name">Jon Snow</string>
-    <string name="add_to_contacts">Add to Contacts</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="settings">Settings</string>
     <string name="about">About</string>
-    <string name="invite">Invite Friends</string>
-
-    <!-- Preference Titles -->
-    <string name="settings_category_account">ACCOUNT</string>
-    <string name="settings_category_messages">NOTIFICATIONS</string>
-    <string name="settings_category_help">HELP</string>
-
-    <!-- Notification Preferences -->
-    <string name="settings_messages_notifications_title">Enable message notifications</string>
-    <string name="notification_sound">Notification sound</string>
-
-    <!-- Account Preferences -->
-    <string name="settings_category_user_name">Username</string>
-    <string name="settings_category_mesh_forwarding">MESH FORWARDING</string>
-    <string name="settings_profile_title">Mesh Profile</string>
-    <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
-    <string name="settings_feedback_summary">Report technical issues or suggest new features</string>
-    <string name="settings_feedback_title">Send feedback</string>
-    <string name="connect">Connect</string>
-
-
+    <string name="action_broadcast">Broadcast</string>
+    <string name="action_sign_up">Register</string>
+    <string name="add_to_contacts">Add to Contacts</string>
+    <string name="app_name">Meshify</string>
     <string name="channel_description">Meshify Notifications</string>
     <string name="channel_name">Meshify</string>
-    <string name="foreground_notification_content_title">Meshify is now running in the background</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
     <string name="foreground_notification_action_stop">Stop</string>
-    <string name="action_broadcast">Broadcast</string>
+    <string name="foreground_notification_content_title">Meshify is now running in the background</string>
+    <string name="invite">Invite Friends</string>
+    <string name="is_nearby">Nearby</string>
+    <string name="notification_sound">Notification sound</string>
+    <string name="placeholder">Type a message</string>
+    <string name="placeholder_device_name">Jon Snow</string>
     <string name="placeholder_last_message">Last Message Here...</string>
-
+    <string name="placeholder_message">Hello Placeholder Message</string>
+    <string name="powered_by">Powered by Meshify</string>
+    <string name="settings">Settings</string>
+    <string name="settings_category_account">ACCOUNT</string>
+    <string name="settings_category_help">HELP</string>
+    <string name="settings_category_messages">NOTIFICATIONS</string>
+    <string name="settings_category_mesh_forwarding">MESH FORWARDING</string>
+    <string name="settings_category_user_name">Username</string>
+    <string name="settings_feedback_summary">Report technical issues or suggest new features</string>
+    <string name="settings_feedback_title">Send feedback</string>
+    <string name="settings_messages_notifications_title">Enable message notifications</string>
+    <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
+    <string name="settings_profile_title">Mesh Profile</string>
+    <string name="sign_up_text">Welcome to Meshify!</string>
+    <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
+    <string name="user_entry">Type Here...</string>
+    <string name="username_text">Please select a nickname.</string>
 </resources>
