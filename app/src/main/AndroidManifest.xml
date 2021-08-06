@@ -37,6 +37,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meshifychat">
+        <activity android:name=".ui.intro.VerificationActivity"></activity>
+        <activity android:name=".ui.intro.IntroActivity" />
         <activity android:name=".ui.about.AboutActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

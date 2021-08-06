@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.ui.intro.IntroActivity;
 import com.codewizards.meshify_chat.ui.signup.SignupActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -22,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, SignupActivity.class));
+                startActivity(new Intent(SplashActivity.this, IntroActivity.class));
                 finish();
             }
         }, 1000);

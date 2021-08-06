@@ -1,0 +1,135 @@
+package com.codewizards.meshify_chat.ui.intro;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.main.MeshifyConstants;
+import com.codewizards.meshify_chat.ui.intro.onboarding.OnboardingAdapter;
+import com.codewizards.meshify_chat.ui.intro.onboarding.OnboardingItem;
+import com.codewizards.meshify_chat.ui.signup.SignupActivity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class IntroActivity extends AppCompatActivity {
+
+    @BindView(R.id.btn_verify)
+    Button btnVerify;
+    @BindView(R.id.pager)
+    ViewPager2 mViewPager;
+    @BindView(R.id.onboardingIndicators)
+    LinearLayout mIndicators;
+
+    private OnboardingAdapter onboardingAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_intro);
+        ButterKnife.bind(this);
+
+        setupOnboardingItems();
+
+        this.mViewPager.setAdapter(onboardingAdapter);
+        this.mViewPager.setPageTransformer(new DepthPageTransformer());
+
+        setupOnbordingIndicators();
+        setCurrentOnboardingIndicator(0);
+
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                setCurrentOnboardingIndicator(position);
+            }
+        });
+
+    }
+
+    private void setupOnboardingItems() {
+        List<OnboardingItem> onboardingItems = new ArrayList<>();
+
+        OnboardingItem itemOne = new OnboardingItem();
+        itemOne.setTitle(getString(MeshifyConstants.string.onboarding_title_1));
+        itemOne.setDescription(getString(MeshifyConstants.string.dummy_text));
+        itemOne.setImage(R.drawable.onboarding_1);
+
+        OnboardingItem itemTwo = new OnboardingItem();
+        itemTwo.setTitle(getString(MeshifyConstants.string.onboarding_title_2));
+        itemTwo.setDescription(getString(MeshifyConstants.string.dummy_text));
+        itemTwo.setImage(R.drawable.onboarding_2);
+
+        onboardingItems.add(itemOne);
+        onboardingItems.add(itemTwo);
+
+        onboardingAdapter = new OnboardingAdapter(onboardingItems);
+
+    }
+
+    private void setupOnbordingIndicators() {
+        ImageView[] indicators = new ImageView[onboardingAdapter.getItemCount()];
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(8, 0, 8, 0);
+        for (int i = 0; i < indicators.length; i++) {
+            indicators[i] = new ImageView(getApplicationContext());
+            indicators[i].setImageDrawable(ContextCompat.getDrawable(
+                    getApplicationContext(),
+                    R.drawable.onboarding_indicator_inactive
+            ));
+            indicators[i].setLayoutParams(layoutParams);
+            mIndicators.addView(indicators[i]);
+        }
+    }
+
+    private void setCurrentOnboardingIndicator(int index) {
+        int childCount = mIndicators.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView imageView = (ImageView) mIndicators.getChildAt(i);
+            if (i == index) {
+                imageView.setImageDrawable(
+                        ContextCompat.getDrawable(getApplicationContext(), R.drawable.onboarding_indicator_active)
+                );
+            } else {
+                imageView.setImageDrawable(
+                        ContextCompat.getDrawable(getApplicationContext(), R.drawable.onboarding_indicator_inactive)
+                );
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == -1) {
+            startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+            finish();
+            return;
+        }
+    }
+
+    @OnClick({R.id.btn_verify})
+    public void startVerification(View v) {
+        if (mViewPager.getCurrentItem() + 1 < onboardingAdapter.getItemCount()) {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+        } else {
+            startActivityForResult(new Intent(getApplicationContext(), VerificationActivity.class), 1029);
+        }
+    }
+}

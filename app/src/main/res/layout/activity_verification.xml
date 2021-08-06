@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.intro.VerificationActivity">
+
+    <RelativeLayout
+        android:id="@+id/layout_phone"
+        style="@style/FirebaseUI.WrapperStyle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/txt_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="16dp"
+            android:text="@string/verify_title"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txt_description"
+            android:paddingTop="16dp">
+
+            <EditText
+                android:id="@+id/phone_number_input"
+                style="@style/FirebaseUI.TextInputEditText.PhoneField"
+                android:layout_gravity="end"
+                android:imeOptions="actionDone" />
+
+            <TextView
+                android:id="@+id/phone_number_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phone_number_input"
+                android:layout_alignStart="@+id/phone_number_input"
+                android:layout_alignLeft="@+id/phone_number_input"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:text="@string/phone_error"
+                android:textColor="@color/verify_error" />
+
+            <Button
+                android:id="@+id/btn_submit"
+                style="@style/FirebaseUI.VerifyPhoneButton"
+                android:layout_below="@+id/phone_number_error"
+                android:layout_alignParentRight="true"
+                android:text="@string/verify_phone_number" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:id="@+id/layout_skip"
+        android:padding="16dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:gravity="center"
+            android:id="@+id/txt_skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/verify_skip"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/cancel" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/from"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/spaced_meshify"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>
