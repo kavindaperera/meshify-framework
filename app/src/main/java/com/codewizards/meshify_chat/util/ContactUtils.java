@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.utils;
+package com.codewizards.meshify_chat.util;
 
 import android.Manifest;
 import android.content.Context;

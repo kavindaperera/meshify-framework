@@ -1,24 +1,18 @@
 package com.codewizards.meshify_chat.service;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.Person;
 
-import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify_chat.main.MeshifyApp;
 import com.codewizards.meshify_chat.main.MeshifyConstants;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MeshifyNotifications {

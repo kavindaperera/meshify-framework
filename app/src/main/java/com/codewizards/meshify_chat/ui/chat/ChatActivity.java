@@ -22,8 +22,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
-import com.codewizards.meshify_chat.ui.home.MainActivity;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;

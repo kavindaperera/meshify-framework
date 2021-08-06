@@ -3,7 +3,7 @@ package com.codewizards.meshify_chat.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
 public class MeshifySession {
 

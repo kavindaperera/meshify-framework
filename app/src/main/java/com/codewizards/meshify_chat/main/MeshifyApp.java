@@ -9,7 +9,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.codewizards.meshify_chat.auth.MeshifySession;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
 public class MeshifyApp extends Application {
 

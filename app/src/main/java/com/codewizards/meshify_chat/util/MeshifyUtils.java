@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.utils;
+package com.codewizards.meshify_chat.util;
 
 import org.apache.commons.lang3.StringUtils;
 

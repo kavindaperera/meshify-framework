@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +20,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,14 +42,15 @@ import com.codewizards.meshify_chat.ui.about.AboutActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
+import com.codewizards.meshify_chat.util.ContactUtils;
 
 import java.util.HashMap;
 import java.util.List;
 
-import static com.codewizards.meshify_chat.utils.Constants.BROADCAST_CHAT;
-import static com.codewizards.meshify_chat.utils.Constants.PAYLOAD_DEVICE_NAME;
-import static com.codewizards.meshify_chat.utils.Constants.PAYLOAD_TEXT;
+import static com.codewizards.meshify_chat.util.Constants.BROADCAST_CHAT;
+import static com.codewizards.meshify_chat.util.Constants.PAYLOAD_DEVICE_NAME;
+import static com.codewizards.meshify_chat.util.Constants.PAYLOAD_TEXT;
 
 public class MainActivity extends AppCompatActivity {
 

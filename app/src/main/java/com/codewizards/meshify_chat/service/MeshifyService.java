@@ -7,22 +7,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.main.MeshifyApp;
 import com.codewizards.meshify_chat.main.MeshifyConstants;
 import com.codewizards.meshify_chat.ui.home.MainActivity;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
 import static android.content.Intent.FLAG_RECEIVER_FOREGROUND;
-import static com.codewizards.meshify_chat.utils.Constants.NOTIFICATION_CHANNEL;
+import static com.codewizards.meshify_chat.util.Constants.NOTIFICATION_CHANNEL;
 
 public class MeshifyService extends Service {
 

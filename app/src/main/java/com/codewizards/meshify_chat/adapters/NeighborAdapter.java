@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,10 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
-import com.codewizards.meshify_chat.utils.MeshifyUtils;
+import com.codewizards.meshify_chat.util.MeshifyUtils;
 
 import java.util.List;
 

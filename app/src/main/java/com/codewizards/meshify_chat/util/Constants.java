@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.utils;
+package com.codewizards.meshify_chat.util;
 
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";

@@ -1,13 +1,12 @@
 package com.codewizards.meshify_chat.ui.settings;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.utils.Constants;
+import com.codewizards.meshify_chat.util.Constants;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
