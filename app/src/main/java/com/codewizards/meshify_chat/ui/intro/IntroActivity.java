@@ -2,12 +2,12 @@ package com.codewizards.meshify_chat.ui.intro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -122,7 +122,7 @@ public class IntroActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == AUTHUI_REQUEST_CODE) {
-            if (requestCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 startActivity(new Intent(getApplicationContext(), SignupActivity.class));
                 finish();
                 return;
