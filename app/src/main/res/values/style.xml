@@ -352,4 +352,15 @@
         <item name="android:gravity">end|center_vertical</item>
         <item name="android:textIsSelectable">false</item>
     </style>
+
+    <style name="GreenTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/white</item>
+
+        <!-- On API 21+ you can use android:statusBarColor -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

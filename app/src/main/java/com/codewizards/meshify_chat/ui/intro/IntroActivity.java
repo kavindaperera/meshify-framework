@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,8 +19,11 @@ import com.codewizards.meshify_chat.main.MeshifyConstants;
 import com.codewizards.meshify_chat.ui.intro.onboarding.OnboardingAdapter;
 import com.codewizards.meshify_chat.ui.intro.onboarding.OnboardingItem;
 import com.codewizards.meshify_chat.ui.signup.SignupActivity;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,7 +38,7 @@ public class IntroActivity extends AppCompatActivity {
     ViewPager2 mViewPager;
     @BindView(R.id.onboardingIndicators)
     LinearLayout mIndicators;
-
+    int AUTHUI_REQUEST_CODE = 10001;
     private OnboardingAdapter onboardingAdapter;
 
     @Override
@@ -117,10 +121,19 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == -1) {
-            startActivity(new Intent(getApplicationContext(), SignupActivity.class));
-            finish();
-            return;
+        if (requestCode == AUTHUI_REQUEST_CODE) {
+            if (requestCode == RESULT_OK) {
+                startActivity(new Intent(getApplicationContext(), SignupActivity.class));
+                finish();
+                return;
+            }
+        } else {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (response == null) {
+                //Log
+            } else {
+                //Log
+            }
         }
     }
 
@@ -129,7 +142,21 @@ public class IntroActivity extends AppCompatActivity {
         if (mViewPager.getCurrentItem() + 1 < onboardingAdapter.getItemCount()) {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
         } else {
-            startActivityForResult(new Intent(getApplicationContext(), VerificationActivity.class), 1029);
+
+            List<AuthUI.IdpConfig> provider = Arrays.asList(
+                    new AuthUI.IdpConfig.PhoneBuilder().build()
+            );
+
+            Intent intent = AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(provider)
+                    .setTosAndPrivacyPolicyUrls("https://meshify.xyz/tos", "https://meshify.xyz/privacy-policy")
+                    .setLogo(R.drawable.ic_logo_grey)
+                    .setTheme(R.style.GreenTheme)
+                    .build();
+
+            startActivityForResult(intent, AUTHUI_REQUEST_CODE);
+
         }
     }
 }

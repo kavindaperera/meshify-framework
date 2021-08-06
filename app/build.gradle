@@ -45,6 +45,13 @@ dependencies {
     implementation "com.j256.ormlite:ormlite-android:5.5"
     implementation "com.j256.ormlite:ormlite-core:5.6"
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.28'
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
 
     // ViewPager2
@@ -70,3 +77,5 @@ dependencies {
     // Java language implementation
     implementation "androidx.fragment:fragment:$fragment_version"
 }
+
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
