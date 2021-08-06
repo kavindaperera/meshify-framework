@@ -28,6 +28,8 @@ public class BluetoothController {
 
     private ThreadServer threadServer;
 
+    private ThreadServer threadServerBle;
+
     private boolean isBLE = true;
 
     private BluetoothAdapter bluetoothAdapter;
@@ -170,7 +172,7 @@ public class BluetoothController {
                 break;
             }
             case BLUETOOTH_LE: {
-                //TODO - start BLE server
+                startBluetoothLeServer(context);
             }
         }
     }
@@ -188,6 +190,20 @@ public class BluetoothController {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0); //value 0 means 120 seconds discoverable duration
             getContext().startActivity(intent);
+        }
+    }
+
+    private void startBluetoothLeServer(Context context) {
+        if (this.isBLE && this.bluetoothAdapter.getBluetoothLeAdvertiser() != null) {
+            this.threadServerBle = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, true);
+            try {
+                this.threadServerBle.startServer();
+            }
+            catch (ConnectionException connectionException) {
+                Log.e(TAG, "startBluetoothLeServer:", connectionException);
+            }
+        } else {
+            //empty
         }
     }
 

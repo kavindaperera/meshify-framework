@@ -117,7 +117,8 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     @SuppressLint("MissingPermission")
     private void startServer() {
-        if (MeshifyUtils.getBluetoothAdapter(this.context).isEnabled()) {
+        BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(this.context);
+        if (bluetoothAdapter.isEnabled()) {
             try {
                 this.bluetoothController.startServer(this.context);
             } catch (ConnectionException e) {
