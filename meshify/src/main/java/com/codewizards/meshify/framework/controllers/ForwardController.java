@@ -24,7 +24,8 @@ public class ForwardController {
     ForwardController() {
     }
 
-    void startForwarding(MeshifyForwardEntity forwardEntity, boolean z) {
+    void addForwardEntitiesToList(MeshifyForwardEntity forwardEntity, boolean z) {
+
         if ( this.reachedNavigableMap.containsKey(forwardEntity.getId())) {
             return;
         }
@@ -34,6 +35,7 @@ public class ForwardController {
             }
             this.discardExpiredEntities(); //remove expire entities
             MeshifyForwardEntity forwardEntity1 = forwardEntity;
+
             if (forwardEntity1 != null) {
                 this.meshNavigableMap.put(forwardEntity1, true);
             } else {
@@ -123,16 +125,21 @@ public class ForwardController {
             if (this.reachedNavigableMap.containsKey(forwardEntity.getId()) || this.meshNavigableMap.containsKey(forwardEntity)) {
                 Log.e(TAG, "forwardAgain: Not forwarding duplicated or already reached entity " + forwardEntity);
             } else {
-                this.startForwarding(forwardEntity, false); //adding all message entities without start forwarding
+                this.addForwardEntitiesToList(forwardEntity, false); //adding all message entities without start forwarding
             }
         }
         this.sendEntity(SessionManager.getSessions(), false); //start forwarding all message entities
+    }
+
+    protected boolean forwardAgain(MeshifyForwardEntity forwardEntity) {
+        return this.reachedNavigableMap.containsKey(forwardEntity.getId()) || this.meshNavigableMap.containsKey(forwardEntity);
     }
 
     public void sendReach(MeshifyForwardEntity forwardEntity) {
         MeshifyEntity<MeshifyForwardTransaction> meshifyEntity = MeshifyEntity.reachMessage(forwardEntity.getId());
         for (Session session : SessionManager.getSessions()) {
             try {
+                Log.e(TAG, "sendReach: sending " + meshifyEntity);
                 MeshifyCore.sendEntity(session, meshifyEntity);
             }
             catch (Exception exception) {

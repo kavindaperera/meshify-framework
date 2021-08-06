@@ -38,5 +38,11 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="BasicEditText">
+        <item name="android:cursorVisible">true</item>
+        <item name="android:ems">10</item>
+        <item name="android:textCursorDrawable">@color/colorPrimary</item>
+        <item name="android:colorControlHighlight">@color/colorPrimary</item>
+    </style>
 
 </resources>

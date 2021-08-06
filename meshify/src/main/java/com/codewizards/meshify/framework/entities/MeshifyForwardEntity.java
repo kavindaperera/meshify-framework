@@ -7,10 +7,12 @@ import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.logs.Log;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class MeshifyForwardEntity implements Parcelable, Comparable {
 
     private static  int[] hopLimits = new int[]{ 50, 0};
+    private static int[] sharingTime = new int[]{15000, 10000};
 
     @JsonProperty(value="id")
     String id;
@@ -43,7 +46,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     @JsonProperty(value="mesh_type")
     int mesh_type;
 
-    public MeshifyForwardEntity(Message message,int mesh_type, ConfigProfile profile) {
+    @JsonIgnore
+    Date added;
+
+    public MeshifyForwardEntity(Message message, int mesh_type, ConfigProfile profile) {
         this.id = message.getUuid() == null ? UUID.randomUUID().toString() : message.getUuid();
         this.payload = message.getContent();
         this.sender = message.getSenderId();
@@ -52,6 +58,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.hops = this.getHopLimitForConfigProfile();
         this.profile = profile.ordinal();
         this.mesh_type = mesh_type;
+        this.added = new Date(System.currentTimeMillis());
     }
 
     protected MeshifyForwardEntity(Parcel in) {
@@ -63,6 +70,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.hops = in.readInt();
         this.profile = in.readInt();
         this.mesh_type = in.readInt();
+        this.added = new Date(in.readLong());
     }
 
     public static final Creator<MeshifyForwardEntity> CREATOR = new Creator<MeshifyForwardEntity>() {
@@ -92,6 +100,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         dest.writeInt(this.hops);
         dest.writeInt(this.profile);
         dest.writeInt(this.mesh_type);
+        if (this.added == null) {
+            this.added = new Date(System.currentTimeMillis());
+        }
+        dest.writeLong(this.added.getTime());
     }
 
     public String toString() {
@@ -170,8 +182,22 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
         this.profile = profile;
     }
 
+    @JsonIgnore
     public int getHopLimitForConfigProfile() {
         return hopLimits[this.profile];
+    }
+
+    @JsonIgnore
+    int getSharingTimeForConfigProfile() {
+        return sharingTime[this.profile] * 1000;
+    }
+
+    public void setAdded(Date added) {
+        this.added = added;
+    }
+
+    public Date getAdded() {
+        return this.added;
     }
 
     @Override
@@ -181,9 +207,13 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     }
 
     public boolean expired() {
-        Log.e("[Meshify]", "expired check: " + this.getId());
         if (this.getHops() <= 0) {
-            Log.i("[Meshify]", "expired because: " + this.getId() + " hops " + this.getHops());
+            Log.e("[Meshify]", "expired because: " + this.getId() + " hops " + this.getHops());
+            return true;
+        }
+        long period = new Date(System.currentTimeMillis()).getTime() - this.added.getTime();
+        if (period > (long) this.getSharingTimeForConfigProfile()) {
+            Log.e("[Meshify]", "expired because: " + this.getId() + " sharing period: " + period + " > " + this.getSharingTimeForConfigProfile() + " | profile : " + this.getProfile());
             return true;
         }
         return false;

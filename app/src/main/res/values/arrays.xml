@@ -1,8 +1,8 @@
 <resources>
     <!-- Profile Preference -->
     <string-array name="profile_entries">
-        <item>Default</item>
-        <item>Do not forward</item>
+        <item>Use Bluetooth for Forwarding</item>
+        <item>Do not Forward</item>
     </string-array>
 
     <string-array name="profile_values">

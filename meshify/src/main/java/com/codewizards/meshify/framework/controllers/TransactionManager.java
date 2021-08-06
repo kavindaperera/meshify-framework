@@ -34,7 +34,7 @@ public class TransactionManager {
         }
     }
 
-    private static void startInBackground() {
+    private static void startInBackground() { //for bluetooth
 
         Executor executor = command -> command.run();
 

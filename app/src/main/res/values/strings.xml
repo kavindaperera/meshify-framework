@@ -28,7 +28,7 @@
     <string name="settings_feedback_title">Send feedback</string>
     <string name="settings_messages_notifications_title">Enable message notifications</string>
     <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
-    <string name="settings_profile_title">Mesh Profile</string>
+    <string name="settings_profile_title">Forward Profile</string>
     <string name="sign_up_text">Welcome to Meshify!</string>
     <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
     <string name="user_entry">Type Here...</string>

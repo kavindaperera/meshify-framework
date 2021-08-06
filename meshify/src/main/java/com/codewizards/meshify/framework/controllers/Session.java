@@ -267,6 +267,8 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
 
 
+
+
                     if (forwardTransaction.getReach() != null || (forwardTransaction.getMesh() != null && forwardTransaction.getMesh().size() == 0) ) {
                         Meshify.getInstance()
                                 .getMeshifyCore()

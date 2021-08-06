@@ -1,7 +1,6 @@
 package com.codewizards.meshify.framework.controllers;
 
 import android.content.Context;
-import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
@@ -16,6 +15,7 @@ import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MessageController {
@@ -72,7 +72,15 @@ public class MessageController {
 
                 Message message = this.getMessageFromForwardEntity(forwardEntity);
                 if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {
+
+                    if (!this.forwardController.forwardAgain(forwardEntity)) {
+                        forwardEntity.setAdded(new Date(System.currentTimeMillis()));
+                        this.forwardController.addForwardEntitiesToList(forwardEntity, true);
+                    }
+
                     this.messageNotifier.onBroadcastMessageReceived(message);
+
+
                 }
 
             }
@@ -100,7 +108,7 @@ public class MessageController {
     }
 
     private void forward(MeshifyForwardEntity forwardEntity) {
-        this.forwardController.startForwarding(forwardEntity, true);
+        this.forwardController.addForwardEntitiesToList(forwardEntity, true);
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
@@ -111,7 +119,7 @@ public class MessageController {
         if (device != null) {
             this.sendMessage(context, message, device);
         } else if (profile != ConfigProfile.NoForwarding) {
-            Log.d(TAG, "Device not found. Forwarding the Message....");
+            Log.d(TAG, "Device unreachable. Forwarding the Message....");
             //TODO - Auto connect check
             this.forward(new MeshifyForwardEntity(message,0, profile));
             if (DeviceManager.getDeviceList().isEmpty()) {
@@ -138,7 +146,7 @@ public class MessageController {
     }
 
     void sendMessage(Message message, ConfigProfile profile) {
-        this.forwardController.startForwarding(new MeshifyForwardEntity(message,1, profile),true);
+        this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true);
     }
 
     public Config getConfig() {
