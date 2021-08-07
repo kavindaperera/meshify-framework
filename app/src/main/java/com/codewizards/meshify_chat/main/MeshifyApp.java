@@ -10,6 +10,10 @@ import androidx.annotation.RequiresApi;
 
 import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.util.Constants;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class MeshifyApp extends Application {
 
@@ -21,11 +25,17 @@ public class MeshifyApp extends Application {
 
     SharedPreferences sharedPreferences;
 
+    MeshifyFirebaseAuth meshifyFirebaseAuth;
+
     @Override
     public void onCreate() {
         super.onCreate();
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         meshifyApp = this;
+        FirebaseApp firebaseApp = FirebaseApp.initializeApp(getApplicationContext());
+        Objects.requireNonNull(firebaseApp);
+        FirebaseAuth.getInstance(firebaseApp);
+        meshifyFirebaseAuth = new MeshifyFirebaseAuth(getApplicationContext());
 
         if (this.sharedPreferences.getLong(Constants.PREFS_FIRST_DATE, 0) == 0) {
             this.sharedPreferences.edit().putLong(Constants.PREFS_FIRST_DATE, System.currentTimeMillis()).apply();
