@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.provider.Telephony;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.MeshifyException;
@@ -50,6 +51,11 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     private IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
+
+        if (this.config.isVerified()) { //Listen to SMS
+            this.addSmsActions(intentFilter);
+        }
+
         switch (this.config.getAntennaType()) {
             case BLUETOOTH: {
                 this.addBluetoothActions(intentFilter);
@@ -59,6 +65,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
                 this.addBleAction(intentFilter);
             }
         }
+
         return intentFilter;
     }
 
@@ -79,6 +86,11 @@ public class MeshifyReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void addSmsActions(IntentFilter intentFilter) {
+        intentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        intentFilter.addAction(Telephony.Sms.Intents.SMS_DELIVER_ACTION);
     }
 
     public void registerReceiver(Context context) {
@@ -148,7 +160,6 @@ public class MeshifyReceiver extends BroadcastReceiver {
     private void onBluetoothServerStop() {
 
     }
-
 
 
 }

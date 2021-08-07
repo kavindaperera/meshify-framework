@@ -1,13 +1,11 @@
 package com.codewizards.meshify_chat.ui.intro;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -76,12 +74,12 @@ public class IntroActivity extends AppCompatActivity {
 
         OnboardingItem itemOne = new OnboardingItem();
         itemOne.setTitle(getString(MeshifyConstants.string.onboarding_title_1));
-        itemOne.setDescription(getString(MeshifyConstants.string.dummy_text));
+        itemOne.setDescription(getString(MeshifyConstants.string.onboarding_description_1));
         itemOne.setImage(R.drawable.onboarding_1);
 
         OnboardingItem itemTwo = new OnboardingItem();
         itemTwo.setTitle(getString(MeshifyConstants.string.onboarding_title_2));
-        itemTwo.setDescription(getString(MeshifyConstants.string.dummy_text));
+        itemTwo.setDescription(getString(MeshifyConstants.string.onboarding_description_2));
         itemTwo.setImage(R.drawable.onboarding_2);
 
         onboardingItems.add(itemOne);
@@ -149,7 +147,7 @@ public class IntroActivity extends AppCompatActivity {
         NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 
-        if ((wifiConn!=null && wifiConn.isConnected()) || (mobileConn!=null && mobileConn.isConnected())){
+        if ((wifiConn != null && wifiConn.isConnected()) || (mobileConn != null && mobileConn.isConnected())) {
             return true;
         }
 
@@ -175,7 +173,7 @@ public class IntroActivity extends AppCompatActivity {
             Intent intent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setAvailableProviders(provider)
-                    .setTosAndPrivacyPolicyUrls("https://meshify.xyz/tos", "https://meshify.xyz/privacy-policy")
+                    .setTosAndPrivacyPolicyUrls("https://www.meshify.xyz/tos", "https://www.meshify.xyz/privacy-policy")
                     .setLogo(R.drawable.ic_logo_grey)
                     .setTheme(R.style.GreenTheme)
                     .build();

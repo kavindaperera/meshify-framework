@@ -12,6 +12,8 @@ public class MeshifyConstants {
         public static final int onboarding_title_1 = R.string.onboarding_title_1;
         public static final int onboarding_title_2 = R.string.onboarding_title_2;
         public static final int dummy_text = R.string.dummy_text;
+        public static final int onboarding_description_1 = R.string.onboarding_description_1;
+        public static final int onboarding_description_2 = R.string.onboarding_description_2;
     }
     public static final class drawable {
         public static final int mf = R.drawable.ic_notification;
