@@ -39,8 +39,8 @@
     <string name="username_text">Please select a nickname.</string>
     <string name="verify">Next</string>
     <string name="verify_phone_number">Verify Phone Number</string>
-    <string name="verify_hint">Verifying your phone number allows you to contact friend through SMS</string>
-    <string name="verify_title">Verify your phone number</string>
+    <string name="verify_hint">Verifying your phone number allows you to contact friend via SMS</string>
+    <string name="verify_title">Phone Verification</string>
     <string name="from">from</string>
     <string name="spaced_meshify">M E S H I F Y</string>
     <string name="phone_error">verification error</string>

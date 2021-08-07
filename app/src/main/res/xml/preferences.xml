@@ -14,7 +14,7 @@
 
     <Preference
         app:iconSpaceReserved="false"
-        app:title="@string/fui_verify_your_phone_title"
+        app:title="@string/verify_title"
         app:key="verification"
         app:summary="@string/verify_hint"
         />
