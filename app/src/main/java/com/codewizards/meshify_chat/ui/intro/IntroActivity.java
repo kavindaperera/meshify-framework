@@ -1,7 +1,12 @@
 package com.codewizards.meshify_chat.ui.intro;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
@@ -137,11 +143,30 @@ public class IntroActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo wifiConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+
+        if ((wifiConn!=null && wifiConn.isConnected()) || (mobileConn!=null && mobileConn.isConnected())){
+            return true;
+        }
+
+        return false;
+    }
+
     @OnClick({R.id.btn_verify})
     public void startVerification(View v) {
         if (mViewPager.getCurrentItem() + 1 < onboardingAdapter.getItemCount()) {
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
         } else {
+
+
+            if (!isConnected()) {
+                showConnectivityDialog();
+                return;
+            }
 
             List<AuthUI.IdpConfig> provider = Arrays.asList(
                     new AuthUI.IdpConfig.PhoneBuilder().build()
@@ -158,5 +183,14 @@ public class IntroActivity extends AppCompatActivity {
             startActivityForResult(intent, AUTHUI_REQUEST_CODE);
 
         }
+    }
+
+    private void showConnectivityDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(IntroActivity.this);
+        builder.setMessage("Meshify requires an active internet connection in the first time it is used.")
+                .setCancelable(false)
+                .setPositiveButton("Connect", (dialog, which) -> startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)))
+                .setNegativeButton("Cancel", (dialog, which) -> finish());
+        builder.show();
     }
 }

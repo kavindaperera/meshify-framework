@@ -6,8 +6,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.util.Constants;
+import com.firebase.ui.auth.data.model.PhoneNumber;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 public class MeshifyFirebaseAuth implements FirebaseAuth.AuthStateListener, FirebaseAuth.IdTokenListener {
 
@@ -18,6 +24,8 @@ public class MeshifyFirebaseAuth implements FirebaseAuth.AuthStateListener, Fire
     private FirebaseAuth firebaseAuth;
 
     protected SharedPreferences settings;
+
+    private PhoneNumber phoneNumber;
 
     public MeshifyFirebaseAuth(Context context) {
         this.context = context;
@@ -30,7 +38,16 @@ public class MeshifyFirebaseAuth implements FirebaseAuth.AuthStateListener, Fire
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        Log.e(TAG, "onAuthStateChanged:" + firebaseAuth.getCurrentUser().getPhoneNumber());
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser != null) {
+            String phoneNumber = firebaseUser.getPhoneNumber();
+            if (phoneNumber!=null && !phoneNumber.trim().equals("")){
+                MeshifySession.setPhoneNumber(phoneNumber);
+                this.settings.edit().putString(Constants.PREFS_USER_PHONE, phoneNumber).apply();
+            }
+        }
+
+
     }
 
     @Override
