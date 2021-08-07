@@ -111,6 +111,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 //        final ImageView mImageView;
         final TextView mInitialsTextView;
         final ImageView mPopupMenu;
+        final TextView mLastMsg;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
@@ -119,6 +120,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 //            mImageView = view.findViewById(R.id.neighborAvatar);
             mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
+            mLastMsg = view.findViewById(R.id.lastMessage);
 
             mPopupMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,11 +179,15 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             }
             if (neighbor.isNearby()) {
                 this.mContentView.setTextColor(Color.parseColor("#006257"));
+                this.mLastMsg.setTextColor(Color.GREEN);
+                this.mLastMsg.setText("Nearby");
 //                this.mImageView.setImageResource(R.drawable.ic_user_green);
                 ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor(MeshifyUtils.getRandomColor()));
 
             } else {
                 this.mContentView.setTextColor(Color.GRAY);
+                this.mLastMsg.setTextColor(Color.RED);
+                this.mLastMsg.setText("Not in Range");
 //                this.mImageView.setImageResource(R.drawable.ic_user_red);
                 ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.RED);
             }

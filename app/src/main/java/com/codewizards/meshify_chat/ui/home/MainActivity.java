@@ -1,11 +1,16 @@
 package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +50,7 @@ import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.codewizards.meshify_chat.util.ContactUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -135,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             super.onStartError(message, errorCode);
             hideProgressBar();
             if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS}, 0);
             }
         }
 
@@ -166,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceAddress() , Toast.LENGTH_SHORT).show();
 
         }
 
@@ -174,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceAddress(), Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -302,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startMeshify(); //start meshify again after permission is granted
         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {

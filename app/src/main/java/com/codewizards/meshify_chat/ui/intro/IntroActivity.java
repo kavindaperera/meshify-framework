@@ -190,7 +190,7 @@ public class IntroActivity extends AppCompatActivity {
         builder.setMessage("Meshify requires an active internet connection in the first time it is used.")
                 .setCancelable(false)
                 .setPositiveButton("Connect", (dialog, which) -> startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)))
-                .setNegativeButton("Cancel", (dialog, which) -> finish());
+                .setNegativeButton("Skip", (dialog, which) -> startActivity(new Intent(getApplicationContext(), SignupActivity.class)));
         builder.show();
     }
 }
