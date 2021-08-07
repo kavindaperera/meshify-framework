@@ -54,6 +54,8 @@ dependencies {
 
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
 
+    implementation 'com.annimon:stream:1.2.2'
+
     // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 

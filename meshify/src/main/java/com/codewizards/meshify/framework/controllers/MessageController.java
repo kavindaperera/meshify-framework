@@ -125,6 +125,8 @@ public class MessageController {
             if (DeviceManager.getDeviceList().isEmpty()) {
                 this.messageNotifier.onMessageFailed(message, new MessageException("No Nearby Neighbors found!"));
             }
+        } else if (profile == ConfigProfile.NoForwarding) {
+            this.messageNotifier.onMessageFailed(message, new MessageException("Change Forward Profile Settings to use Mesh Forwarding"));
         }
     }
 

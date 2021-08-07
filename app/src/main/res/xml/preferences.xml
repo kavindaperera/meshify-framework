@@ -35,6 +35,7 @@
         app:iconSpaceReserved="false"
         app:title="@string/settings_category_mesh_forwarding">
         <DropDownPreference
+            app:defaultValue="Default"
             app:entries="@array/profile_entries"
             app:entryValues="@array/profile_values"
             app:iconSpaceReserved="false"

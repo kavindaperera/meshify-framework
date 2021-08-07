@@ -17,6 +17,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
@@ -112,10 +113,11 @@ public class ChatActivity extends AppCompatActivity {
                 builder.setContent(content);
                 Meshify.sendBroadcastMessage(builder.build(), ConfigProfile.Default);
 
+
             } else {
                 com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
                 builder.setContent(content).setReceiverId(deviceId);
-                Meshify.sendMessage(builder.build(), ConfigProfile.Default);
+                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
             }
         }
     }
