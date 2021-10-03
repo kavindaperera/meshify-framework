@@ -19,6 +19,10 @@ public class MeshifyClient {
 
     private String secretKey;
 
+    private String phone;
+
+    private DeviceProfile deviceProfile;
+
     static class Builder {
 
         private SharedPreferences sharedPreferences;
@@ -33,11 +37,16 @@ public class MeshifyClient {
 
         private String secretKey;
 
+        private String phone = null;
+
+        private DeviceProfile deviceProfile;
+
         Builder(Context context) {
             if (context != null) {
                 Context applicationContext = context.getApplicationContext();
                 this.sharedPreferences = applicationContext.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);
                 this.editor = sharedPreferences.edit();
+                this.deviceProfile = new DeviceProfile(applicationContext);
                 return;
             }
             throw new IllegalArgumentException("Context can not be null.");
@@ -69,6 +78,11 @@ public class MeshifyClient {
             return this;
         }
 
+        public Builder setPhone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
         public MeshifyClient build() {
             this.editor.putString(MeshifyCore.PREFS_USER_UUID, this.userUuid);
             this.editor.apply();
@@ -78,6 +92,10 @@ public class MeshifyClient {
 
     public String getApiKey() {
         return this.apiKey;
+    }
+
+    public DeviceProfile getDeviceProfile() {
+        return deviceProfile;
     }
 
     public String getPublicKey() {
@@ -92,11 +110,17 @@ public class MeshifyClient {
         return this.userUuid;
     }
 
+    public String getPhone() {
+        return this.phone;
+    }
+
     private MeshifyClient(Builder builder) {
         this.userUuid = builder.userUuid;
         this.apiKey = builder.apiKey;
         this.publicKey = builder.publicKey;
         this.secretKey = builder.secretKey;
+        this.phone = builder.phone;
+        this.deviceProfile = builder.deviceProfile;
     }
 
 }
