@@ -28,9 +28,13 @@ public class BluetoothController {
 
     private ThreadServer threadServer;
 
+    private BluetoothLeDiscovery bluetoothLeDiscovery;
+
     private ThreadServer threadServerBle;
 
     private boolean isBLE = true;
+
+    private static GattManager gattManager;
 
     private BluetoothAdapter bluetoothAdapter;
 
@@ -63,6 +67,7 @@ public class BluetoothController {
             }
         } else {
             //BLE
+            gattManager = new GattManager();
         }
     }
 
@@ -140,7 +145,7 @@ public class BluetoothController {
                 break;
             }
             case BLUETOOTH_LE: {
-                //TODO - startBluetoothLeDiscovery
+                this.startBluetoothLeDiscovery(context);
             }
         }
     }
@@ -152,6 +157,22 @@ public class BluetoothController {
 
         if (!this.bluetoothDiscovery.isDiscoveryRunning()) {
             this.bluetoothDiscovery.startDiscovery(context, getConfig());
+        }
+    }
+
+    private void startBluetoothLeDiscovery(Context context) {
+        Log.d(TAG, "startBluetoothLeDiscovery:");
+        if (this.isBLE) {
+            if (this.bluetoothLeDiscovery == null) {
+                this.bluetoothLeDiscovery = new BluetoothLeDiscovery(context);
+            } else {
+                Log.w(TAG, "startBluetoothLeDiscovery: already exists");
+            }
+            if (!this.bluetoothLeDiscovery.isDiscoveryRunning()) {
+                this.bluetoothLeDiscovery.startDiscovery(context, this.getConfig());
+            } else {
+                Log.e(TAG, "startBluetoothLeDiscovery: discovery already running");
+            }
         }
     }
 
@@ -204,6 +225,7 @@ public class BluetoothController {
             }
         } else {
             //empty
+            state = 1;
         }
     }
 

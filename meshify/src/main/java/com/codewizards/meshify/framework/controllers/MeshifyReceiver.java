@@ -11,6 +11,7 @@ import android.os.Build;
 import android.provider.Telephony;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
@@ -161,5 +162,12 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     }
 
+    public void startAdvertising(Config.Antenna antenna) {
+        switch (antenna) {
+            case BLUETOOTH_LE: {
+//                this.bluetoothController.startAdvertising(Meshify.getInstance().getMeshifyClient().getUserUuid());
+            }
+        }
+    }
 
 }
