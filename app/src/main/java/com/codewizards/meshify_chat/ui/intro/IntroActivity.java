@@ -173,7 +173,7 @@ public class IntroActivity extends AppCompatActivity {
             Intent intent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setAvailableProviders(provider)
-                    .setTosAndPrivacyPolicyUrls("https://www.meshify.xyz/tos", "https://www.meshify.xyz/privacy-policy")
+                    .setTosAndPrivacyPolicyUrls(getString(MeshifyConstants.string.url_tos), getString(MeshifyConstants.string.url_privacy))
                     .setLogo(R.drawable.ic_logo_grey)
                     .setTheme(R.style.GreenTheme)
                     .build();
@@ -185,7 +185,7 @@ public class IntroActivity extends AppCompatActivity {
 
     private void showConnectivityDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(IntroActivity.this);
-        builder.setMessage("Meshify requires an active internet connection in the first time it is used.")
+        builder.setMessage(getString(MeshifyConstants.string.connectivity_dialog_text))
                 .setCancelable(false)
                 .setPositiveButton("Connect", (dialog, which) -> startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)))
                 .setNegativeButton("Skip", (dialog, which) -> startActivity(new Intent(getApplicationContext(), SignupActivity.class)));

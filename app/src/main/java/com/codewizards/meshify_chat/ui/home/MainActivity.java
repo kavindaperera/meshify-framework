@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -43,9 +44,14 @@ import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.codewizards.meshify_chat.util.Constants.BROADCAST_CHAT;
 import static com.codewizards.meshify_chat.util.Constants.PAYLOAD_DEVICE_NAME;
@@ -63,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
 
     private MainViewModel mainViewModel;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     MessageListener messageListener = new MessageListener() {
         @Override
@@ -118,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStarted() {
             super.onStarted();
+            Log.d(TAG, "onStarted:");
 //            showProgressBar();
         }
 
@@ -182,11 +192,60 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        ContactUtils contactUtils = new ContactUtils();
+//        try {
+//            Log.e(TAG, contactUtils.getPhonesNamesAndLabels("").toString());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        Cursor c = getContentResolver().query(
+//                ContactsContract.RawContacts.CONTENT_URI,
+//                new String[] { ContactsContract.RawContacts.CONTACT_ID, ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY },
+//                ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
+//                new String[] { "com.whatsapp" },
+//                null);
+//
+//        ArrayList<String> myWhatsappContacts = new ArrayList<String>();
+//        int contactNameColumn = c.getColumnIndex(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY);
+//        while (c.moveToNext())
+//        {
+//            // You can also read RawContacts.CONTACT_ID to read the
+//            // ContactsContract.Contacts table or any of the other related ones.
+//            myWhatsappContacts.add(c.getString(contactNameColumn));
+//        }
+//
+//        Log.e(TAG, myWhatsappContacts.toString());
+
+//        String accountType = "com.codewizards.meshify";
+//        String accountName = "Meshify";
+//
+//        ContentValues values = new ContentValues();
+//        values.put(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType);
+//        values.put(ContactsContract.RawContacts.ACCOUNT_NAME, accountName);
+//        Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, values);
+//        long rawContactId = ContentUris.parseId(rawContactUri);
+//
+//        values.clear();
+//        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+//        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+//        values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "Mike Sullivan");
+//        getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
+
+
         if (MeshifySession.isLoggedIn()) {
             init(savedInstanceState);
             return;
         }
+
         showSplashActivity();
+
+    }
+
+    @OnClick(R.id.fab)
+    public void newConversation(View v) {
+        Log.e(TAG, "New Conversation Activity");
     }
 
     private void showSplashActivity() {
@@ -196,6 +255,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void init(Bundle bundle) {
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
 
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 

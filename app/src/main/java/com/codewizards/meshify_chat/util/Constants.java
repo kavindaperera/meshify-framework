@@ -19,5 +19,5 @@ public class Constants {
     public static final String PREFS_USER_UUID = "user_uuid";
     public static final String PREFS_NOTIFICATION_ENABLED = "settings_notifications_enabled";
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
-
+    public static final String DATABASE_PASSWORD = "database_password";
 }
