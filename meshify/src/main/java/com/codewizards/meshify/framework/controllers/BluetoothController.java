@@ -14,6 +14,8 @@ import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 
+import java.io.IOException;
+
 public class BluetoothController {
 
     private static String TAG = "[Meshify][BluetoothController]";
@@ -83,6 +85,47 @@ public class BluetoothController {
         }
     }
 
+    public boolean startAdvertising(String string) throws IllegalStateException {
+
+        if (state != 3) {
+            try {
+                Thread.sleep(200L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            try {
+
+                if (this.bluetoothAdapter != null && this.bluetoothAdapter.getBluetoothLeAdvertiser() != null && this.threadServerBle != null && this.threadServerBle.getServerSocket() != null ) {
+                    Log.d(TAG, "startAdvertising:");
+
+                    // TODO
+
+                    state = 3;
+                    return true;
+                }
+
+                state = 1;
+                return false;
+            }
+            catch (IllegalStateException il) {
+                state = 0;
+                return  false;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+
+        }
+
+        Log.e(TAG, "startAdvertising: advertising already running");
+        return false;
+
+    }
+
+
+
     private void disconnectDevices() {
         switch (this.getConfig().getAntennaType()) {
             case BLUETOOTH: {
@@ -102,6 +145,7 @@ public class BluetoothController {
                 case BluetoothAdapter.STATE_ON: {
                     try {
                         this.startServer(context.getApplicationContext());
+                        // TODO
                     } catch (ConnectionException e) {
                         e.printStackTrace();
                     }
@@ -223,6 +267,17 @@ public class BluetoothController {
             catch (ConnectionException connectionException) {
                 Log.e(TAG, "startBluetoothLeServer:", connectionException);
             }
+            try {
+                Thread.sleep(500L);
+            }
+            catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
+
+            String string = Meshify.getInstance().getMeshifyClient().getUserUuid();
+
+            this.startAdvertising(string);
+
         } else {
             //empty
             state = 1;
