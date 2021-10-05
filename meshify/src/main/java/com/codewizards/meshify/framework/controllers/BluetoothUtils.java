@@ -4,7 +4,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanSettings;
 import android.os.Build;
 import android.os.ParcelUuid;
-import android.util.Log;
 
 import com.codewizards.meshify.client.Meshify;
 
@@ -59,6 +58,42 @@ public class BluetoothUtils {
         messageDigest.reset();
         return arrby;
     }
+
+
+    static List<ScanFilter> getBluetoothLeScanFilter() {
+        ArrayList<ScanFilter> arrayList = new ArrayList<ScanFilter>();
+        ScanFilter.Builder builder = new ScanFilter.Builder();
+        builder.setServiceUuid(new ParcelUuid(BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect())));
+        arrayList.add(builder.build());
+        builder = new ScanFilter.Builder();
+        builder.setServiceData(new ParcelUuid(BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect())), null);
+        arrayList.add(builder.build());
+        return arrayList;
+    }
+
+    static UUID getHashedBluetoothLeUuid(boolean bl) {
+        UUID uUID = UUID.fromString(Meshify.getInstance().getMeshifyClient().getApiKey());
+        UUID uUID2 = UUID.fromString("00000000-0000-4000-8000-9cf178c472fc"); // TODO - Change this is production
+        byte[] arrby = BluetoothUtils.getSignificantBits(uUID2.toString());
+        byte[] arrby2 = Arrays.copyOfRange(BluetoothUtils.getSHA(uUID.toString()), 0, 16);
+        arrby[2] = arrby2[arrby2.length - 2];
+        arrby[3] = (byte)(bl ? 255 : 238);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(arrby);
+        long l2 = byteBuffer.getLong();
+        long l3 = byteBuffer.getLong();
+        UUID uUID3 = new UUID(l2, l3);
+        return uUID3;
+    }
+
+    static byte[] getSignificantBits(String string) {
+        UUID uUID = UUID.fromString(string);
+        byte[] arrby = new byte[16];
+        ByteBuffer.wrap(arrby).putLong(uUID.getMostSignificantBits()).putLong(uUID.getLeastSignificantBits());
+        return arrby;
+    }
+
+
+
 
 
 
