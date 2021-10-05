@@ -20,8 +20,9 @@ public class BluetoothUtils {
 
     private static String TAG = "[Meshify][BluetoothUtils]";
 
-
     private static UUID uuidBluetooth;
+
+    private static UUID uuidCharacteristic;
 
     static UUID getBluetoothUuid() {
         if (uuidBluetooth == null) {
@@ -92,9 +93,17 @@ public class BluetoothUtils {
         return arrby;
     }
 
+    static ScanSettings getScanSettings() {
+        ScanSettings.Builder builder = new ScanSettings.Builder();
+        if (Build.VERSION.SDK_INT >= 23) {
+            builder.setNumOfMatches(1);
+        }
 
+        // TODO - [kavinda] - add switch case for energy saving mode
 
+        builder.setScanMode(1); // SCAN_MODE_BALANCED
 
-
+        return builder.build();
+    }
 
 }
