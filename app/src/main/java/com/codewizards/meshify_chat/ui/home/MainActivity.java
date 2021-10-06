@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
     private void startMeshify() {
 
         Config.Builder builder = new Config.Builder();
-        builder.setAntennaType(Config.Antenna.BLUETOOTH);
+        builder.setAntennaType(Config.Antenna.BLUETOOTH_LE);
         builder.setVerified(MeshifySession.isVerified());
         builder.setAutoConnect(false);
 
