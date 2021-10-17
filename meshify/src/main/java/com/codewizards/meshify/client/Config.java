@@ -59,7 +59,7 @@ public class Config {
 
     public static final class Builder {
 
-        private boolean isEncryption = true;
+        private boolean isEncryption = false;
 
         private boolean isVerified = false;
 
