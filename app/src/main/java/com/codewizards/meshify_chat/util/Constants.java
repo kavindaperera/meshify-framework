@@ -11,6 +11,7 @@ public class Constants {
     public static final String MESHIFY_APP_FOREGROUND = "com.codewizards.meshify.main.service.foreground";
     public static final String MESHIFY_STOP = "com.codewizards.meshify.main.service.stop";
     public static final String PAYLOAD_DEVICE_NAME = "device_name";
+    public static final String PAYLOAD_DEVICE_NEIGHBORS = "device_neighbors";
     public static final String PAYLOAD_TEXT = "text";
     public static final String PREFS_NAME = "com.codewizards.meshify.app";
     public static final String PREFS_FIRST_DATE = "first_date";

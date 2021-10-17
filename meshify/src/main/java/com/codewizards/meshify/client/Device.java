@@ -25,6 +25,8 @@ public class Device implements Parcelable {
 
     private String sessionId;
 
+    private String rssi;
+
     public Device() {
     }
 

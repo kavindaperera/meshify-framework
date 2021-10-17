@@ -19,6 +19,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         }
     }
 
-    private int getNeighborPosition(String neighborId) {
+    public int getNeighborPosition(String neighborId) {
         for (int i = 0; i < neighbors.size(); i++) {
             if (neighbors.get(i).getUuid().equals(neighborId))
                 return i;
@@ -96,6 +97,10 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 
     public Neighbor getNeighborAt(int position) {
         return neighbors.get(position);
+    }
+
+    public String getAllNeighbors() {
+        return new Gson().toJson(this.neighbors);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
