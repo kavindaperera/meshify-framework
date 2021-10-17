@@ -3,6 +3,10 @@ package com.codewizards.meshify.framework.controllers;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.le.AdvertiseCallback;
+import android.bluetooth.le.AdvertiseData;
+import android.bluetooth.le.AdvertiseSettings;
+import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -20,7 +24,7 @@ public class BluetoothController {
 
     private static String TAG = "[Meshify][BluetoothController]";
 
-    static int state = 0;
+    static int state = 0; // BLE Advertising state
 
     private Config config;
 
@@ -34,7 +38,7 @@ public class BluetoothController {
 
     private ThreadServer threadServerBle;
 
-    private boolean isBLE = true;
+    private boolean isBLE = true; // BLE support check
 
     private static GattManager gattManager;
 
@@ -80,7 +84,7 @@ public class BluetoothController {
         if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE && Meshify.getInstance().getConfig().getAntennaType() == Config.Antenna.BLUETOOTH) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             getContext().startActivity(intent);
         }
     }
@@ -253,7 +257,7 @@ public class BluetoothController {
         if (this.bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) { //get discoverable permissions
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0); //value 0 means 120 seconds discoverable duration
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300); //value 0 means 120 seconds discoverable duration
             getContext().startActivity(intent);
         }
     }
@@ -324,8 +328,9 @@ public class BluetoothController {
                 this.bluetoothDiscovery.DiscoveryFinishedAction(context);
                 break;
             case BluetoothDevice.ACTION_FOUND:
-                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int  rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
+                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress() + " | RSSI: " + rssi + "dBm");
                 this.bluetoothDiscovery.addBluetoothDevice(intent);
                 break;
             case BluetoothDevice.ACTION_UUID:

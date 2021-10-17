@@ -18,7 +18,7 @@ public class ForwardController {
 
     public final String TAG = "[Meshify][ForwardController]";
 
-    private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>();
+    private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>(); // DD Cache
     private ConcurrentNavigableMap<String, Boolean> reachedNavigableMap = new ConcurrentSkipListMap<String, Boolean>();
 
     ForwardController() {
@@ -26,24 +26,62 @@ public class ForwardController {
 
     void addForwardEntitiesToList(MeshifyForwardEntity forwardEntity, boolean z) {
 
-        if ( this.reachedNavigableMap.containsKey(forwardEntity.getId())) {
+        if ( this.reachedNavigableMap.containsKey(forwardEntity.getId())) { // check already in the reached list
             return;
         }
+
         synchronized (meshNavigableMap) {
+
             if (this.checkAvailability(forwardEntity) != null) {
+                Log.e(TAG, "Forward Entity already in the mesh map");
                 return;
             }
+
             this.discardExpiredEntities(); //remove expire entities
-            MeshifyForwardEntity forwardEntity1 = forwardEntity;
+
+            MeshifyForwardEntity forwardEntity1 = null;
+
+            if (this.meshNavigableMap.size() < 10) { // DD Cache
+
+                forwardEntity1 = forwardEntity;
+
+            } else {
+
+                MeshifyForwardEntity forwardEntity2 = null;
+
+                for (MeshifyForwardEntity forwardEntity3 : this.meshNavigableMap.descendingKeySet()) {
+                    if (forwardEntity2 == null) {
+                        forwardEntity2 = forwardEntity3;
+                        continue;
+                    }
+
+                    if (forwardEntity2.getAdded().getTime() <= forwardEntity3.getAdded().getTime()) continue;
+
+                    forwardEntity2 = forwardEntity3;
+
+                }
+
+                if (forwardEntity2.getAdded().getTime() < forwardEntity.getAdded().getTime()) {
+
+                    this.meshNavigableMap.remove(forwardEntity2); // delete oldest entity
+
+                    forwardEntity1 = forwardEntity;
+
+                }
+
+            }
 
             if (forwardEntity1 != null) {
                 this.meshNavigableMap.put(forwardEntity1, true);
             } else {
                 this.reachedNavigableMap.put(forwardEntity1.getId(), Boolean.TRUE);
             }
+
         }
         if (z) {
-            this.sendEntity(SessionManager.getSessions(), false);
+
+            this.sendEntity(SessionManager.getSessions(), false); // forward to all available neighbors
+
         } 
     }
 
@@ -140,7 +178,7 @@ public class ForwardController {
         for (Session session : SessionManager.getSessions()) {
             try {
                 Log.e(TAG, "sendReach: sending " + meshifyEntity);
-                MeshifyCore.sendEntity(session, meshifyEntity);
+                MeshifyCore.sendEntity(session, meshifyEntity); // sending reached message
             }
             catch (Exception exception) {
                 Log.e(TAG, "sendReach: Error sending reach message", exception);
@@ -170,7 +208,7 @@ public class ForwardController {
                     if (list.size() > 0 || this.z) {
                         MeshifyEntity<MeshifyForwardTransaction> meshifyEntity = MeshifyEntity.meshMessage((ArrayList)list, Meshify.getInstance().getMeshifyClient().getUserUuid());
                         try {
-                            MeshifyCore.sendEntity(session, meshifyEntity);
+                            MeshifyCore.sendEntity(session, meshifyEntity); // forwarding message
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

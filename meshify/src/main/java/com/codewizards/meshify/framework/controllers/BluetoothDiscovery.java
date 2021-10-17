@@ -12,6 +12,7 @@ import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.DeviceProfile;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.logs.Log;
 
@@ -121,6 +122,9 @@ public class BluetoothDiscovery extends Discovery {
             if (!this.discoveredDevices.isEmpty()) {
 
                 Log.v(TAG, "fetchUuidsWithSdp() from " + this.discoveredDevices.size() + " discovered devices:");
+
+                Log.e(TAG, "MaxConnections allowed: " + DeviceProfile.getMaxConnectionsForDevice());
+
                 for (BluetoothDevice bluetoothDevice : this.discoveredDevices) {
                     new ScheduledThreadPoolExecutor(1).schedule(() -> {
                         this.removeDevice(bluetoothDevice);
@@ -173,10 +177,14 @@ public class BluetoothDiscovery extends Discovery {
             Device device = new Device(bluetoothDevice, isBLE);
             this.devices.addIfAbsent(device);
 
+
+
             if (z) {
+
                 DeviceManager.addDevice(device);
                 this.addIfAbsentConfirmed(bluetoothDevice);
                 this.emitter.onNext(device); //notify connection subscriber
+
             } else if (!z && !isBLE) {
                 this.addIfAbsentDiscovered(bluetoothDevice);
             }
@@ -184,7 +192,7 @@ public class BluetoothDiscovery extends Discovery {
     }
 
     void addIfAbsentConfirmed(BluetoothDevice bluetoothDevice) {
-        Log.d(TAG, "addDevice: " + bluetoothDevice + " to confirmedBluetoothDevices" );
+        Log.d(TAG, "addDevice: " + bluetoothDevice + " to confirmedBluetoothDevices");
         this.confirmedBluetoothDevices.addIfAbsent(bluetoothDevice);
     }
 
