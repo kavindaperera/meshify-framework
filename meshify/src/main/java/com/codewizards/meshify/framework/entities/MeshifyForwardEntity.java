@@ -3,6 +3,8 @@ package com.codewizards.meshify.framework.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
@@ -204,6 +206,15 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     public int compareTo(Object object) {
         MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) object;
         return ("" + forwardEntity.getCreatedAt()).compareTo("" + this.getCreatedAt());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof MeshifyForwardEntity) {
+            MeshifyForwardEntity forwardEntity = (MeshifyForwardEntity) obj;
+            return forwardEntity.getId().trim().equalsIgnoreCase(this.getId().trim());
+        }
+        throw new IllegalArgumentException(obj.getClass().getCanonicalName() + " is not a instance of " + this.getClass().getName());
     }
 
     public boolean expired() {

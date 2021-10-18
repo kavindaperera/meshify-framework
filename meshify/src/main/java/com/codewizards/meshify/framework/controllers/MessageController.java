@@ -48,8 +48,10 @@ public class MessageController {
             for (MeshifyForwardEntity forwardEntity : mesh) {
                 forwardEntity.decreaseHops();
                 if (forwardEntity.getMeshType() == 0) {
-                    if (forwardEntity.getReceiver() != null && forwardEntity.getReceiver().trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){
+                    if (forwardEntity.getReceiver() != null && forwardEntity.getReceiver().trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){ // msg to me
+
                         Message message = this.getMessageFromForwardEntity(forwardEntity);
+
                         if (message != null && message.getContent() == null) {
                             //Error Message
                         } else {
@@ -73,9 +75,11 @@ public class MessageController {
                 Message message = this.getMessageFromForwardEntity(forwardEntity);
                 if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {
 
+                    Log.e(TAG, "Broadcasting");
+
                     if (!this.forwardController.forwardAgain(forwardEntity)) {
                         forwardEntity.setAdded(new Date(System.currentTimeMillis()));
-                        this.forwardController.addForwardEntitiesToList(forwardEntity, true);
+                        this.forwardController.addForwardEntitiesToList(forwardEntity, true); // broadcasting
                     }
 
                     this.messageNotifier.onBroadcastMessageReceived(message);
@@ -86,8 +90,10 @@ public class MessageController {
             }
 
             if (!entityArrayList.isEmpty()){
+
                 Log.e(TAG, "incomingMeshMessageAction: forwarding again....");
                 this.forwardController.forwardAgain(entityArrayList, session);
+
             }
 
         }
@@ -101,6 +107,8 @@ public class MessageController {
                 true,
                 forwardEntity.getHops());
 
+        message.setDateSent(forwardEntity.getCreatedAt());
+
         if (forwardEntity.getId() != null) {
             message.setUuid(forwardEntity.getId());
         }
@@ -108,7 +116,7 @@ public class MessageController {
     }
 
     private void forward(MeshifyForwardEntity forwardEntity) {
-        this.forwardController.addForwardEntitiesToList(forwardEntity, true);
+        this.forwardController.addForwardEntitiesToList(forwardEntity, true); // add and send
     }
 
     void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
@@ -119,12 +127,14 @@ public class MessageController {
         if (device != null) {
             this.sendMessage(context, message, device);
         } else if (profile != ConfigProfile.NoForwarding) {
-            Log.d(TAG, "Device unreachable. Forwarding the Message....");
+            Log.d(TAG, "Device not in range. Forwarding the Message....");
             //TODO - Auto connect check
             this.forward(new MeshifyForwardEntity(message,0, profile));
+
             if (DeviceManager.getDeviceList().isEmpty()) {
                 this.messageNotifier.onMessageFailed(message, new MessageException("No Nearby Neighbors found!"));
             }
+
         } else if (profile == ConfigProfile.NoForwarding) {
             this.messageNotifier.onMessageFailed(message, new MessageException("Change Forward Profile Settings to use Mesh Forwarding"));
         }
@@ -137,7 +147,7 @@ public class MessageController {
         }
         if (session != null) {
             try {
-                MeshifyCore.sendEntity(session, MeshifyEntity.message(message));
+                MeshifyCore.sendEntity(session, MeshifyEntity.message(message)); // send message
             } catch (MessageException e) {
                 e.printStackTrace();
             } catch (IOException ioException) {
@@ -148,7 +158,7 @@ public class MessageController {
     }
 
     void sendMessage(Message message, ConfigProfile profile) {
-        this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true);
+        this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true); // add broadcast message and send
     }
 
     public Config getConfig() {

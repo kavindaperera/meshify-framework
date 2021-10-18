@@ -3,6 +3,8 @@ package com.codewizards.meshify.client;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -162,6 +164,14 @@ public class Message implements Parcelable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj != null && obj instanceof Message) {
+            return ((Message) obj).getUuid() != null && ((Message) obj).getUuid().trim().equalsIgnoreCase(this.getUuid().trim());
+        }
+        throw new IllegalArgumentException(obj.getClass().getCanonicalName() + " is not a instance of " + Message.class.getName());
     }
 
     @Override
