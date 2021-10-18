@@ -72,12 +72,17 @@ public class ForwardController {
             }
 
             if (forwardEntity1 != null) {
+
                 this.meshNavigableMap.put(forwardEntity1, true);
+
             } else {
-                this.reachedNavigableMap.put(forwardEntity1.getId(), Boolean.TRUE);
+
+                this.reachedNavigableMap.put(forwardEntity.getId(), Boolean.TRUE);
+
             }
 
         }
+        
         if (z) {
 
             this.sendEntity(SessionManager.getSessions(), false); // forward to all available neighbors
