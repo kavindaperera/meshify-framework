@@ -24,6 +24,8 @@
     <string name="placeholder_last_message">Near by</string>
     <string name="placeholder_message">Hello Placeholder Message</string>
     <string name="powered_by">Powered by Meshify</string>
+    <string name="save">Save</string>
+    <string name="selected_avatar_description">Current selected user avatar</string>
     <string name="settings">Settings</string>
     <string name="settings_category_account">ACCOUNT</string>
     <string name="settings_category_help">HELP</string>

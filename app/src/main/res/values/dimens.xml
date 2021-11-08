@@ -15,4 +15,29 @@
     <dimen name="fui_button_inset_right">2dp</dimen>
 
     <dimen name="fui_min_height_target">48dp</dimen>
+
+
+    <dimen name="meshify_margin_mini">4dp</dimen>
+    <dimen name="meshify_margin_small">8dp</dimen>
+    <dimen name="meshify_margin_medium">16dp</dimen>
+    <dimen name="meshify_margin_large">24dp</dimen>
+    <dimen name="meshify_margin_extra_large">32dp</dimen>
+    <dimen name="meshify_square_avatar">40dp</dimen>
+
+
+    <dimen name="elevation_card">1dp</dimen>
+    <dimen name="elevation_refresh_indicator">3dp</dimen>
+    <dimen name="elevation_app_bar">4dp</dimen>
+    <dimen name="elevation_snack_bar">6dp</dimen>
+    <dimen name="elevation_bottom_nav">8dp</dimen>
+
+    <dimen name="onboarding_textedit_vertical_offset">124dp</dimen>
+
+    <dimen name="choose_avatar_height_header">152dp</dimen>
+    <dimen name="choose_avatar_square_header_image">96dp</dimen>
+
+
+
+
+
 </resources>
