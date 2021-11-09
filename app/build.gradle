@@ -63,9 +63,9 @@ dependencies {
     def arch_version = "2.1.0"
 
     // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+//    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // Annotation processor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
@@ -78,6 +78,32 @@ dependencies {
 
     // Java language implementation
     implementation "androidx.fragment:fragment:$fragment_version"
+
+    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
+
+    // Room components
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
+
+    // UI
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
+
+    // Testing
+    testImplementation "junit:junit:$rootProject.junitVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
+    androidTestImplementation ("androidx.test.espresso:espresso-core:$rootProject.espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
+
+
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Services plugin
