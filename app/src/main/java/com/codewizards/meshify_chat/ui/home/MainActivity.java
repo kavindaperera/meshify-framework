@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -82,42 +81,38 @@ public class MainActivity extends AppCompatActivity {
             super.onMessageReceived(message);
 
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
-//                Neighbor neighbor = new Neighbor(message.getSenderId(),(String) message.getContent().get(PAYLOAD_DEVICE_NAME));
-//                neighbor.setNearby(true);
-//                neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-//                adapter.addNeighbor(neighbor);
                 String senderId = message.getSenderId();
                 String userName = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
                 adapter.updateNeighbor(senderId, userName);
 
                 hideProgressBar();
 
-                HashMap<String, Object> neighbors = new HashMap<>();
-                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
-                Message.Builder builder = new Message.Builder();
-                builder.setContent(neighbors).setReceiverId(senderId);
-                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
+//                HashMap<String, Object> neighbors = new HashMap<>();
+//                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
+//                Message.Builder builder = new Message.Builder();
+//                builder.setContent(neighbors).setReceiverId(senderId);
+//                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
 
-            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
-
-                String senderId = message.getSenderId();
-                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
-
-                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
-
-                for (Neighbor neighbor : neighbors) {
-
-                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
-
-                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDeviceName());
-                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDeviceName());
-                        neighbor_ind.setNearby(false);
-                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
-                        neighbor_ind.setDevice(neighbor.getDevice());
-                        adapter.addNeighbor(neighbor_ind);
-
-                    }
-                }
+//            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
+//
+//                String senderId = message.getSenderId();
+//                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
+//
+//                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
+//
+//                for (Neighbor neighbor : neighbors) {
+//
+//                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
+//
+//                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDevice_name());
+//                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDevice_name());
+//                        neighbor_ind.setNearby(false);
+//                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
+//                        neighbor_ind.setDevice(neighbor.getDevice());
+//                        adapter.addNeighbor(neighbor_ind);
+//
+//                    }
+//                }
 
             } else {
                 String text = (String) message.getContent().get("text");
@@ -157,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         public void onStarted() {
             super.onStarted();
             Log.d(TAG, "onStarted:");
-//            showProgressBar();
         }
 
 
@@ -204,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceAddress() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
 
         }
 
@@ -212,7 +206,8 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceAddress(), Toast.LENGTH_SHORT).show();
+            mainViewModel.updateNearby(device.getUserId());
+            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -221,47 +216,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        ContactUtils contactUtils = new ContactUtils();
-//        try {
-//            Log.e(TAG, contactUtils.getPhonesNamesAndLabels("").toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        Cursor c = getContentResolver().query(
-//                ContactsContract.RawContacts.CONTENT_URI,
-//                new String[] { ContactsContract.RawContacts.CONTACT_ID, ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY },
-//                ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
-//                new String[] { "com.whatsapp" },
-//                null);
-//
-//        ArrayList<String> myWhatsappContacts = new ArrayList<String>();
-//        int contactNameColumn = c.getColumnIndex(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY);
-//        while (c.moveToNext())
-//        {
-//            // You can also read RawContacts.CONTACT_ID to read the
-//            // ContactsContract.Contacts table or any of the other related ones.
-//            myWhatsappContacts.add(c.getString(contactNameColumn));
-//        }
-//
-//        Log.e(TAG, myWhatsappContacts.toString());
-
-//        String accountType = "com.codewizards.meshify";
-//        String accountName = "Meshify";
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType);
-//        values.put(ContactsContract.RawContacts.ACCOUNT_NAME, accountName);
-//        Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, values);
-//        long rawContactId = ContentUris.parseId(rawContactUri);
-//
-//        values.clear();
-//        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-//        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-//        values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "Mike Sullivan");
-//        getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-
 
         if (MeshifySession.isLoggedIn()) {
             init(savedInstanceState);
@@ -286,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         /*Configure the Toolbar*/
@@ -296,10 +249,11 @@ public class MainActivity extends AppCompatActivity {
 
         /*ViewModel*/
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        mainViewModel.init();
-        mainViewModel.getNeighbors().observe(this, new Observer<List<Neighbor>>() {
+
+        mainViewModel.getAllNeighbors().observe(this, new Observer<List<Neighbor>>() {
             @Override
             public void onChanged(List<Neighbor> neighbors) {
+                adapter.setNeighbors(neighbors);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -307,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progress_bar);
 
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
-        adapter = new NeighborAdapter(this, mainViewModel.getNeighbors().getValue());
+        adapter = new NeighborAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -318,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         startMeshify();
 
         adapter.setOnItemClickListener(neighbor -> startActivity(new Intent(getApplicationContext(), ChatActivity.class)
-                .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
+                .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDevice_name())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
     }
 

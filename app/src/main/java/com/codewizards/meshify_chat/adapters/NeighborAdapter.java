@@ -3,6 +3,7 @@ package com.codewizards.meshify_chat.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,29 +11,38 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
+import com.codewizards.meshify_chat.ui.home.MainViewModel;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.NeighborViewHolder> {
 
-    private final List<Neighbor> neighbors;
+    private List<Neighbor> neighbors;
     private Context context;
+    private MainViewModel mainViewModel;
 
     private OnItemClickListener listener;
 
-    public NeighborAdapter(Context context, List<Neighbor> neighbors) {
-        this.neighbors = neighbors;
+    public NeighborAdapter(Context context) {
+        this.neighbors = new ArrayList<>();
         this.context = context;
+
+        mainViewModel =  new ViewModelProvider((ViewModelStoreOwner) context).get(MainViewModel.class);
+
     }
 
     @NonNull
@@ -99,6 +109,17 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         return neighbors.get(position);
     }
 
+    public void setNeighbors(List<Neighbor> newData) {
+        if (neighbors != null) {
+            neighbors.clear();
+            neighbors.addAll(newData);
+            notifyDataSetChanged();
+        } else {
+            // first initialization
+            neighbors = newData;
+        }
+    }
+
     public String getAllNeighbors() {
         return new Gson().toJson(this.neighbors);
     }
@@ -138,6 +159,8 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                             switch (item.getItemId()){
                                 case R.id.action_popup_save:
                                     // call method to save
+                                    mainViewModel.insert(neighbor);
+                                    Toast.makeText(context, "Saved " + neighbor.getDevice_name() + " to contacts", Toast.LENGTH_LONG).show();
                                     return true;
                                 case R.id.action_popup_disconnect:{
                                     Device device = neighbor.getDevice();
@@ -153,6 +176,11 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                     }
                                     return true;
                                 }
+                                case R.id.action_popup_remove:
+                                    // call method to save
+                                    mainViewModel.delete(neighbor);
+                                    Toast.makeText(context,  "Removed " + neighbor.getDevice_name() + " from contacts", Toast.LENGTH_LONG).show();
+                                    return true;
                                 default:
                                     return false;
                             }
@@ -177,8 +205,8 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             this.neighbor = neighbor;
             switch (neighbor.getDeviceType()) {
                 case ANDROID:
-                    this.mContentView.setText(neighbor.getDeviceName());
-                    this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDeviceName()));
+                    this.mContentView.setText(neighbor.getDevice_name());
+                    this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDevice_name()));
 //                    ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor("#006257"));
                     break;
             }
