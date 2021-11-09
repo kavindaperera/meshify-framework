@@ -9,4 +9,7 @@
     <item
         android:id="@+id/action_popup_disconnect"
         android:title="@string/disconnect" />
+    <item
+        android:id="@+id/action_popup_remove"
+        android:title="@string/remove_from_contacts" />
 </menu>

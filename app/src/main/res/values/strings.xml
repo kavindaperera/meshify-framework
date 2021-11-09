@@ -150,6 +150,7 @@
     <string name="url_tos">https://www.meshify.xyz/tos</string>
     <string name="url_privacy">https://www.meshify.xyz/privacy-policy</string>
     <string name="connectivity_dialog_text">Meshify requires an active internet connection in the first time it is used.</string>
+    <string name="remove_from_contacts">Remove from Contacts</string>
 
 
 </resources>
