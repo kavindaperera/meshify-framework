@@ -1,37 +1,59 @@
 package com.codewizards.meshify_chat.models;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.codewizards.meshify.client.Device;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+@Entity(tableName = "neighbor_table")
 public class Neighbor {
+
+    @ColumnInfo(name = "neighborName")
     private String device_name;
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "neighborUuid")
     private String uuid;
+
+    @ColumnInfo(name = "isNearby")
     private boolean isNearby;
+
+    @ColumnInfo(name = "deviceType")
     private DeviceType deviceType;
+
+    @Ignore
     private Device device;
 
-    public Neighbor(String uuid, String device_name) {
+
+    public Neighbor(@NonNull String uuid, String device_name) {
         this.uuid = uuid;
         this.device_name = device_name;
-    }
-
-    public static Neighbor create(String json) {
-        return new Gson().fromJson(json, Neighbor.class);
     }
 
     public void setDeviceName(String deviceName) {
         this.device_name = deviceName;
     }
 
-    public String getDeviceName() {
-        return device_name;
+    public String getDevice_name() {
+        return this.device_name;
     }
 
     public String getUuid() {
         return uuid;
     }
+
 
     public DeviceType getDeviceType() {
         return deviceType;
