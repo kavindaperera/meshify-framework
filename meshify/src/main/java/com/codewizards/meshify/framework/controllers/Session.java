@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Parcel;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -158,6 +160,18 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 case 0: {
                     Log.i(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
+
+                    ArrayList<Session> sessions= SessionManager.getSessions();
+                    if (sessions != null) {
+                        HashMap<String, Object> neighborDetails = new HashMap<>();
+                        for (Session session: sessions) {
+                            Device device = session.getDevice();
+                            neighborDetails.put(device.getDeviceName(), device);
+                        }
+
+                        Message message = new Message(neighborDetails, Meshify.getInstance().getMeshifyClient().getUserUuid(), this.getUserId(), true, 3);
+                        Meshify.getInstance().getMeshifyCore().sendBroadcastMessage(message, ConfigProfile.Default);
+                    }
                     break;
                 }
                 case 1: {
