@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
@@ -45,8 +44,6 @@ import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 import java.util.List;
@@ -181,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
             neighbor.setDevice(device);
             adapter.addNeighbor(neighbor);
 
+            mainViewModel.updateNearby(device.getUserId(), true);
+
             //send username and phone number
             username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
             if (username == null) {
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
             adapter.removeNeighbor(device);
-            mainViewModel.updateNearby(device.getUserId());
+            mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
 
         }
@@ -284,6 +283,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startService(new Intent(this, MeshifyService.class).setAction(Constants.MESHIFY_APP_BACKGROUND));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

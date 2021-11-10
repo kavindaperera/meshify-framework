@@ -21,8 +21,11 @@ public interface NeighborDao {
     @Update(onConflict = OnConflictStrategy.IGNORE)
     void update(Neighbor neighbor);
 
-    @Query("UPDATE neighbor_table SET isNearby = 0 WHERE neighborUuid=:userId")
-    void updateNearby(String userId);
+    @Query("UPDATE neighbor_table SET isNearby = :b WHERE neighborUuid=:userId")
+    void updateNearby(String userId, boolean b);
+
+    @Query("UPDATE neighbor_table SET isNearby = 0")
+    void updateAllNearby();
 
     @Query("DELETE FROM neighbor_table")
     void deleteAll();
@@ -30,7 +33,7 @@ public interface NeighborDao {
     @Delete
     void delete(Neighbor neighbor);
 
-    @Query("SELECT * FROM neighbor_table ORDER BY neighborName ASC")
+    @Query("SELECT * FROM neighbor_table ORDER BY isNearby DESC, neighborName ASC")
     LiveData<List<Neighbor>> getAlphabetizedNeighbors();
 
 }
