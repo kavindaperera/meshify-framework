@@ -54,7 +54,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
         IntentFilter intentFilter = new IntentFilter();
 
         if (this.config.isVerified()) { //Listen to SMS
-            //this.addSmsActions(intentFilter);
+            this.addSmsActions(intentFilter);
         }
 
         switch (this.config.getAntennaType()) {
