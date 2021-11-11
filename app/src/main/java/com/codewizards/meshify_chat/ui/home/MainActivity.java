@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
+            if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
+                Toast.makeText(getApplicationContext(), "ERROR! Please turn on Location Services and Restart", Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
