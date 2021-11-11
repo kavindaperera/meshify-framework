@@ -39,6 +39,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText txtMessage;
     MessageAdapter adapter = new MessageAdapter(new ArrayList<Message>());
     private String deviceName;
+    private boolean lastSeen;
     private String deviceId;
 
     SharedPreferences sharedPreferences;
@@ -52,6 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
+        lastSeen = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_LAST_SEEN,false);
         deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -61,6 +63,7 @@ public class ChatActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(deviceName);
+            actionBar.setSubtitle(lastSeen ? "Nearby" : "Not in Range");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
