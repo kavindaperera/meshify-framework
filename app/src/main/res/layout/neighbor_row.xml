@@ -64,6 +64,18 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/lastSeen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:text="@string/placeholder_last_seen"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_toLeftOf="@id/popupMenu"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:textSize="12dp"/>
+
     <ImageView
         android:id="@+id/popupMenu"
         android:layout_width="28dp"

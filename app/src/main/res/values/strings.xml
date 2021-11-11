@@ -50,6 +50,7 @@
     <string name="phone_error">verification error</string>
     <string name="cancel">Cancel</string>
     <string name="verify_skip">Skip</string>
+    <string name="placeholder_last_seen">Not seen in a while</string>
 
 
     <!-- Common -->
