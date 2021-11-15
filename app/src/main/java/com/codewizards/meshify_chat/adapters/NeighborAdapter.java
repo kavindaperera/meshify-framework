@@ -138,6 +138,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         final TextView mInitialsTextView;
         final ImageView mPopupMenu;
         final TextView mLastMsg;
+        final TextView mNotificationBadge;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
@@ -147,6 +148,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
             mLastMsg = view.findViewById(R.id.lastMessage);
+            mNotificationBadge = view.findViewById(R.id.notificationBadge);
 
             mPopupMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -159,8 +161,8 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                             switch (item.getItemId()){
                                 case R.id.action_popup_save:
                                     // call method to save
-                                    mainViewModel.insert(neighbor);
-                                    Toast.makeText(context, "Saved " + neighbor.getDevice_name() + " to contacts", Toast.LENGTH_LONG).show();
+                                    mainViewModel.update(neighbor);
+                                    Toast.makeText(context, "Updated the contact " + neighbor.getDevice_name() + " ", Toast.LENGTH_LONG).show();
                                     return true;
                                 case R.id.action_popup_disconnect:{
                                     Device device = neighbor.getDevice();

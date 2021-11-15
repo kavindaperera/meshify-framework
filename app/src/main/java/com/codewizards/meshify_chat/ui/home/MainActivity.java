@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
 
+
                 MeshifyNotifications.getInstance().createChatNotification(message, text); //Remove
 
             }
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             neighbor.setDevice(device);
             adapter.addNeighbor(neighbor);
 
+            mainViewModel.insert(neighbor);
             mainViewModel.updateNearby(device.getUserId(), true);
 
             //send username and phone number

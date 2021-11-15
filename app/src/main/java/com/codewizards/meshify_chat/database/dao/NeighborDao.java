@@ -18,7 +18,7 @@ public interface NeighborDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Neighbor neighbor);
 
-    @Update(onConflict = OnConflictStrategy.IGNORE)
+    @Update
     void update(Neighbor neighbor);
 
     @Query("UPDATE neighbor_table SET isNearby = :b WHERE neighborUuid=:userId")

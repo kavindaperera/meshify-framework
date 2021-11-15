@@ -32,7 +32,10 @@ public class MainViewModel extends AndroidViewModel {
         return mAllNeighbors;
     }
 
+    public void update(Neighbor neighbor) { mRepository.update(neighbor); }
+
     public void insert(Neighbor neighbor) { mRepository.insert(neighbor); }
+
 
     public void updateNearby(String userId, boolean b) { mRepository.updateNearby(userId, b); }
 
