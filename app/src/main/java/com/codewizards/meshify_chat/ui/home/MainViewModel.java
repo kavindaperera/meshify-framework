@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify_chat.database.MeshifyRoomDatabase;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.repositories.NeighborRepository;
 
@@ -32,14 +33,19 @@ public class MainViewModel extends AndroidViewModel {
         return mAllNeighbors;
     }
 
-    public void update(Neighbor neighbor) { mRepository.update(neighbor); }
-
     public void insert(Neighbor neighbor) { mRepository.insert(neighbor); }
 
+    public void update(Neighbor neighbor) { mRepository.update(neighbor); }
+
+    public void delete(Neighbor neighbor) { mRepository.delete(neighbor); }
+
+    public void updateNameByUuid(String userId, String userName) {
+        mRepository.updateNameByUuid(userId, userName);
+    }
 
     public void updateNearby(String userId, boolean b) { mRepository.updateNearby(userId, b); }
 
-    public void delete(Neighbor neighbor) { mRepository.delete(neighbor); }
+
 
     @Override
     protected void onCleared() {

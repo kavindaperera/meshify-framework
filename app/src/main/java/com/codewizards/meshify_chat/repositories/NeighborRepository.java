@@ -43,6 +43,12 @@ public class NeighborRepository {
         });
     }
 
+    public void updateNameByUuid(String userId, String userName) {
+        MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mNeighborDao.updateNameByUuid(userId, userName);
+        });
+    }
+
     public void updateNearby(String userId, boolean b) {
         MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
             mNeighborDao.updateNearby(userId, b);

@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
                 String senderId = message.getSenderId();
                 String userName = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
-                adapter.updateNeighbor(senderId, userName);
+                mainViewModel.updateNameByUuid(senderId, userName);
 
                 hideProgressBar();
 
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
             neighbor.setDevice(device);
-            adapter.addNeighbor(neighbor);
 
             mainViewModel.insert(neighbor);
             mainViewModel.updateNearby(device.getUserId(), true);
@@ -207,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
-            adapter.removeNeighbor(device);
             Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
 
         }
@@ -215,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
-            adapter.removeNeighbor(device);
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
 
@@ -259,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*RecyclerView*/
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
-        adapter = new NeighborAdapter(this);
+        adapter = new NeighborAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
@@ -268,8 +265,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         mainViewModel.getAllNeighbors().observe(this, neighbors -> {
-            adapter.setNeighbors(neighbors);
-            adapter.notifyDataSetChanged();
+              adapter.submitList(neighbors);
         });
 
         mProgressBar = findViewById(R.id.progress_bar);

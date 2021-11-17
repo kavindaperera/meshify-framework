@@ -36,4 +36,6 @@ public interface NeighborDao {
     @Query("SELECT * FROM neighbor_table ORDER BY isNearby DESC, neighborName ASC")
     LiveData<List<Neighbor>> getAlphabetizedNeighbors();
 
+    @Query("UPDATE neighbor_table SET neighborName = :userName WHERE neighborUuid=:userId")
+    void updateNameByUuid(String userId, String userName);
 }
