@@ -2,31 +2,44 @@ package com.codewizards.meshify_chat.models;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.Insert;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.Gson;
 
 @Entity(tableName = "message_table")
 public class Message {
 
+    @Ignore
     public final static int INCOMING_MESSAGE = 0;
+    @Ignore
     public final static int OUTGOING_MESSAGE = 1;
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "messageId")
+    public int id;
 
     @ColumnInfo(name = "direction")
     private int direction;
 
-    @ColumnInfo(name = "message")
+    @ColumnInfo(name = "contents")
     private String message;
 
     @ColumnInfo(name = "dateSent")
     private String dateSent;
 
-    public Message(String message) {
+    @ColumnInfo(name = "senderId")
+    public String senderId;
+
+    @ColumnInfo(name = "receiverId")
+    public String receiverId;
+
+    public Message(String message, String senderId, String receiverId) {
         this.message = message;
         this.dateSent = String.valueOf(System.currentTimeMillis());
-    }
-
-    public static Message create(String json) {
-        return new Gson().fromJson(json, Message.class);
+        this.senderId = senderId;
+        this.receiverId = receiverId;
     }
 
     public int getDirection() {

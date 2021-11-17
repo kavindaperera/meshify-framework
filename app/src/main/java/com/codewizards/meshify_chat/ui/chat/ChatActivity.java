@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,7 +71,7 @@ public class ChatActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG));
+                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
                         message.setDirection(Message.INCOMING_MESSAGE);
                         adapter.addMessage(message);
                     }
@@ -97,7 +98,7 @@ public class ChatActivity extends AppCompatActivity {
 
             txtMessage.setText("");
 
-            Message message = new Message(messageString);
+            Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
             message.setDirection(Message.OUTGOING_MESSAGE);
             adapter.addMessage(message);
 

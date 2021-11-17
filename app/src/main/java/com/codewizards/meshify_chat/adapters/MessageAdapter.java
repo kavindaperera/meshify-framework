@@ -1,8 +1,10 @@
 package com.codewizards.meshify_chat.adapters;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -62,6 +64,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     class MessageViewHolder extends RecyclerView.ViewHolder {
         final TextView txtMessage;
         final TextView dateSentView;
+        final ImageView statusView;
 
         Message message;
 
@@ -69,6 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             super(view);
             txtMessage = view.findViewById(R.id.txtMessage);
             dateSentView = view.findViewById(R.id.msgDate);
+            statusView = view.findViewById(R.id.msgStatus);
         }
 
         void setMessage(Message message) {
