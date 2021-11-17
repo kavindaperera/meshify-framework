@@ -13,6 +13,7 @@
     <string name="foreground_notification_content_title">Meshify is now running in the background</string>
     <string name="invite">Invite Friends</string>
     <string name="is_nearby">Nearby</string>
+    <string name="message_date_yesterday">Yesterday</string>
     <string name="notification_sound">Notification sound</string>
     <string name="onboarding_title_1">Welcome</string>
     <string name="onboarding_description_1">Meshify gives you the power to connect with others without internet.</string>
