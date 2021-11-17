@@ -35,9 +35,7 @@
 
     <dimen name="choose_avatar_height_header">152dp</dimen>
     <dimen name="choose_avatar_square_header_image">96dp</dimen>
-
-
-
+    <dimen name="chat_row_margin">28dp</dimen>
 
 
 </resources>

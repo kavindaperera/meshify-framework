@@ -31,7 +31,7 @@
         android:layout_below="@+id/app_bar"
         android:layout_above="@+id/textbox"
         android:paddingBottom="8dp"
-        tools:listitem="@layout/msg_row_outgoing"/>
+        tools:listitem="@layout/chat_message_row_inbound"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/textbox"

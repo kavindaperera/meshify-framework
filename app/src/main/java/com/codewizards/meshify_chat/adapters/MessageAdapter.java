@@ -28,10 +28,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         switch (viewType) {
             case Message.INCOMING_MESSAGE:
-                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.msg_row_incoming), parent, false);
+                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_message_row_inbound), parent, false);
                 break;
             case Message.OUTGOING_MESSAGE:
-                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.msg_row_outgoing), parent, false);
+                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_message_row_outbound), parent, false);
                 break;
         }
 
