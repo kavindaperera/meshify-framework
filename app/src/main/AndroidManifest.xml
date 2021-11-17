@@ -54,8 +54,7 @@
         <activity android:name=".ui.signup.SignupActivity" />
         <activity
             android:name=".ui.chat.ChatActivity"
-            android:parentActivityName=".ui.home.MainActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".ui.home.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.home.MainActivity" />
@@ -64,8 +63,7 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:alwaysRetainTaskState="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -72,22 +72,6 @@
             android:orientation="vertical"
             android:layout_marginRight="@dimen/meshify_margin_large">
 
-            <TextView
-                android:id="@+id/notificationBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/meshify_margin_large"
-                android:layout_marginRight="@dimen/meshify_margin_large"
-                android:background="@drawable/round_corner"
-                android:gravity="start"
-                android:textAlignment="textStart"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:paddingRight="@dimen/meshify_margin_small"
-                android:paddingLeft="@dimen/meshify_margin_small"
-                android:textStyle="bold"
-                android:visibility="invisible" />
-
                 <TextView
                     android:id="@+id/lastSeen"
                     android:layout_width="wrap_content"

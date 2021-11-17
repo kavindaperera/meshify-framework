@@ -80,6 +80,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         if (position > -1) {
             Neighbor neighbor = neighbors.get(position);
             neighbor.setDeviceName(userName);
+            mainViewModel.update(neighbor);
             notifyItemChanged(position);
         }
 
@@ -137,7 +138,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         final TextView mInitialsTextView;
         final ImageView mPopupMenu;
         final TextView mLastMsg;
-        final TextView mNotificationBadge;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
@@ -147,7 +147,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
             mLastMsg = view.findViewById(R.id.lastMessage);
-            mNotificationBadge = view.findViewById(R.id.notificationBadge);
 
             mPopupMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -158,11 +157,11 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()){
-                                case R.id.action_popup_save:
-                                    // call method to save
-                                    mainViewModel.update(neighbor);
-                                    Toast.makeText(context, "Updated the contact " + neighbor.getDeviceName() + " ", Toast.LENGTH_LONG).show();
-                                    return true;
+//                                case R.id.action_popup_save:
+//                                    // call method to save
+//                                    mainViewModel.update(neighbor);
+//                                    Toast.makeText(context, "Updated the contact " + neighbor.getDeviceName() + " ", Toast.LENGTH_LONG).show();
+//                                    return true;
                                 case R.id.action_popup_disconnect:{
                                     Device device = neighbor.getDevice();
                                     if (device!=null) {
@@ -178,7 +177,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                     return true;
                                 }
                                 case R.id.action_popup_remove:
-                                    // call method to save
+                                    // call method to delete
                                     mainViewModel.delete(neighbor);
                                     Toast.makeText(context,  "Removed " + neighbor.getDeviceName() + " from contacts", Toast.LENGTH_LONG).show();
                                     return true;

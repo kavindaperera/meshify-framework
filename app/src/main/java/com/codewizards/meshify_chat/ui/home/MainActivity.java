@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +47,7 @@ import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +55,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 import static com.codewizards.meshify_chat.util.Constants.BROADCAST_CHAT;
 import static com.codewizards.meshify_chat.util.Constants.PAYLOAD_DEVICE_NAME;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mProgressBar;
 
+    /* ViewModel */
     private MainViewModel mainViewModel;
 
     @BindView(R.id.fab)
@@ -251,26 +257,57 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        /*ViewModel*/
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
-        mainViewModel.getAllNeighbors().observe(this, new Observer<List<Neighbor>>() {
-            @Override
-            public void onChanged(List<Neighbor> neighbors) {
-                adapter.setNeighbors(neighbors);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        mProgressBar = findViewById(R.id.progress_bar);
-
+        /*RecyclerView*/
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
         adapter = new NeighborAdapter(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        Meshify.debug = BuildConfig.DEBUG;
+        /*ViewModel*/
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        mainViewModel.getAllNeighbors().observe(this, neighbors -> {
+            adapter.setNeighbors(neighbors);
+            adapter.notifyDataSetChanged();
+        });
+
+        mProgressBar = findViewById(R.id.progress_bar);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) { // swipe to delete
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Neighbor n1  = adapter.getNeighborAt(viewHolder.getAdapterPosition());
+                mainViewModel.delete(n1);
+
+                Snackbar.make(recyclerView, n1.getDeviceName() + " Achieved.", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", v -> {
+                            mainViewModel.insert(n1);
+                        }).show();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary))
+                        .addSwipeLeftActionIcon(R.drawable.ic_baseline_archive_24)
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.verify_error))
+                        .addSwipeRightActionIcon(R.drawable.ic_baseline_delete_24)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+        }).attachToRecyclerView(recyclerView);
+
+        Meshify.debug = BuildConfig.DEBUG; // remove in production
         Meshify.initialize(getApplicationContext());
 
         startMeshify();
