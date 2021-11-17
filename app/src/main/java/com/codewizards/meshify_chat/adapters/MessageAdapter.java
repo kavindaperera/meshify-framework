@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
+import com.codewizards.meshify_chat.util.MeshifyUtils;
 
 import java.util.List;
 
@@ -60,16 +61,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
         final TextView txtMessage;
+        final TextView dateSentView;
+
         Message message;
 
         MessageViewHolder(View view) {
             super(view);
             txtMessage = view.findViewById(R.id.txtMessage);
+            dateSentView = view.findViewById(R.id.msgDate);
         }
 
         void setMessage(Message message) {
             this.message = message;
-            this.txtMessage.setText(message.getText());
+            this.txtMessage.setText(message.getMessage());
+            if (this.dateSentView != null) {
+                String valueOf = String.valueOf(System.currentTimeMillis());
+                if (message.getDateSent() != null) {
+                    valueOf = message.getDateSent();
+                }
+                String messageDate = MeshifyUtils.getMessageDate(valueOf);
+                this.dateSentView.setText(messageDate);
+            }
         }
     }
 
