@@ -29,4 +29,7 @@ public abstract class MessageListener {
     public void onBroadcastMessageReceived(Message message) {
     }
 
+    public void onMessageSent(String messageId) {
+    }
+
 }

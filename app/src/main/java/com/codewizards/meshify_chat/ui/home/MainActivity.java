@@ -143,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onMessageSent(String messageId) {
+            super.onMessageSent(messageId);
+            Log.e(TAG, "onMessageSent: " + messageId);
+            Toast.makeText(getApplicationContext(), "Message Sent Successfully!" , Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
         public void onMessageFailed(Message message, MessageException exception) {
             super.onMessageFailed(message, exception);
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
