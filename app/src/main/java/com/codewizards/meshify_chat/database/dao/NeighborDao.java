@@ -21,6 +21,9 @@ public interface NeighborDao {
     @Update
     void update(Neighbor neighbor);
 
+    @Delete
+    void delete(Neighbor neighbor);
+
     @Query("UPDATE neighbor_table SET isNearby = :b WHERE neighborUuid=:userId")
     void updateNearby(String userId, boolean b);
 
@@ -29,9 +32,6 @@ public interface NeighborDao {
 
     @Query("DELETE FROM neighbor_table")
     void deleteAll();
-
-    @Delete
-    void delete(Neighbor neighbor);
 
     @Query("SELECT * FROM neighbor_table ORDER BY isNearby DESC, neighborName ASC")
     LiveData<List<Neighbor>> getAlphabetizedNeighbors();

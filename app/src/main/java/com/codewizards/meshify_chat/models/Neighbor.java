@@ -1,9 +1,7 @@
 package com.codewizards.meshify_chat.models;
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,15 +10,11 @@ import androidx.room.PrimaryKey;
 import com.codewizards.meshify.client.Device;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 @Entity(tableName = "neighbor_table")
 public class Neighbor {
 
     @ColumnInfo(name = "neighborName")
-    private String device_name;
+    private String deviceName;
 
     @PrimaryKey
     @NonNull
@@ -37,23 +31,22 @@ public class Neighbor {
     private Device device;
 
 
-    public Neighbor(@NonNull String uuid, String device_name) {
+    public Neighbor(@NonNull String uuid, String deviceName) {
         this.uuid = uuid;
-        this.device_name = device_name;
+        this.deviceName = deviceName;
     }
 
     public void setDeviceName(String deviceName) {
-        this.device_name = deviceName;
+        this.deviceName = deviceName;
     }
 
-    public String getDevice_name() {
-        return this.device_name;
+    public String getDeviceName() {
+        return this.deviceName;
     }
 
     public String getUuid() {
         return uuid;
     }
-
 
     public DeviceType getDeviceType() {
         return deviceType;

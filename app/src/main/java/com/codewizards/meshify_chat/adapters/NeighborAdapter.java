@@ -3,7 +3,6 @@ package com.codewizards.meshify_chat.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -162,7 +161,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                 case R.id.action_popup_save:
                                     // call method to save
                                     mainViewModel.update(neighbor);
-                                    Toast.makeText(context, "Updated the contact " + neighbor.getDevice_name() + " ", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, "Updated the contact " + neighbor.getDeviceName() + " ", Toast.LENGTH_LONG).show();
                                     return true;
                                 case R.id.action_popup_disconnect:{
                                     Device device = neighbor.getDevice();
@@ -181,7 +180,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                                 case R.id.action_popup_remove:
                                     // call method to save
                                     mainViewModel.delete(neighbor);
-                                    Toast.makeText(context,  "Removed " + neighbor.getDevice_name() + " from contacts", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context,  "Removed " + neighbor.getDeviceName() + " from contacts", Toast.LENGTH_LONG).show();
                                     return true;
                                 default:
                                     return false;
@@ -207,8 +206,8 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
             this.neighbor = neighbor;
             switch (neighbor.getDeviceType()) {
                 case ANDROID:
-                    this.mContentView.setText(neighbor.getDevice_name());
-                    this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDevice_name()));
+                    this.mContentView.setText(neighbor.getDeviceName());
+                    this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDeviceName()));
 //                    ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor("#006257"));
                     break;
             }

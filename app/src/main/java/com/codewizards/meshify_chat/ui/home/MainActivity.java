@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
         startMeshify();
 
         adapter.setOnItemClickListener(neighbor -> startActivity(new Intent(getApplicationContext(), ChatActivity.class)
-                .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDevice_name())
+                .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
                 .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, neighbor.isNearby())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
     }
