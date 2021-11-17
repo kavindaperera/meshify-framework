@@ -33,7 +33,7 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
     private static final DiffUtil.ItemCallback<Neighbor> DIFF_CALLBACK = new DiffUtil.ItemCallback<Neighbor>() {
         @Override
         public boolean areItemsTheSame(@NonNull Neighbor oldItem, @NonNull Neighbor newItem) {
-            return oldItem.getUuid() == newItem.getUuid();
+            return oldItem.getUuid().equals(newItem.getUuid());
         }
 
         @Override
