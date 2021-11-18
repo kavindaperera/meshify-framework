@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     EditText txtMessage;
     MessageAdapter adapter = new MessageAdapter(new ArrayList<Message>());
     private String deviceName;
+    private boolean lastSeen;
     private String deviceId;
 
     SharedPreferences sharedPreferences;
@@ -52,6 +54,7 @@ public class ChatActivity extends AppCompatActivity {
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
+        lastSeen = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_LAST_SEEN,false);
         deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -61,13 +64,14 @@ public class ChatActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(deviceName);
+            actionBar.setSubtitle(lastSeen ? "Nearby" : "Not in Range");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG));
+                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
                         message.setDirection(Message.INCOMING_MESSAGE);
                         adapter.addMessage(message);
                     }
@@ -94,7 +98,7 @@ public class ChatActivity extends AppCompatActivity {
 
             txtMessage.setText("");
 
-            Message message = new Message(messageString);
+            Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
             message.setDirection(Message.OUTGOING_MESSAGE);
             adapter.addMessage(message);
 

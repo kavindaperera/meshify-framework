@@ -10,7 +10,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
@@ -35,7 +35,7 @@
 
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
@@ -60,9 +60,39 @@
                 android:ems="15"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textSize="11dp" />
+
+
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="end"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/meshify_margin_large">
+
+                <TextView
+                    android:id="@+id/lastSeen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/placeholder_last_seen"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_toLeftOf="@id/popupMenu"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/meshify_margin_large"
+                    android:layout_alignTop="@id/popupMenu"
+                    android:visibility="invisible"
+                    android:textSize="12dp"/>
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
+
+
 
     <ImageView
         android:id="@+id/popupMenu"

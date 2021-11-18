@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_popup_save"
-        android:title="@string/add_to_contacts" />
+<!--    <item-->
+<!--        android:id="@+id/action_popup_save"-->
+<!--        android:title="@string/add_to_contacts" />-->
     <item
         android:id="@+id/action_popup_connect"
         android:title="@string/connect" />
     <item
         android:id="@+id/action_popup_disconnect"
         android:title="@string/disconnect" />
+<!--    <item-->
+<!--        android:id="@+id/action_popup_remove"-->
+<!--        android:title="@string/remove_from_contacts" />-->
 </menu>
