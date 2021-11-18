@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+
 public class ResponseJson implements Parcelable {
 
     @JsonProperty(value="type")
@@ -17,6 +19,9 @@ public class ResponseJson implements Parcelable {
     @JsonProperty(value="uuid")
     private String uuid;
 
+    @JsonProperty(value="neighborDetails")
+    private HashMap<String, Object> neighborDetails;
+
     public ResponseJson() {
     }
 
@@ -24,6 +29,7 @@ public class ResponseJson implements Parcelable {
         type = in.readInt();
         uuid = in.readString();
         key = in.readString();
+        neighborDetails = in.readHashMap(HashMap.class.getClassLoader());
     }
 
     public static final Creator<ResponseJson> CREATOR = new Creator<ResponseJson>() {
@@ -49,6 +55,13 @@ public class ResponseJson implements Parcelable {
         ResponseJson responseJson = new ResponseJson();
         responseJson.setType(1);
         responseJson.setKey(key);
+        return responseJson;
+    }
+
+    public static ResponseJson ResponseTypeNeighborDetails(HashMap<String, Object> neighborDetails) {
+        ResponseJson responseJson = new ResponseJson();
+        responseJson.setType(2);
+        responseJson.setNeighborDetails(neighborDetails);
         return responseJson;
     }
 
@@ -79,6 +92,15 @@ public class ResponseJson implements Parcelable {
         this.key = key;
     }
 
+    @JsonProperty(value="neighborDetails")
+    public HashMap<String, Object> getNeighborDetails() {
+        return this.neighborDetails;
+    }
+
+    public void setNeighborDetails(HashMap<String, Object> neighborDetails) {
+        this.neighborDetails = neighborDetails;
+    }
+
     public String toString() {
         return new Gson().toJson((Object)this);
     }
@@ -93,5 +115,6 @@ public class ResponseJson implements Parcelable {
         dest.writeInt(this.type);
         dest.writeString(this.uuid);
         dest.writeString(this.key);
+        dest.writeMap(this.neighborDetails);
     }
 }
