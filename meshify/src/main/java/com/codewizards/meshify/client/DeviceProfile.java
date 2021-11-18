@@ -125,7 +125,7 @@ public class DeviceProfile {
     }
 
     public static int getMaxConnectionsForDevice() {
-        return 1;
+        return 8;
     }
 
     public String getDeviceEvaluation() {

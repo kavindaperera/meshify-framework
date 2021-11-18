@@ -17,7 +17,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/MeshifyTheme.PopupOverlay" />
+            app:title="@string/placeholder_device_name"
+            app:subtitle="@string/placeholder_last_seen"
+            app:popupTheme="@style/MeshifyTheme.PopupOverlay"/>
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -29,7 +31,7 @@
         android:layout_below="@+id/app_bar"
         android:layout_above="@+id/textbox"
         android:paddingBottom="8dp"
-        tools:listitem="@layout/msg_row_outgoing"/>
+        tools:listitem="@layout/chat_message_row_inbound"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/textbox"

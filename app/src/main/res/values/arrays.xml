@@ -1,12 +1,23 @@
 <resources>
-    <!-- Profile Preference -->
-    <string-array name="profile_entries">
-        <item>Use Bluetooth for Forwarding</item>
-        <item>Do not Forward</item>
-    </string-array>
+<!-- Profile Preference -->
+<string-array name="profile_entries">
+    <item>Use Bluetooth for Forwarding</item>
+    <item>Do not Forward</item>
+</string-array>
 
-    <string-array name="profile_values">
-        <item>Default</item>
-        <item>NoForwarding</item>
-    </string-array>
+<string-array name="profile_values">
+    <item>Default</item>
+    <item>NoForwarding</item>
+</string-array>
+
+<array name="days_of_the_week">
+    <item>Monday</item>
+    <item>Tuesday</item>
+    <item>Wednesday</item>
+    <item>Thursday</item>
+    <item>Friday</item>
+    <item>Saturday</item>
+    <item>Sunday</item>
+</array>
+
 </resources>
