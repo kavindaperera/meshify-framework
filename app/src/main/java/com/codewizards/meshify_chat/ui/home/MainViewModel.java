@@ -1,29 +1,55 @@
 package com.codewizards.meshify_chat.ui.home;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+
+import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify_chat.database.MeshifyRoomDatabase;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.repositories.NeighborRepository;
 
 import java.util.List;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Neighbor>> mNeighbors; //Mutable data is subclass of Livedata
-    private NeighborRepository mRepo;
-    private MutableLiveData<Boolean> isUpdating = new MutableLiveData<>();
+    private static final String TAG = "[Meshify][MainViewModel]" ;
 
-    public void init(){
-        if (mNeighbors != null){
+    private NeighborRepository mRepository;
+    private LiveData<List<Neighbor>> mAllNeighbors;
+
+    public MainViewModel(@NonNull Application application) {
+        super(application);
+        if (mAllNeighbors != null){
             return;
         }
-        mRepo = NeighborRepository.getInstance();
-        mNeighbors = mRepo.getNeighbors();
+        mRepository = new NeighborRepository(application);
+        mAllNeighbors = mRepository.getAllNeighbors();
     }
 
-    public LiveData<List<Neighbor>> getNeighbors() { //Livedata cannot be directly changed, only observe
-        return mNeighbors;
+    public LiveData<List<Neighbor>> getAllNeighbors() {
+        return mAllNeighbors;
+    }
+
+    public void insert(Neighbor neighbor) { mRepository.insert(neighbor); }
+
+    public void update(Neighbor neighbor) { mRepository.update(neighbor); }
+
+    public void delete(Neighbor neighbor) { mRepository.delete(neighbor); }
+
+    public void updateNameByUuid(String userId, String userName) {
+        mRepository.updateNameByUuid(userId, userName);
+    }
+
+    public void updateNearby(String userId, boolean b) { mRepository.updateNearby(userId, b); }
+
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        mRepository.updateAllNearby();
     }
 }

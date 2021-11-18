@@ -1,6 +1,5 @@
 package com.codewizards.meshify_chat.adapters;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -12,6 +11,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Device;
@@ -19,21 +20,29 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
-import com.google.gson.Gson;
 
-import java.util.List;
 
-public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.NeighborViewHolder> {
-
-    private final List<Neighbor> neighbors;
-    private Context context;
-
+public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.NeighborViewHolder> {
     private OnItemClickListener listener;
 
-    public NeighborAdapter(Context context, List<Neighbor> neighbors) {
-        this.neighbors = neighbors;
-        this.context = context;
+    public NeighborAdapter() {
+        super(DIFF_CALLBACK);
+
     }
+
+    private static final DiffUtil.ItemCallback<Neighbor> DIFF_CALLBACK = new DiffUtil.ItemCallback<Neighbor>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Neighbor oldItem, @NonNull Neighbor newItem) {
+            return oldItem.getUuid().equals(newItem.getUuid());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Neighbor oldItem, @NonNull Neighbor newItem) {
+            return oldItem.getDeviceName().equals(newItem.getDeviceName()) &&
+                    oldItem.isNearby() == newItem.isNearby();
+        }
+    };
+
 
     @NonNull
     @Override
@@ -46,62 +55,14 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 
     @Override
     public void onBindViewHolder(@NonNull NeighborViewHolder holder, int position) {
-        holder.setNeighbor(neighbors.get(position));
+        holder.setNeighbor(getItem(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return neighbors.size();
-    }
-
-    public void addNeighbor(Neighbor neighbor) {
-        int position = getNeighborPosition(neighbor.getUuid());
-
-        if (position > -1) {
-            neighbors.set(position, neighbor);
-            notifyItemChanged(position);
-        } else {
-            neighbors.add(neighbor);
-            notifyItemInserted(neighbors.size() - 1);
-        }
-    }
-
-    public void updateNeighbor(String senderId, String userName) {
-        int position = getNeighborPosition(senderId);
-        if (position > -1) {
-            Neighbor neighbor = neighbors.get(position);
-            neighbor.setDeviceName(userName);
-            notifyItemChanged(position);
-        }
-
-    }
-
-    public void removeNeighbor(Device lostNeighbor) {
-        int position = getNeighborPosition(lostNeighbor.getUserId());
-
-        if (position > -1) {
-            Neighbor neighbor = neighbors.get(position);
-            neighbor.setNearby(false);
-            neighbors.set(position, neighbor);
-            notifyItemChanged(position);
-        }
-    }
-
-    public int getNeighborPosition(String neighborId) {
-        for (int i = 0; i < neighbors.size(); i++) {
-            if (neighbors.get(i).getUuid().equals(neighborId))
-                return i;
-        }
-        return -1;
-    }
 
     public Neighbor getNeighborAt(int position) {
-        return neighbors.get(position);
+        return getItem(position);
     }
 
-    public String getAllNeighbors() {
-        return new Gson().toJson(this.neighbors);
-    }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
@@ -113,7 +74,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
 
     class NeighborViewHolder extends RecyclerView.ViewHolder {
         final TextView mContentView;
-//        final ImageView mImageView;
         final TextView mInitialsTextView;
         final ImageView mPopupMenu;
         final TextView mLastMsg;
@@ -122,7 +82,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
         NeighborViewHolder(View view) {
             super(view);
             mContentView = view.findViewById(R.id.neighborName);
-//            mImageView = view.findViewById(R.id.neighborAvatar);
             mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
             mLastMsg = view.findViewById(R.id.lastMessage);
@@ -136,9 +95,6 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()){
-                                case R.id.action_popup_save:
-                                    // call method to save
-                                    return true;
                                 case R.id.action_popup_disconnect:{
                                     Device device = neighbor.getDevice();
                                     if (device!=null) {
@@ -167,7 +123,7 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(neighbors.get(position));
+                        listener.onItemClick(getItem(position));
                     }
                 }
             });
@@ -179,21 +135,18 @@ public class NeighborAdapter extends RecyclerView.Adapter<NeighborAdapter.Neighb
                 case ANDROID:
                     this.mContentView.setText(neighbor.getDeviceName());
                     this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDeviceName()));
-//                    ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor("#006257"));
                     break;
             }
             if (neighbor.isNearby()) {
                 this.mContentView.setTextColor(Color.parseColor("#006257"));
                 this.mLastMsg.setTextColor(Color.GREEN);
                 this.mLastMsg.setText("Nearby");
-//                this.mImageView.setImageResource(R.drawable.ic_user_green);
                 ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.parseColor(MeshifyUtils.getRandomColor()));
 
             } else {
                 this.mContentView.setTextColor(Color.GRAY);
                 this.mLastMsg.setTextColor(Color.RED);
                 this.mLastMsg.setText("Not in Range");
-//                this.mImageView.setImageResource(R.drawable.ic_user_red);
                 ((GradientDrawable) this.mInitialsTextView.getBackground()).setColor(Color.RED);
             }
         }

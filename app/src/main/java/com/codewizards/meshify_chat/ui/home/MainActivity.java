@@ -4,13 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,14 +18,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
@@ -46,8 +47,7 @@ import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +55,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 import static com.codewizards.meshify_chat.util.Constants.BROADCAST_CHAT;
 import static com.codewizards.meshify_chat.util.Constants.PAYLOAD_DEVICE_NAME;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar mProgressBar;
 
+    /* ViewModel */
     private MainViewModel mainViewModel;
 
     @BindView(R.id.fab)
@@ -82,48 +84,45 @@ public class MainActivity extends AppCompatActivity {
             super.onMessageReceived(message);
 
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
-//                Neighbor neighbor = new Neighbor(message.getSenderId(),(String) message.getContent().get(PAYLOAD_DEVICE_NAME));
-//                neighbor.setNearby(true);
-//                neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
-//                adapter.addNeighbor(neighbor);
                 String senderId = message.getSenderId();
                 String userName = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
-                adapter.updateNeighbor(senderId, userName);
+                mainViewModel.updateNameByUuid(senderId, userName);
 
                 hideProgressBar();
 
-                HashMap<String, Object> neighbors = new HashMap<>();
-                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
-                Message.Builder builder = new Message.Builder();
-                builder.setContent(neighbors).setReceiverId(senderId);
-                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
+//                HashMap<String, Object> neighbors = new HashMap<>();
+//                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
+//                Message.Builder builder = new Message.Builder();
+//                builder.setContent(neighbors).setReceiverId(senderId);
+//                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
 
-            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
-
-                String senderId = message.getSenderId();
-                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
-
-                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
-
-                for (Neighbor neighbor : neighbors) {
-
-                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
-
-                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDeviceName());
-                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDeviceName());
-                        neighbor_ind.setNearby(false);
-                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
-                        neighbor_ind.setDevice(neighbor.getDevice());
-                        adapter.addNeighbor(neighbor_ind);
-
-                    }
-                }
+//            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
+//
+//                String senderId = message.getSenderId();
+//                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
+//
+//                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
+//
+//                for (Neighbor neighbor : neighbors) {
+//
+//                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
+//
+//                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDevice_name());
+//                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDevice_name());
+//                        neighbor_ind.setNearby(false);
+//                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
+//                        neighbor_ind.setDevice(neighbor.getDevice());
+//                        adapter.addNeighbor(neighbor_ind);
+//
+//                    }
+//                }
 
             } else {
                 String text = (String) message.getContent().get("text");
                 LocalBroadcastManager
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
+
 
                 MeshifyNotifications.getInstance().createChatNotification(message, text); //Remove
 
@@ -144,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onMessageSent(String messageId) {
+            super.onMessageSent(messageId);
+            Log.e(TAG, "onMessageSent: " + messageId);
+            Toast.makeText(getApplicationContext(), "Message Sent Successfully!" , Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
         public void onMessageFailed(Message message, MessageException exception) {
             super.onMessageFailed(message, exception);
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
@@ -157,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         public void onStarted() {
             super.onStarted();
             Log.d(TAG, "onStarted:");
-//            showProgressBar();
         }
 
 
@@ -175,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
             if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
+            if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
+                Toast.makeText(getApplicationContext(), "ERROR! Please turn on Location Services and Restart", Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
@@ -185,7 +193,9 @@ public class MainActivity extends AppCompatActivity {
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
             neighbor.setDevice(device);
-            adapter.addNeighbor(neighbor);
+
+            mainViewModel.insert(neighbor);
+            mainViewModel.updateNearby(device.getUserId(), true);
 
             //send username and phone number
             username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
@@ -203,16 +213,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceBlackListed(Device device) {
             super.onDeviceBlackListed(device);
-            adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceAddress() , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
 
         }
 
         @Override
         public void onDeviceLost(Device device) {
             super.onDeviceLost(device);
-            adapter.removeNeighbor(device);
-            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceAddress(), Toast.LENGTH_SHORT).show();
+            mainViewModel.updateNearby(device.getUserId(), false);
+            Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
 
         }
     };
@@ -221,47 +230,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        ContactUtils contactUtils = new ContactUtils();
-//        try {
-//            Log.e(TAG, contactUtils.getPhonesNamesAndLabels("").toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        Cursor c = getContentResolver().query(
-//                ContactsContract.RawContacts.CONTENT_URI,
-//                new String[] { ContactsContract.RawContacts.CONTACT_ID, ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY },
-//                ContactsContract.RawContacts.ACCOUNT_TYPE + "= ?",
-//                new String[] { "com.whatsapp" },
-//                null);
-//
-//        ArrayList<String> myWhatsappContacts = new ArrayList<String>();
-//        int contactNameColumn = c.getColumnIndex(ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY);
-//        while (c.moveToNext())
-//        {
-//            // You can also read RawContacts.CONTACT_ID to read the
-//            // ContactsContract.Contacts table or any of the other related ones.
-//            myWhatsappContacts.add(c.getString(contactNameColumn));
-//        }
-//
-//        Log.e(TAG, myWhatsappContacts.toString());
-
-//        String accountType = "com.codewizards.meshify";
-//        String accountName = "Meshify";
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType);
-//        values.put(ContactsContract.RawContacts.ACCOUNT_NAME, accountName);
-//        Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, values);
-//        long rawContactId = ContentUris.parseId(rawContactUri);
-//
-//        values.clear();
-//        values.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-//        values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-//        values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, "Mike Sullivan");
-//        getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-
 
         if (MeshifySession.isLoggedIn()) {
             init(savedInstanceState);
@@ -286,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         /*Configure the Toolbar*/
@@ -294,31 +261,63 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        /*ViewModel*/
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        mainViewModel.init();
-        mainViewModel.getNeighbors().observe(this, new Observer<List<Neighbor>>() {
-            @Override
-            public void onChanged(List<Neighbor> neighbors) {
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        mProgressBar = findViewById(R.id.progress_bar);
-
+        /*RecyclerView*/
         RecyclerView recyclerView = findViewById(R.id.neighbor_list);
-        adapter = new NeighborAdapter(this, mainViewModel.getNeighbors().getValue());
+        adapter = new NeighborAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        Meshify.debug = BuildConfig.DEBUG;
+        /*ViewModel*/
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
+        mainViewModel.getAllNeighbors().observe(this, neighbors -> {
+              adapter.submitList(neighbors);
+        });
+
+        mProgressBar = findViewById(R.id.progress_bar);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) { // swipe to delete
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Neighbor n1  = adapter.getNeighborAt(viewHolder.getAdapterPosition());
+                mainViewModel.delete(n1);
+
+                Snackbar.make(recyclerView, n1.getDeviceName() + " Achieved.", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", v -> {
+                            mainViewModel.insert(n1);
+                        }).show();
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary))
+                        .addSwipeLeftActionIcon(R.drawable.ic_baseline_archive_24)
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.verify_error))
+                        .addSwipeRightActionIcon(R.drawable.ic_baseline_delete_24)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+        }).attachToRecyclerView(recyclerView);
+
+        Meshify.debug = BuildConfig.DEBUG; // remove in production
         Meshify.initialize(getApplicationContext());
 
         startMeshify();
 
         adapter.setOnItemClickListener(neighbor -> startActivity(new Intent(getApplicationContext(), ChatActivity.class)
                 .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
+                .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, neighbor.isNearby())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
     }
 
@@ -330,6 +329,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             startService(new Intent(this, MeshifyService.class).setAction(Constants.MESHIFY_APP_BACKGROUND));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override

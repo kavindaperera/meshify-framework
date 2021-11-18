@@ -3,6 +3,7 @@ package com.codewizards.meshify_chat.util;
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";
     public static final int FOREGROUND_SERVICE = 333;
+    public static final String INTENT_EXTRA_LAST_SEEN = "lastSeen";
     public static final String INTENT_EXTRA_NAME = "deviceName";
     public static final String INTENT_EXTRA_MSG = "message";
     public static final String INTENT_EXTRA_UUID = "deviceUuid";
