@@ -45,11 +45,16 @@ public class MainViewModel extends AndroidViewModel {
 
     public void updateNearby(String userId, boolean b) { mRepository.updateNearby(userId, b); }
 
-
-
     @Override
     protected void onCleared() {
+        Log.e(TAG, "onCleared");
         super.onCleared();
         mRepository.updateAllNearby();
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
+
 }

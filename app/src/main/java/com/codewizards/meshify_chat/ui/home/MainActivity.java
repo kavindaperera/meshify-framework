@@ -123,8 +123,7 @@ public class MainActivity extends AppCompatActivity {
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
 
-
-                MeshifyNotifications.getInstance().createChatNotification(message, text); //Remove
+                MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, "Meshify User"); //Remove
 
             }
         }
@@ -146,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
         public void onMessageSent(String messageId) {
             super.onMessageSent(messageId);
             Log.e(TAG, "onMessageSent: " + messageId);
-            Toast.makeText(getApplicationContext(), "Message Sent Successfully!" , Toast.LENGTH_SHORT).show();
         }
 
         @Override
