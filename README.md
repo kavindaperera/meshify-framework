@@ -12,7 +12,7 @@
   <p align="center">
     Adaptive Communication Framework for Android Devices using Bluetooth and Bluetooth Low Energy
     <br />
-    <a href="https://github.com/kavindaperera/meshify-framework"><strong>Explore the docs »</strong></a>
+    <a href="http://ec2-3-20-225-140.us-east-2.compute.amazonaws.com/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/kavindaperera/meshify-framework">View Demo</a>
