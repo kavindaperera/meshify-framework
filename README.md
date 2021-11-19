@@ -40,6 +40,7 @@
 
 [![Status](https://badgen.net/badge/status/development/red)]()
 [![Build Status](https://badgen.net/badge/build/pending/orange)]()
+[![LoC](https://badgen.net/badge/lines/8.54k/green)]()
 [![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/meshify-framework)
 [![License](https://badgen.net//badge/license/MIT/blue)]()
 
