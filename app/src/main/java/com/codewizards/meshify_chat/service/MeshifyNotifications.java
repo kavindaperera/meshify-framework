@@ -75,7 +75,10 @@ public class MeshifyNotifications {
                     bundle.putParcelableArrayList(Constants.NOTIFICATION_MESSAGES_ARRAY, next.getMessages());
                     i = next.getNotificationId();
                     bundle.putInt(Constants.NOTIFICATION_ID, i);
-                    displayNotification(i, intent.putExtras(bundle), str);
+                    displayNotification(
+                            i,
+                            intent.putExtras(bundle).putExtra(Constants.INTENT_EXTRA_NAME, str).putExtra(Constants.INTENT_EXTRA_UUID, string),
+                            str);
                     break;
                 }
             }
@@ -90,7 +93,10 @@ public class MeshifyNotifications {
                 arr.add(create);
                 notifications.add(new MessageHolder(string, arr, nextInt));
                 bundle.putParcelableArrayList(Constants.NOTIFICATION_MESSAGES_ARRAY, arr);
-                displayNotification(nextInt, intent.putExtras(bundle), str);
+                displayNotification(
+                        nextInt,
+                        intent.putExtras(bundle).putExtra(Constants.INTENT_EXTRA_NAME, str).putExtra(Constants.INTENT_EXTRA_UUID, string),
+                        str);
             }
         }
     }

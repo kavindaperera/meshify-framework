@@ -97,7 +97,13 @@ public class MainActivity extends AppCompatActivity {
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
 
-                MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, "Meshify User"); //Remove
+                //TODO- Remove later
+                Neighbor neighbor = adapter.getNeighborById(message.getSenderId());
+                String nName = "Unknown User";
+                if (neighbor != null) {
+                    nName = neighbor.getDeviceName();
+                }
+                MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, nName);
 
             }
         }
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessageSent(String messageId) {
             super.onMessageSent(messageId);
-            Log.e(TAG, "onMessageSent: " + messageId);
+            Log.i(TAG, "onMessageSent: " + messageId);
         }
 
         @Override

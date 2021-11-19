@@ -63,6 +63,16 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
         return getItem(position);
     }
 
+    public Neighbor getNeighborById(String id) {
+        for (int i = 0; i < getItemCount(); i++){
+            Neighbor n1 = getItem(i);
+            if (n1.getUuid().equals(id)){
+                return n1;
+            }
+        }
+        return null;
+    }
+
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
