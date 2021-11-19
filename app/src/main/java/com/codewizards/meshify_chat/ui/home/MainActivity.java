@@ -296,13 +296,6 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, neighbor.isNearby())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
 
-
-//        ArrayList<com.codewizards.meshify.framework.controllers.Session> activeSessions = Meshify.getInstance().getMeshifyCore().getAllActiveSessions();
-//        for (Session session: activeSessions) {
-//            mainViewModel.updateNearby(session.getUserId(), true);
-//        }
-
-
     }
 
     @Override

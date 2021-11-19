@@ -135,9 +135,4 @@ public class MeshifyCore {
             session.disconnect();
         }
     }
-
-//    public ArrayList<Session> getAllActiveSessions(){
-//        return SessionManager.getSessions();
-//    }
-
 }
