@@ -211,16 +211,16 @@ public class BluetoothController {
     private void startBluetoothLeDiscovery(Context context) {
         Log.d(TAG, "startBluetoothLeDiscovery:");
         if (this.isBLE) {
-            if (this.bluetoothLeDiscovery == null) {
-                this.bluetoothLeDiscovery = new BluetoothLeDiscovery(context);
-            } else {
-                Log.w(TAG, "startBluetoothLeDiscovery: already exists");
-            }
-            if (!this.bluetoothLeDiscovery.isDiscoveryRunning()) {
-                this.bluetoothLeDiscovery.startDiscovery(context, this.getConfig());
-            } else {
-                Log.e(TAG, "startBluetoothLeDiscovery: discovery already running");
-            }
+//            if (this.bluetoothLeDiscovery == null) {
+//                this.bluetoothLeDiscovery = new BluetoothLeDiscovery(context);
+//            } else {
+//                Log.w(TAG, "startBluetoothLeDiscovery: already exists");
+//            }
+//            if (!this.bluetoothLeDiscovery.isDiscoveryRunning()) {
+//                this.bluetoothLeDiscovery.startDiscovery(context, this.getConfig());
+//            } else {
+//                Log.e(TAG, "startBluetoothLeDiscovery: discovery already running");
+//            }
         }
     }
 
