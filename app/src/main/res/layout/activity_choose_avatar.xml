@@ -61,7 +61,7 @@
         android:elevation="@dimen/elevation_bottom_nav"
         android:fontFamily="sans-serif"
         android:onClick="saveAvatar"
-        android:text="@string/save"
+        android:text="@string/done"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"

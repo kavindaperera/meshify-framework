@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -50,8 +49,8 @@ import com.codewizards.meshify_chat.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -200,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
             super.onDeviceLost(device);
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
-
         }
     };
 
@@ -297,6 +295,14 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
                 .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, neighbor.isNearby())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
+
+
+//        ArrayList<com.codewizards.meshify.framework.controllers.Session> activeSessions = Meshify.getInstance().getMeshifyCore().getAllActiveSessions();
+//        for (Session session: activeSessions) {
+//            mainViewModel.updateNearby(session.getUserId(), true);
+//        }
+
+
     }
 
     @Override

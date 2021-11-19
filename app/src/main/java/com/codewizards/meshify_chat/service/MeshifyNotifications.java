@@ -123,11 +123,11 @@ public class MeshifyNotifications {
             contentIntent.setLargeIcon(largeIcon);
         }
 
-        Person.Builder builder = new Person.Builder();
-        if (str == null) {
-            str = Constants.IMAGES_FOLDER;
-        }
-        builder.setName(str);
+//        Person.Builder builder = new Person.Builder();
+//        if (str == null) {
+//            str = Constants.IMAGES_FOLDER;
+//        }
+//        builder.setName(str);
 
 //        NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(str);
 //        Iterator it = parcelableArrayList.iterator();
