@@ -42,6 +42,7 @@ import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
+import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
@@ -89,33 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 mainViewModel.updateNameByUuid(senderId, userName);
 
                 hideProgressBar();
-
-//                HashMap<String, Object> neighbors = new HashMap<>();
-//                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
-//                Message.Builder builder = new Message.Builder();
-//                builder.setContent(neighbors).setReceiverId(senderId);
-//                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
-
-//            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
-//
-//                String senderId = message.getSenderId();
-//                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
-//
-//                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
-//
-//                for (Neighbor neighbor : neighbors) {
-//
-//                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
-//
-//                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDevice_name());
-//                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDevice_name());
-//                        neighbor_ind.setNearby(false);
-//                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
-//                        neighbor_ind.setDevice(neighbor.getDevice());
-//                        adapter.addNeighbor(neighbor_ind);
-//
-//                    }
-//                }
 
             } else {
                 String text = (String) message.getContent().get("text");
@@ -240,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void newConversation(View v) {
-        Log.e(TAG, "New Conversation Activity");
+        startActivity(new Intent(this, ChooseAvatarActivity.class));
     }
 
     private void showSplashActivity() {

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    tools:context=".ui.avatar.ChooseAvatarActivity">
+
+    <FrameLayout
+        android:id="@+id/choose_avatar_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/choose_avatar_height_header"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"/>
+
+    <ImageButton
+        android:id="@+id/choose_avatar_selected_avatar"
+        android:layout_width="@dimen/choose_avatar_square_header_image"
+        android:layout_height="@dimen/choose_avatar_square_header_image"
+        android:layout_marginEnd="@dimen/meshify_margin_small"
+        android:layout_marginStart="@dimen/meshify_margin_small"
+        android:layout_marginTop="@dimen/meshify_margin_small"
+        android:background="@drawable/avatar_select"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/selected_avatar_description"
+        android:elevation="@dimen/elevation_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/choose_avatar_header" />
+
+    <ScrollView
+        android:id="@+id/avatarScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/meshify_margin_medium"
+        android:layout_marginStart="@dimen/meshify_margin_medium"
+        android:layout_marginTop="@dimen/meshify_margin_medium"
+        android:background="@drawable/scrollbar"
+        android:elevation="@dimen/elevation_card"
+        android:fillViewport="false"
+        android:paddingBottom="@dimen/meshify_margin_extra_large"
+        android:paddingLeft="@dimen/meshify_margin_large"
+        android:paddingRight="@dimen/meshify_margin_large"
+        android:paddingTop="@dimen/meshify_margin_extra_large"
+        app:layout_constraintBottom_toTopOf="@+id/saveUserAvatarButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/choose_avatar_selected_avatar" />
+
+    <Button
+        android:id="@+id/saveUserAvatarButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:clickable="false"
+        android:elevation="@dimen/elevation_bottom_nav"
+        android:fontFamily="sans-serif"
+        android:onClick="saveAvatar"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

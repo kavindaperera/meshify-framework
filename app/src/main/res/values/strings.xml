@@ -155,6 +155,7 @@
     <string name="remove_from_contacts">Remove from Contacts</string>
     <string name="user_avatar_description">User Avater</string>
     <string name="chat_message_failed">Retry</string>
+    <string name="choose_avatar_image_description">Avatar option</string>
 
 
 </resources>
