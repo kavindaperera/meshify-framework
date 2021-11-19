@@ -1,10 +1,14 @@
 package com.codewizards.meshify_chat.util;
 
+import android.content.Intent;
+
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";
     public static final int FOREGROUND_SERVICE = 333;
     public static final String CHAT_MESSAGE_RECEIVED = "chatMessage";
     public static final String CHAT_MESSAGE_RECEIVED_BACKGROUND = "chatMessageBackground";
+    public static final String CONNECTION_TYPE = "neighborConnectionType";
+    public static final String DEVICE_LOST = "deviceLost";
     public static final String INTENT_EXTRA_LAST_SEEN = "lastSeen";
     public static final String INTENT_EXTRA_NAME = "deviceName";
     public static final String INTENT_EXTRA_MSG = "message";
@@ -15,6 +19,7 @@ public class Constants {
     public static final String NOTIFICATION_MESSAGES_ARRAY = "chatMessagesArray";
     public static final String MESHIFY_APP_BACKGROUND = "com.codewizards.meshify.main.service.background";
     public static final String MESHIFY_APP_FOREGROUND = "com.codewizards.meshify.main.service.foreground";
+    public static final String MESHIFY_DEVICE = "meshifyDevice";
     public static final String MESHIFY_STOP = "com.codewizards.meshify.main.service.stop";
     public static final String MESSAGE = "meshifyMessage";
     public static final String PAYLOAD_DEVICE_NAME = "device_name";
@@ -29,6 +34,4 @@ public class Constants {
     public static final String PREFS_NOTIFICATION_SOUND = "notificationSound";
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
     public static final String DATABASE_PASSWORD = "database_password";
-
-
 }
