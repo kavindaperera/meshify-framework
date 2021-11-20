@@ -55,4 +55,12 @@ public abstract class ConnectionListener {
 
     }
 
+    /**
+     * Callback when an indirect device is received
+     * @param device the Device object which was received
+     */
+    public void onIndirectDeviceFound(Device device){
+
+    }
+
 }

@@ -7,6 +7,7 @@ import com.codewizards.meshify.client.Device;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ResponseJson implements Parcelable {
@@ -21,7 +22,7 @@ public class ResponseJson implements Parcelable {
     private String uuid;
 
     @JsonProperty(value="neighborDetails")
-    private HashMap<String, Object> neighborDetails;
+    private ArrayList<Device> neighborDetails;
 
     public ResponseJson() {
     }
@@ -30,7 +31,7 @@ public class ResponseJson implements Parcelable {
         type = in.readInt();
         uuid = in.readString();
         key = in.readString();
-        neighborDetails = in.readHashMap(Device.class.getClassLoader());
+        neighborDetails = in.readArrayList(Device.class.getClassLoader());
     }
 
     public static final Creator<ResponseJson> CREATOR = new Creator<ResponseJson>() {
@@ -59,7 +60,7 @@ public class ResponseJson implements Parcelable {
         return responseJson;
     }
 
-    public static ResponseJson ResponseTypeNeighborDetails(HashMap<String, Object> neighborDetails) {
+    public static ResponseJson ResponseTypeNeighborDetails(ArrayList<Device> neighborDetails) {
         ResponseJson responseJson = new ResponseJson();
         responseJson.setType(1);
         responseJson.setNeighborDetails(neighborDetails);
@@ -94,11 +95,11 @@ public class ResponseJson implements Parcelable {
     }
 
     @JsonProperty(value="neighborDetails")
-    public HashMap<String, Object> getNeighborDetails() {
+    public ArrayList<Device> getNeighborDetails() {
         return this.neighborDetails;
     }
 
-    public void setNeighborDetails(HashMap<String, Object> neighborDetails) {
+    public void setNeighborDetails(ArrayList<Device> neighborDetails) {
         this.neighborDetails = neighborDetails;
     }
 
@@ -116,6 +117,6 @@ public class ResponseJson implements Parcelable {
         dest.writeInt(this.type);
         dest.writeString(this.uuid);
         dest.writeString(this.key);
-        dest.writeMap(this.neighborDetails);
+        dest.writeList(this.neighborDetails);
     }
 }

@@ -200,6 +200,13 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
         }
+
+        @Override
+        public void onIndirectDeviceFound(Device device){
+            super.onIndirectDeviceFound(device);
+            Log.i(TAG, "onIndirectDeviceFound: " + device.getDeviceName());
+        }
+
     };
 
 

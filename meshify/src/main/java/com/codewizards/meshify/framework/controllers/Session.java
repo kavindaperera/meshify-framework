@@ -2,6 +2,8 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 
 import com.codewizards.meshify.client.Config;
@@ -169,13 +171,11 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                     ArrayList<Session> sessions= SessionManager.getSessions();
                     if (sessions != null) {
-                        HashMap<String, Object> neighborDetails = new HashMap<>();
+                        ArrayList<Device> neighborDetails = new ArrayList<>();
                         for (Session session : sessions) {
                             Device device = session.getDevice();
-                            neighborDetails.put(device.getDeviceName(), device);
+                            neighborDetails.add(device);
                         }
-                        //Message message = new Message(neighborDetails, Meshify.getInstance().getMeshifyClient().getUserUuid(), this.getUserId(), true, 3);
-                        //Meshify.getInstance().getMeshifyCore().sendBroadcastMessage(message, ConfigProfile.Default);
                         responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
                     }
                     break;
@@ -205,11 +205,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
                 case 1: {
                     Log.i(TAG, "processHandshake: response type 2 : neighbor details received ");
-                    HashMap<String, Object> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
-                    Iterator<String> keys = neighborDetails.keySet().iterator();
-                    while(keys.hasNext()){
-                        String deviceName = keys.next();
-                        Log.i(TAG, deviceName + " details received");
+
+                    ArrayList<Device> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
+
+                    for(Device indirectDevice: neighborDetails) {
+
+                        if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null) continue;
+
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                        });
                     }
 
                     // check whether public key already exists
