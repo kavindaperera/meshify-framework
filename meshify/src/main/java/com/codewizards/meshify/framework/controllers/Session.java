@@ -178,9 +178,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                                 neighborDetails.add(device);
                             }
                         }
-                        if (neighborDetails.size() > 0) {
-                            responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
-                        }
+                        responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
                     }
                     break;
                 }
