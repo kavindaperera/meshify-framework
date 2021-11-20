@@ -165,13 +165,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
                 case 1: {
                     Log.i(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
-                    Log.i(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
-                    responseJson = ResponseJson.ResponseTypeKey(Meshify.getInstance().getMeshifyClient().getPublicKey());
-                    break;
-                }
-                case 2: {
-                    Log.i(TAG, "processHandshake: request type 2 device: " + this.getDevice().getDeviceAddress());
-                    Log.i(TAG, "processHandshake: neighbor details requested: ");
+                    Log.i(TAG, "processHandshake: neighbor details requested:");
 
                     ArrayList<Session> sessions= SessionManager.getSessions();
                     if (sessions != null) {
@@ -179,11 +173,17 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                         for (Session session : sessions) {
                             Device device = session.getDevice();
                             neighborDetails.put(device.getDeviceName(), device);
-                            //Message message = new Message(neighborDetails, Meshify.getInstance().getMeshifyClient().getUserUuid(), this.getUserId(), true, 3);
-                            //Meshify.getInstance().getMeshifyCore().sendBroadcastMessage(message, ConfigProfile.Default);
-                            responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
                         }
+                        //Message message = new Message(neighborDetails, Meshify.getInstance().getMeshifyClient().getUserUuid(), this.getUserId(), true, 3);
+                        //Meshify.getInstance().getMeshifyCore().sendBroadcastMessage(message, ConfigProfile.Default);
+                        responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
                     }
+                    break;
+                }
+                case 2: {
+                    Log.i(TAG, "processHandshake: request type 2 device: " + this.getDevice().getDeviceAddress());
+                    Log.i(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
+                    responseJson = ResponseJson.ResponseTypeKey(Meshify.getInstance().getMeshifyClient().getPublicKey());
                     break;
                 }
             }
@@ -198,34 +198,35 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     this.getDevice().setUserId(meshifyHandshake.getRp().getUuid());
                     DeviceManager.addDevice(this.getDevice());
 
+                    Log.i(TAG, "processHandshake: asking for neighbor details");
+                    rq = 1;
+
+                    break;
+                }
+                case 1: {
+                    Log.i(TAG, "processHandshake: response type 2 : neighbor details received ");
+                    HashMap<String, Object> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
+                    Iterator<String> keys = neighborDetails.keySet().iterator();
+                    while(keys.hasNext()){
+                        String deviceName = keys.next();
+                        Log.i(TAG, deviceName + " details received");
+                    }
+
                     // check whether public key already exists
                     HashMap<String,String> publicKeysMap = getKeys();
                     if (!publicKeysMap.containsKey(meshifyHandshake.getRp().getUuid())) {
 
                         if (Meshify.getInstance().getConfig().isEncryption()) {
                             Log.i(TAG, "processHandshake: asking for key");
-                            rq = 1;
+                            rq = 2;
                         }
                     }
                     break;
                 }
-                case 1: {
-                    Log.i(TAG, "processHandshake: response type 1 : public key received " + meshifyHandshake.getRp().getKey());
+                case 2: {
+                    Log.i(TAG, "processHandshake: response type 2 : public key received " + meshifyHandshake.getRp().getKey());
                     this.setPublicKey(meshifyHandshake.getRp().getKey());
                     Session.saveKey(this.getUserId(), meshifyHandshake.getRp().getKey());
-
-                    Log.i(TAG, "processHandshake: asking for neighbor details");
-                    rq = 2;
-                    break;
-                }
-                case 2: {
-                    Log.i(TAG, "processHandshake: response type 2 : neighbor details received ");
-                    HashMap<String, Object> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
-                    Iterator<String> keys = neighborDetails.keySet().iterator();
-                    while(keys.hasNext()){
-                        String deviceName = keys.next();
-                        Log.i(TAG, deviceName + "details received ");
-                    }
                 }
             }
         }

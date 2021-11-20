@@ -3,6 +3,7 @@ package com.codewizards.meshify.framework.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.codewizards.meshify.client.Device;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
@@ -29,7 +30,7 @@ public class ResponseJson implements Parcelable {
         type = in.readInt();
         uuid = in.readString();
         key = in.readString();
-        neighborDetails = in.readHashMap(HashMap.class.getClassLoader());
+        neighborDetails = in.readHashMap(Device.class.getClassLoader());
     }
 
     public static final Creator<ResponseJson> CREATOR = new Creator<ResponseJson>() {
@@ -53,14 +54,14 @@ public class ResponseJson implements Parcelable {
 
     public static ResponseJson ResponseTypeKey(String key) {
         ResponseJson responseJson = new ResponseJson();
-        responseJson.setType(1);
+        responseJson.setType(2);
         responseJson.setKey(key);
         return responseJson;
     }
 
     public static ResponseJson ResponseTypeNeighborDetails(HashMap<String, Object> neighborDetails) {
         ResponseJson responseJson = new ResponseJson();
-        responseJson.setType(2);
+        responseJson.setType(1);
         responseJson.setNeighborDetails(neighborDetails);
         return responseJson;
     }
