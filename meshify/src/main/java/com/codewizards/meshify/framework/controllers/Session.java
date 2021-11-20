@@ -174,9 +174,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                         ArrayList<Device> neighborDetails = new ArrayList<>();
                         for (Session session : sessions) {
                             Device device = session.getDevice();
-                            neighborDetails.add(device);
+                            if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
+                                neighborDetails.add(device);
+                            }
                         }
-                        responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
+                        if (neighborDetails.size() > 0) {
+                            responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
+                        }
                     }
                     break;
                 }
