@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,18 +27,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
-import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.models.Neighbor;
-import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.permissions.RationaleDialog;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
@@ -49,7 +51,6 @@ import com.codewizards.meshify_chat.util.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -158,9 +159,17 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
             if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
-                Toast.makeText(getApplicationContext(), "ERROR! Please turn on Location Services and Restart", Toast.LENGTH_LONG).show();
+
+                RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
+                        .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
+                        .setCancelable(false)
+                        .show()
+                        .getWindow()
+                        .setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
             }
         }
+
 
         @Override
         public void onDeviceConnected(Device device, Session session) {
