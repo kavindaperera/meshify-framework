@@ -124,12 +124,12 @@ public class MeshifyCore {
     }
 
     public void connectDevice(Device device) {
-        Log.e(TAG, "Connect to Device: " + device );
+        Log.i(TAG, "Connect to Device: " + device );
         ConnectionManager.connect(device);
     }
 
     public void disconnectDevice(Device device) {
-        Log.e(TAG, "Disconnect Device: " + device);
+        Log.i(TAG, "Disconnect Device: " + device);
         Session session = SessionManager.getSession(device.getDeviceAddress());
         if (session != null) {
             session.disconnect();
