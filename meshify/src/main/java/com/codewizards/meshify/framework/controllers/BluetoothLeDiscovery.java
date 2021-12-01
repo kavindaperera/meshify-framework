@@ -11,11 +11,13 @@ import android.os.ParcelUuid;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -44,6 +46,12 @@ public class BluetoothLeDiscovery extends Discovery {
     private ScanCallback scanCallback;
 
     private ScheduledThreadPoolExecutor threadPoolExecutor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(40);
+
+    private final String bleUuid = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();
+
+    private final String btUuid = BluetoothUtils.getHashedBluetoothUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();
+
+
 
     public BluetoothLeDiscovery(Context context) {
         BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
@@ -127,7 +135,7 @@ public class BluetoothLeDiscovery extends Discovery {
         String string;
         blockX: {
             BluetoothDevice bluetoothDevice;
-            Map map;
+            Map<ParcelUuid,byte[]> map;
             blockY: {
                 List list = scanResult.getScanRecord().getServiceUuids();
                 map = scanResult.getScanRecord().getServiceData();
@@ -140,6 +148,21 @@ public class BluetoothLeDiscovery extends Discovery {
                 break blockX;
             }
             if (map == null || map.entrySet() == null) break blockX;
+            for (Map.Entry entry : map.entrySet()) {
+                String string3 = new String((byte[])entry.getValue());
+                UUID uuid = ((ParcelUuid) entry.getKey()).getUuid();
+                string = this.stringStringHashMap.get(bluetoothDevice.getAddress());
+                if (string != null) continue;
+                Log.w(TAG, "\nAPIKEY: " + Meshify.getInstance().getMeshifyClient().getApiKey() +
+                        "\nDeviceData: " + string3 +
+                        "\nService UUID: " + uuid.toString() +
+                        "\nCustom UUID: " +
+                        "\nUUID: " + this.btUuid +
+                        "\nUUID: " + this.bleUuid);
+                if (!uuid.toString().equalsIgnoreCase(this.bleUuid)) continue;
+
+                Log.d(TAG, "Device Found " + string3 + " : " );
+            }
 
         }
         return string;
