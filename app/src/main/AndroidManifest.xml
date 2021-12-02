@@ -35,9 +35,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meshifychat">
-        <activity android:name=".ui.avatar.ChooseAvatarActivity"></activity>
+        <activity android:name=".ui.broadcast.BroadcastActivity"></activity>
+        <activity android:name=".ui.avatar.ChooseAvatarActivity" />
         <activity android:name=".ui.intro.IntroActivity" />
-        <activity android:name=".ui.about.AboutActivity"
+        <activity
+            android:name=".ui.about.AboutActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
