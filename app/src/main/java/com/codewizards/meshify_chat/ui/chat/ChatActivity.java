@@ -1,6 +1,9 @@
 package com.codewizards.meshify_chat.ui.chat;
 
+import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,11 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify.framework.controllers.ServerFactory;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
 import com.codewizards.meshify_chat.util.Constants;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,15 +35,22 @@ import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
+import butterknife.OnTextChanged;
 
 
 public class ChatActivity extends AppCompatActivity {
 
     public static String TAG = "[Meshify][ChatActivity]";
 
-    @BindView(R.id.txtMessage)
-    EditText txtMessage;
+    @BindView(R.id.txtChatLine)
+    protected EditText chatLine;
+
+    @BindView(R.id.fabText)
+    protected FloatingActionButton fabText;
+
     MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
+
     private String deviceName;
     private boolean lastSeen;
     private String deviceId;
@@ -111,6 +122,8 @@ public class ChatActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        this.fabText.setVisibility(View.INVISIBLE);
+
         RecyclerView messagesRecyclerView = findViewById(R.id.messages);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(true);
@@ -124,13 +137,33 @@ public class ChatActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    @OnClick({R.id.btnSend})
+    @OnTextChanged(R.id.txtChatLine)
+    public void onTextChanged(CharSequence charSequence) {
+        if (charSequence.length() == 0) {
+            this.fabText.hide(true);
+        } else {
+            this.fabText.show(true);
+        }
+    }
+
+    @OnLongClick(R.id.txtChatLine)
+    public boolean onChatLineLongClick() {
+        ClipboardManager clipboardManager = (ClipboardManager) this.getSystemService(Service.CLIPBOARD_SERVICE);
+        if (clipboardManager.getPrimaryClip() == null || clipboardManager.getPrimaryClip().getItemAt(0) == null) {
+            return true;
+        }
+        ClipData.Item itemAt = clipboardManager.getPrimaryClip().getItemAt(0);
+        this.chatLine.append((itemAt.getText() != null ? itemAt.getText().toString() : ""));
+        return true;
+    }
+
+    @OnClick({R.id.fabText})
     public void onMessageSend(View v) {
 
-        String messageString = txtMessage.getText().toString();
+        String messageString = chatLine.getText().toString();
         if (messageString.trim().length() > 0) {
 
-            txtMessage.setText("");
+            chatLine.setText("");
 
             Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
             message.setDirection(Message.OUTGOING_MESSAGE);
