@@ -147,12 +147,12 @@ public class ConnectionManager {
             };
 
             if (meshifyDevice1 !=null) {
-                Log.e(TAG, "Sending to connect: " + meshifyDevice1.getDevice().toString() );
+                Log.i(TAG, "Sending to connect: " + meshifyDevice1.getDevice().toString() );
                 meshifyDevice1.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver);
             }
 
         } else if (meshifyDevice != null) {
-            Log.e(TAG, "Waiting to connect: " + meshifyDevice.getDevice().toString());
+            Log.i(TAG, "Waiting to connect: " + meshifyDevice.getDevice().toString());
          }
     }
 }

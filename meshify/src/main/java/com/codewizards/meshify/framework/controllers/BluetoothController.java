@@ -42,6 +42,8 @@ public class BluetoothController {
 
     private static GattManager gattManager;
 
+    private MeshifyAdvertiseCallback advertiseCallback;
+
     private BluetoothAdapter bluetoothAdapter;
 
 
@@ -89,7 +91,7 @@ public class BluetoothController {
         }
     }
 
-    public boolean startAdvertising(String string) throws IllegalStateException {
+    public boolean startAdvertising(String userUuid) throws IllegalStateException {
 
         if (state != 3) {
             try {
@@ -97,18 +99,22 @@ public class BluetoothController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             try {
 
                 if (this.bluetoothAdapter != null && this.bluetoothAdapter.getBluetoothLeAdvertiser() != null && this.threadServerBle != null && this.threadServerBle.getServerSocket() != null ) {
-                    Log.d(TAG, "startAdvertising:");
-
+                    AdvertiseSettings advertiseSettings = BluetoothUtils.getAdvertiseSettings();
+                    AdvertiseData advertiseData = BluetoothUtils.getAdvertiseData(userUuid);
+                    BluetoothLeAdvertiser bluetoothLeAdvertiser = this.bluetoothAdapter.getBluetoothLeAdvertiser();
+                    if (bluetoothLeAdvertiser != null) {
+                        this.advertiseCallback = new MeshifyAdvertiseCallback();
+                        Log.i(TAG, "startAdvertising: " + advertiseData.toString());
+                        bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, this.advertiseCallback);
+                    }
                     // TODO
 
                     state = 3;
                     return true;
                 }
-
                 state = 1;
                 return false;
             }
@@ -122,7 +128,6 @@ public class BluetoothController {
             }
 
         }
-
         Log.e(TAG, "startAdvertising: advertising already running");
         return false;
 
@@ -278,9 +283,9 @@ public class BluetoothController {
                 interruptedException.printStackTrace();
             }
 
-            String string = Meshify.getInstance().getMeshifyClient().getUserUuid();
+            String userUuid = Meshify.getInstance().getMeshifyClient().getUserUuid();
 
-            this.startAdvertising(string);
+            this.startAdvertising(userUuid);
 
         } else {
             //empty

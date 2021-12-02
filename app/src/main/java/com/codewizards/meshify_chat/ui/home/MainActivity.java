@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,21 +27,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
-import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.models.Neighbor;
-import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.permissions.RationaleDialog;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
+import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
@@ -50,7 +52,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -90,41 +91,19 @@ public class MainActivity extends AppCompatActivity {
 
                 hideProgressBar();
 
-//                HashMap<String, Object> neighbors = new HashMap<>();
-//                neighbors.put(Constants.PAYLOAD_DEVICE_NEIGHBORS, adapter.getAllNeighbors());
-//                Message.Builder builder = new Message.Builder();
-//                builder.setContent(neighbors).setReceiverId(senderId);
-//                Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
-
-//            } else if (message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS) != null) {
-//
-//                String senderId = message.getSenderId();
-//                String neighborString = (String) message.getContent().get(Constants.PAYLOAD_DEVICE_NEIGHBORS);
-//
-//                List<Neighbor> neighbors = new Gson().fromJson(neighborString, new TypeToken<List<Neighbor>>(){}.getType());
-//
-//                for (Neighbor neighbor : neighbors) {
-//
-//                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equals(neighbor.getUuid()) && (adapter.getNeighborPosition(neighbor.getUuid()) == -1) ) {
-//
-//                        Log.e(TAG, "Indirect Neighbor Found " +  neighbor.getDevice_name());
-//                        Neighbor neighbor_ind = new Neighbor(neighbor.getUuid(), neighbor.getDevice_name());
-//                        neighbor_ind.setNearby(false);
-//                        neighbor_ind.setDeviceType(Neighbor.DeviceType.ANDROID);
-//                        neighbor_ind.setDevice(neighbor.getDevice());
-//                        adapter.addNeighbor(neighbor_ind);
-//
-//                    }
-//                }
-
             } else {
                 String text = (String) message.getContent().get("text");
                 LocalBroadcastManager
                         .getInstance(getBaseContext())
                         .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
 
-
-                MeshifyNotifications.getInstance().createChatNotification(message, text); //Remove
+                //TODO- Remove later
+                Neighbor neighbor = adapter.getNeighborById(message.getSenderId());
+                String nName = "Unknown User";
+                if (neighbor != null) {
+                    nName = neighbor.getDeviceName();
+                }
+                MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, nName);
 
             }
         }
@@ -145,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessageSent(String messageId) {
             super.onMessageSent(messageId);
-            Log.e(TAG, "onMessageSent: " + messageId);
-            Toast.makeText(getApplicationContext(), "Message Sent Successfully!" , Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "onMessageSent: " + messageId);
         }
 
         @Override
@@ -181,9 +159,17 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
             if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
-                Toast.makeText(getApplicationContext(), "ERROR! Please turn on Location Services and Restart", Toast.LENGTH_LONG).show();
+
+                RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
+                        .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
+                        .setCancelable(false)
+                        .show()
+                        .getWindow()
+                        .setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
             }
         }
+
 
         @Override
         public void onDeviceConnected(Device device, Session session) {
@@ -222,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
             super.onDeviceLost(device);
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
-
         }
     };
 
@@ -242,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void newConversation(View v) {
-        Log.e(TAG, "New Conversation Activity");
+        startActivity(new Intent(this, ChooseAvatarActivity.class));
     }
 
     private void showSplashActivity() {
@@ -319,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra(Constants.INTENT_EXTRA_NAME, neighbor.getDeviceName())
                 .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, neighbor.isNearby())
                 .putExtra(Constants.INTENT_EXTRA_UUID, neighbor.getUuid())));
+
     }
 
     @Override

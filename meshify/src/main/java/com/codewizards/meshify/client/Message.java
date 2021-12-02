@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,6 +40,11 @@ public class Message implements Parcelable {
         this.isMesh = mesh;
         this.hop = hop;
     }
+
+    public static Message create(String str) throws JsonSyntaxException {
+        return (Message) new Gson().fromJson(str, Message.class);
+    }
+
 
     protected Message(Parcel parcel) {
         receiverId = parcel.readString();

@@ -8,6 +8,7 @@
     <string name="channel_name">Meshify</string>
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
+    <string name="done">Done</string>
     <string name="dummy_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
     <string name="foreground_notification_action_stop">Stop</string>
     <string name="foreground_notification_content_title">Meshify is now running in the background</string>
@@ -155,6 +156,7 @@
     <string name="remove_from_contacts">Remove from Contacts</string>
     <string name="user_avatar_description">User Avater</string>
     <string name="chat_message_failed">Retry</string>
+    <string name="choose_avatar_image_description">Avatar option</string>
 
 
 </resources>
