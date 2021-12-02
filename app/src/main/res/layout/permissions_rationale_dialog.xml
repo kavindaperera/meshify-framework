@@ -29,6 +29,7 @@
         android:paddingEnd="20dp"
         android:paddingBottom="40dp"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="15sp"
         tools:text="Meshify needs access to your contacts and location in order to connect with friends" />
 

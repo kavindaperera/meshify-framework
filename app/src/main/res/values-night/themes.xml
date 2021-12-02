@@ -16,5 +16,5 @@
 
     </style>
     <style name="MeshifyTheme.AppBarOverlay" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="MeshifyTheme.PopupOverlay" parent="@style/ThemeOverlay.AppCompat.Light" />
+    <style name="MeshifyTheme.PopupOverlay" parent="@style/ThemeOverlay.AppCompat.DayNight" />
 </resources>
