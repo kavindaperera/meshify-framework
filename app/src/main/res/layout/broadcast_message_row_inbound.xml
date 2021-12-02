@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <include
+        android:id="@+id/badgeInitials"
+        layout="@layout/badge_initials"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/chat_row_margin"
+        android:layout_marginRight="@dimen/chat_row_margin"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bubble_in"
+        android:paddingLeft="8dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:id="@+id/broadcast_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dp"
+            android:autoLink="web"
+            android:lineSpacingExtra="2sp"
+            android:minEms="3"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:text="@string/placeholder_device_name"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/broadcast_user_name"
+            android:layout_marginLeft="8dp"
+            android:autoLink="web"
+            android:lineSpacingExtra="2sp"
+            android:minEms="3"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:text="@string/placeholder_message"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/msgDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtMessage"
+            android:layout_alignStart="@+id/txtMessage"
+            android:layout_alignLeft="@+id/txtMessage"
+            android:text="@string/placeholder_date"
+            android:textColor="@color/black"
+            android:textSize="8sp" />
+    </RelativeLayout>
+</LinearLayout>

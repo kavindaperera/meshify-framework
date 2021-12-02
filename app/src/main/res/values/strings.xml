@@ -159,6 +159,7 @@
     <string name="choose_avatar_image_description">Avatar option</string>
     <string name="placeholder_date">12:20</string>
     <string name="placeholder_broadcast_chat">Broadcast Chat</string>
+    <string name="messages_paginator">LOAD OLDER MESSAGES</string>
 
 
 </resources>
