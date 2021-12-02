@@ -14,6 +14,7 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.logs.Log;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,9 @@ public class BluetoothLeDiscovery extends Discovery {
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private HashMap<String, String> stringStringHashMap;
+    private HashMap<String, String> deviceHashMap;
 
-    private HashMap<String, ScheduledFuture> stringScheduledFutureHashMap;
+    private HashMap<String, ScheduledFuture> scheduledFutureHashMap;
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
@@ -47,9 +48,11 @@ public class BluetoothLeDiscovery extends Discovery {
 
     private ScheduledThreadPoolExecutor threadPoolExecutor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(40);
 
-    private final String bleUuid = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();
+    private final String bleUuid = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();   // j
 
-    private final String btUuid = BluetoothUtils.getHashedBluetoothUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();
+    private final String btUuid = BluetoothUtils.getHashedBluetoothUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();      // k
+
+    private final String bleUuid2 = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getMeshifyClient().getApiKey());          // l
 
 
 
@@ -59,8 +62,8 @@ public class BluetoothLeDiscovery extends Discovery {
         if (this.bluetoothAdapter == null) {
             Log.e(TAG, " BluetoothAdapter was NULL");
         }
-        this.stringStringHashMap = new HashMap<>();
-        this.stringScheduledFutureHashMap = new HashMap<>();
+        this.deviceHashMap = new HashMap<>();
+        this.scheduledFutureHashMap = new HashMap<>();
     }
 
     @SuppressLint("CheckResult")
@@ -88,7 +91,6 @@ public class BluetoothLeDiscovery extends Discovery {
                                             @Override
                                             public void onScanResult(int callbackType, ScanResult result) {
                                                 super.onScanResult(callbackType, result);
-                                                Log.d(TAG, "onScanResult: ");
                                                 BluetoothLeDiscovery.this.onScanResultAction(result, (FlowableEmitter<Device>) emitter);
                                             }
 
@@ -101,7 +103,6 @@ public class BluetoothLeDiscovery extends Discovery {
                                             @Override
                                             public void onScanFailed(int errorCode) {
                                                 super.onScanFailed(errorCode);
-                                                Log.e(TAG, "onScanFailed: ");
                                             }
                                         });
 
@@ -127,8 +128,53 @@ public class BluetoothLeDiscovery extends Discovery {
         }, throwable -> Log.e(TAG, "error: " + throwable.getMessage()));
     }
 
-    private void onScanResultAction(ScanResult result, FlowableEmitter<Device> emitter) {
-        String string = this.processScanResult(result);
+    @SuppressLint("MissingPermission")
+    private void onScanResultAction(ScanResult scanResult, FlowableEmitter<Device> flowableEmitter) {
+        String string = this.processScanResult(scanResult);
+        if (string != null && this.bluetoothAdapter != null && this.bluetoothAdapter.isEnabled()){
+            Device device = this.processPresenceResult(string, scanResult.getDevice());
+            if (device != null && SessionManager.getSession(device.getDeviceAddress()) == null && Meshify.getInstance().getConfig().isAutoConnect()){
+                flowableEmitter.onNext(device);
+            } else if (device!=null){
+                // TODO - add to scheduled future
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    synchronized Device processPresenceResult(String string, BluetoothDevice bluetoothDevice) {
+        if (this.bluetoothAdapter.isEnabled() && bluetoothDevice != null){
+            if (ConnectionManager.checkConnection(bluetoothDevice.getAddress())){
+                Log.e(TAG, "Device is blacklisted");
+                return null;
+            }
+            if (SessionManager.sessionMap.get(bluetoothDevice.getAddress()) != null){
+                return null;
+            }
+            String userUuid = Meshify.getInstance().getMeshifyClient().getUserUuid();
+            boolean bl = false;
+            Collection<Session> collection = SessionManager.sessionMap.values();
+            for (Session session : collection){
+                //TODO - get a session count
+                if (session.getBluetoothGatt() != null && session.getBluetoothGatt().getDevice() != null && session.getBluetoothGatt().getDevice().equals(bluetoothDevice)){
+                    bl = true;
+                    break;
+                }
+            }
+            if (!Meshify.getInstance().getConfig().isAutoConnect()) { //TODO - check maximum connections
+                Device device = DeviceManager.getDevice(bluetoothDevice.getAddress());
+                if (device == null) {
+                    device = new Device(bluetoothDevice, true);
+                    device.setAntennaType(Config.Antenna.BLUETOOTH_LE);
+                    device.setDeviceName(string);
+                    device.setUserId(string);
+                }
+                return device;
+            }
+            return null;
+        }
+        Log.e(TAG, "processPresenceResult: could not process Bluetooth device");
+        return null;
     }
 
     private String processScanResult(ScanResult scanResult) {
@@ -140,7 +186,7 @@ public class BluetoothLeDiscovery extends Discovery {
                 List list = scanResult.getScanRecord().getServiceUuids();
                 map = scanResult.getScanRecord().getServiceData();
                 bluetoothDevice = scanResult.getDevice();
-                Log.i(TAG, "service_data: " + map.toString());
+                Log.i(TAG, "scanResult: " + map.toString());
                 string = null;
                 if (list == null || list.isEmpty()) break blockY;
 
@@ -151,19 +197,19 @@ public class BluetoothLeDiscovery extends Discovery {
             for (Map.Entry entry : map.entrySet()) {
                 String string3 = new String((byte[])entry.getValue());
                 UUID uuid = ((ParcelUuid) entry.getKey()).getUuid();
-                string = this.stringStringHashMap.get(bluetoothDevice.getAddress());
+                string = this.deviceHashMap.get(bluetoothDevice.getAddress());
                 if (string != null) continue;
                 Log.w(TAG, "\nAPIKEY: " + Meshify.getInstance().getMeshifyClient().getApiKey() +
                         "\nDeviceData: " + string3 +
                         "\nService UUID: " + uuid.toString() +
-                        "\nCustom UUID: " +
-                        "\nUUID: " + this.btUuid +
-                        "\nUUID: " + this.bleUuid);
-                if (!uuid.toString().equalsIgnoreCase(this.bleUuid)) continue;
-
-                Log.d(TAG, "Device Found " + string3 + " : " );
+                        "\nCustom UUID: " + this.bleUuid2 +
+                        "\nBT UUID: " + this.btUuid +
+                        "\nBLE UUID: " + this.bleUuid);
+                if (!uuid.toString().equalsIgnoreCase(this.bleUuid) && !uuid.toString().equalsIgnoreCase(this.btUuid) && !uuid.toString().equalsIgnoreCase(this.bleUuid2)) continue;
+                string = BluetoothUtils.getUuidFromDataString(string3);
+                this.deviceHashMap.put(bluetoothDevice.getAddress(), string);
+                Log.e(TAG, "Device Found " + string3 + " userUuid: " + string);
             }
-
         }
         return string;
     }

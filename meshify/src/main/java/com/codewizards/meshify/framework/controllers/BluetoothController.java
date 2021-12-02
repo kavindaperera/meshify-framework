@@ -107,7 +107,7 @@ public class BluetoothController {
                     BluetoothLeAdvertiser bluetoothLeAdvertiser = this.bluetoothAdapter.getBluetoothLeAdvertiser();
                     if (bluetoothLeAdvertiser != null) {
                         this.advertiseCallback = new MeshifyAdvertiseCallback();
-                        Log.e(TAG, "startAdvertising:");
+                        Log.i(TAG, "startAdvertising: " + advertiseData.toString());
                         bluetoothLeAdvertiser.startAdvertising(advertiseSettings, advertiseData, this.advertiseCallback);
                     }
                     // TODO
