@@ -2,7 +2,6 @@ package com.codewizards.meshify_chat.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +51,16 @@ public class MeshifyNotifications {
     public static void cancelNotifications() {
 
     }
+
+
+    public static Bundle prepareMessageBundle(Message message, String str) {
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.OTHER_USER_NAME, str);
+        bundle.putString(Constants.OTHER_USER_ID, message.getSenderId());
+        bundle.putString(Constants.MESSAGE, (String) message.getContent().get("text"));
+        return bundle;
+    }
+
 
     public void createChatNotification(String senderId, Message message, String str) {
         int i;

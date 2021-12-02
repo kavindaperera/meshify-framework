@@ -1,6 +1,5 @@
 package com.codewizards.meshify_chat.util;
 
-import android.content.Intent;
 
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";
@@ -34,4 +33,7 @@ public class Constants {
     public static final String PREFS_NOTIFICATION_SOUND = "notificationSound";
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
     public static final String DATABASE_PASSWORD = "database_password";
+    public static final String OTHER_USER_NAME = "otherUserName";
+    public static final String OTHER_USER_ID = "otherUserName";
+    public static final String MESSAGE_LABEL = "meshifyMessageLabel";
 }

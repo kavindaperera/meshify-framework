@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,9 +17,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
@@ -36,14 +35,54 @@ import butterknife.OnClick;
 
 public class ChatActivity extends AppCompatActivity {
 
+    public static String TAG = "[Meshify][ChatActivity]";
+
     @BindView(R.id.txtMessage)
     EditText txtMessage;
-    MessageAdapter adapter = new MessageAdapter(new ArrayList<Message>());
+    MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
     private String deviceName;
     private boolean lastSeen;
     private String deviceId;
 
     SharedPreferences sharedPreferences;
+
+    private BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+
+    class MessageBroadcastReceiver extends BroadcastReceiver {
+        MessageBroadcastReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.CHAT_MESSAGE_RECEIVED)) {
+                Bundle extras = intent.getExtras();
+                String string = extras.getString(Constants.OTHER_USER_ID, "");
+                if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
+                    Message message = new Message(extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
+                    message.setDirection(Message.INCOMING_MESSAGE);
+                    ChatActivity.this.pushMessageToView(message);
+                }
+            }
+        }
+    }
+
+    public void pushMessageToView(Message message) {
+        this.messageAdapter.addMessage(message);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.CHAT_MESSAGE_RECEIVED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(this.messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(this.messageBroadcastReceiver);
+        super.onPause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,24 +103,19 @@ public class ChatActivity extends AppCompatActivity {
 
         if (actionBar != null) {
             actionBar.setTitle(deviceName);
-            actionBar.setSubtitle(lastSeen ? "Nearby" : "Not in Range");
+            if (!deviceId.equals(Constants.BROADCAST_CHAT)) {
+                actionBar.setSubtitle(lastSeen ? "Nearby" : "Not in Range");
+            } else {
+                actionBar.setSubtitle("");
+            }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        Message message = new Message(intent.getStringExtra(Constants.INTENT_EXTRA_MSG), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                        message.setDirection(Message.INCOMING_MESSAGE);
-                        adapter.addMessage(message);
-                    }
-                }, new IntentFilter(deviceId));
 
         RecyclerView messagesRecyclerView = findViewById(R.id.messages);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(true);
         messagesRecyclerView.setLayoutManager(mLinearLayoutManager);
-        messagesRecyclerView.setAdapter(adapter);
+        messagesRecyclerView.setAdapter(messageAdapter);
 
     }
 
@@ -100,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
 
             Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
             message.setDirection(Message.OUTGOING_MESSAGE);
-            adapter.addMessage(message);
+            messageAdapter.addMessage(message);
 
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);

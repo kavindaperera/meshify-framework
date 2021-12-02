@@ -157,6 +157,7 @@
     <string name="user_avatar_description">User Avater</string>
     <string name="chat_message_failed">Retry</string>
     <string name="choose_avatar_image_description">Avatar option</string>
+    <string name="placeholder_date">12:20</string>
 
 
 </resources>

@@ -1,12 +1,15 @@
 package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,8 +51,10 @@ import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 
@@ -92,10 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 hideProgressBar();
 
             } else {
-                String text = (String) message.getContent().get("text");
-                LocalBroadcastManager
-                        .getInstance(getBaseContext())
-                        .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
+
 
                 //TODO- Remove later
                 Neighbor neighbor = adapter.getNeighborById(message.getSenderId());
@@ -103,7 +105,14 @@ public class MainActivity extends AppCompatActivity {
                 if (neighbor != null) {
                     nName = neighbor.getDeviceName();
                 }
+
                 MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, nName);
+
+
+                Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, nName);
+                LocalBroadcastManager
+                        .getInstance(getBaseContext())
+                        .sendBroadcast(new Intent().setAction(Constants.CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
 
             }
         }
@@ -113,12 +122,13 @@ public class MainActivity extends AppCompatActivity {
             super.onBroadcastMessageReceived(message);
             String Msg = (String) message.getContent().get(PAYLOAD_TEXT);
             String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
+            Log.i(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
 
-            Log.e(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
-            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(
-                    new Intent(BROADCAST_CHAT)
-                            .putExtra(Constants.INTENT_EXTRA_NAME, deviceName)
-                            .putExtra(Constants.INTENT_EXTRA_MSG,  Msg));
+            Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, Constants.BROADCAST_CHAT);
+            LocalBroadcastManager
+                    .getInstance(getBaseContext())
+                    .sendBroadcast(new Intent().setAction(Constants.CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
+
         }
 
         @Override
@@ -162,6 +172,10 @@ public class MainActivity extends AppCompatActivity {
 
                 RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
                         .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
+                        .setPositiveButton(R.string.Permissions_continue, (dialog, whichButton) -> {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        })
                         .setCancelable(false)
                         .show()
                         .getWindow()
@@ -224,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
         showSplashActivity();
 
     }
+
+
 
     @OnClick(R.id.fab)
     public void newConversation(View v) {
@@ -373,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
         builder.setVerified(MeshifySession.isVerified());
-        builder.setAutoConnect(false);
+        builder.setAutoConnect(true);
 
         Meshify.start(messageListener, connectionListener, builder.build());
 
