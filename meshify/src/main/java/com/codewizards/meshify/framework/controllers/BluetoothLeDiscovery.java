@@ -35,25 +35,15 @@ import io.reactivex.disposables.CompositeDisposable;
 public class BluetoothLeDiscovery extends Discovery {
 
     private static String TAG = "[Meshify][BluetoothLeDiscovery]";
-
-    private BluetoothAdapter bluetoothAdapter;
-
-    private HashMap<String, String> deviceHashMap;
-
-    private HashMap<String, ScheduledFuture> scheduledFutureHashMap;
-
-    private CompositeDisposable disposable = new CompositeDisposable();
-
-    private ScanCallback scanCallback;
-
-    private ScheduledThreadPoolExecutor threadPoolExecutor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(40);
-
     private final String bleUuid = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();   // j
-
     private final String btUuid = BluetoothUtils.getHashedBluetoothUuid(Meshify.getInstance().getConfig().isAutoConnect()).toString();      // k
-
     private final String bleUuid2 = BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getMeshifyClient().getApiKey());          // l
-
+    private BluetoothAdapter bluetoothAdapter;
+    private HashMap<String, String> deviceHashMap;
+    private HashMap<String, ScheduledFuture> scheduledFutureHashMap;
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private ScanCallback scanCallback;
+    private ScheduledThreadPoolExecutor threadPoolExecutor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(40);
 
 
     public BluetoothLeDiscovery(Context context) {
@@ -75,13 +65,13 @@ public class BluetoothLeDiscovery extends Discovery {
             public void subscribe(@NonNull FlowableEmitter<Device> emitter) throws Exception {
                 if (BluetoothLeDiscovery.this.bluetoothAdapter != null && BluetoothLeDiscovery.this.bluetoothAdapter.isEnabled()) {
                     if (BluetoothLeDiscovery.this.bluetoothAdapter.getBluetoothLeScanner() == null) {
+                        Log.w(TAG, "getBluetoothLeScanner() was null, sleeping for 300 ms.");
                         try {
-                            Thread.sleep(500L);
+                            Thread.sleep(300L);
                         } catch (InterruptedException interruptedException) {
                             interruptedException.printStackTrace();
                         }
                     }
-
                     try {
                         BluetoothLeDiscovery.this.bluetoothAdapter.getBluetoothLeScanner()
                                 .startScan(
@@ -103,27 +93,23 @@ public class BluetoothLeDiscovery extends Discovery {
                                             @Override
                                             public void onScanFailed(int errorCode) {
                                                 super.onScanFailed(errorCode);
+                                                BluetoothLeDiscovery.this.scanFailedAction(errorCode);
                                             }
                                         });
 
                     } catch (IllegalStateException illegalStateException) {
                         Log.e(TAG, "error: " + illegalStateException.getMessage());
                     }
-
                 }
-
-                //TODO
-
             }
         }, BackpressureStrategy.BUFFER);
-
-
         super.startDiscovery(context, config);
-
+        this.setConfig(config);
         Completable.timer(60L, TimeUnit.SECONDS).subscribe(() -> {
             if (SessionManager.sessionMap.isEmpty()) {
                 Log.i(TAG, "startDiscovery: resetting");
-                //TODO
+                this.stopDiscovery(null);
+                this.startDiscovery(null, this.getConfig());
             }
         }, throwable -> Log.e(TAG, "error: " + throwable.getMessage()));
     }
@@ -131,32 +117,33 @@ public class BluetoothLeDiscovery extends Discovery {
     @SuppressLint("MissingPermission")
     private void onScanResultAction(ScanResult scanResult, FlowableEmitter<Device> flowableEmitter) {
         String string = this.processScanResult(scanResult);
-        if (string != null && this.bluetoothAdapter != null && this.bluetoothAdapter.isEnabled()){
+        if (string != null && this.bluetoothAdapter != null && this.bluetoothAdapter.isEnabled()) {
             Device device = this.processPresenceResult(string, scanResult.getDevice());
-            if (device != null && SessionManager.getSession(device.getDeviceAddress()) == null && Meshify.getInstance().getConfig().isAutoConnect()){
+            if (device != null && SessionManager.getSession(device.getDeviceAddress()) == null && Meshify.getInstance().getConfig().isAutoConnect()) {
                 flowableEmitter.onNext(device);
-            } else if (device!=null){
+            } else if (device != null) {
                 // TODO - add to scheduled future
+                this.addToScheduledFuture(device, string);
             }
         }
     }
 
     @SuppressLint("MissingPermission")
     synchronized Device processPresenceResult(String string, BluetoothDevice bluetoothDevice) {
-        if (this.bluetoothAdapter.isEnabled() && bluetoothDevice != null){
-            if (ConnectionManager.checkConnection(bluetoothDevice.getAddress())){
+        if (this.bluetoothAdapter.isEnabled() && bluetoothDevice != null) {
+            if (ConnectionManager.checkConnection(bluetoothDevice.getAddress())) {
                 Log.e(TAG, "Device is blacklisted");
                 return null;
             }
-            if (SessionManager.sessionMap.get(bluetoothDevice.getAddress()) != null){
+            if (SessionManager.sessionMap.get(bluetoothDevice.getAddress()) != null) {
                 return null;
             }
             String userUuid = Meshify.getInstance().getMeshifyClient().getUserUuid();
             boolean bl = false;
             Collection<Session> collection = SessionManager.sessionMap.values();
-            for (Session session : collection){
+            for (Session session : collection) {
                 //TODO - get a session count
-                if (session.getBluetoothGatt() != null && session.getBluetoothGatt().getDevice() != null && session.getBluetoothGatt().getDevice().equals(bluetoothDevice)){
+                if (session.getBluetoothGatt() != null && session.getBluetoothGatt().getDevice() != null && session.getBluetoothGatt().getDevice().equals(bluetoothDevice)) {
                     bl = true;
                     break;
                 }
@@ -179,10 +166,12 @@ public class BluetoothLeDiscovery extends Discovery {
 
     private String processScanResult(ScanResult scanResult) {
         String string;
-        blockX: {
+        blockX:
+        {
             BluetoothDevice bluetoothDevice;
-            Map<ParcelUuid,byte[]> map;
-            blockY: {
+            Map<ParcelUuid, byte[]> map;
+            blockY:
+            {
                 List list = scanResult.getScanRecord().getServiceUuids();
                 map = scanResult.getScanRecord().getServiceData();
                 bluetoothDevice = scanResult.getDevice();
@@ -195,7 +184,7 @@ public class BluetoothLeDiscovery extends Discovery {
             }
             if (map == null || map.entrySet() == null) break blockX;
             for (Map.Entry entry : map.entrySet()) {
-                String string3 = new String((byte[])entry.getValue());
+                String string3 = new String((byte[]) entry.getValue());
                 UUID uuid = ((ParcelUuid) entry.getKey()).getUuid();
                 string = this.deviceHashMap.get(bluetoothDevice.getAddress());
                 if (string != null) continue;
@@ -205,13 +194,48 @@ public class BluetoothLeDiscovery extends Discovery {
                         "\nCustom UUID: " + this.bleUuid2 +
                         "\nBT UUID: " + this.btUuid +
                         "\nBLE UUID: " + this.bleUuid);
-                if (!uuid.toString().equalsIgnoreCase(this.bleUuid) && !uuid.toString().equalsIgnoreCase(this.btUuid) && !uuid.toString().equalsIgnoreCase(this.bleUuid2)) continue;
+                if (!uuid.toString().equalsIgnoreCase(this.bleUuid) && !uuid.toString().equalsIgnoreCase(this.btUuid) && !uuid.toString().equalsIgnoreCase(this.bleUuid2))
+                    continue;
                 string = BluetoothUtils.getUuidFromDataString(string3);
                 this.deviceHashMap.put(bluetoothDevice.getAddress(), string);
                 Log.e(TAG, "Device Found " + string3 + " userUuid: " + string);
             }
         }
         return string;
+    }
+
+    private void addToScheduledFuture(Device device, String string) {
+        ScheduledFuture<?> scheduledFuture;
+        if (SessionManager.getSession(device.getDeviceAddress()) == null && !this.scheduledFutureHashMap.containsKey(string)) {
+            Meshify.getInstance().getMeshifyCore().getConnectionListener().onDeviceDiscovered(device);
+        }
+        if ((scheduledFuture = this.scheduledFutureHashMap.remove(string)) != null && !scheduledFuture.isCancelled()) {
+            scheduledFuture.cancel(true);
+        }
+        // TODO
+        this.scheduledFutureHashMap.put(string, scheduledFuture);
+    }
+
+    private void scanFailedAction(int errorCode) {
+        this.setDiscoveryRunning(false);
+        switch (errorCode) {
+            case 1: {
+                Log.e(TAG, "onScanFailed: Fails to start scan as BLE scan with the same settings is already started by the app | SCAN_FAILED_ALREADY_STARTED | code: " + errorCode);
+                break;
+            }
+            case 2: {
+                Log.e(TAG, "onScanFailed: Fails to start scan as app cannot be registered | SCAN_FAILED_APPLICATION_REGISTRATION_FAILED | code: " + errorCode);
+                break;
+            }
+            case 23: {
+                Log.e(TAG, "onScanFailed: Fails to start scan due an internal error | SCAN_FAILED_INTERNAL_ERROR | code: " + errorCode);
+                break;
+            }
+            case 4: {
+                Log.e(TAG, "onScanFailed: Fails to start power optimized scan as this feature is not supported | SCAN_FAILED_FEATURE_UNSUPPORTED | code: " + errorCode);
+            }
+        }
+        Log.e(TAG, "SCANNING_FAILED_WITH_ERROR | code: " + errorCode);
     }
 
 }
