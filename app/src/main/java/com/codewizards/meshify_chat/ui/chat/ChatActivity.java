@@ -22,10 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.framework.controllers.ServerFactory;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
+import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.util.Constants;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -50,32 +49,11 @@ public class ChatActivity extends AppCompatActivity {
     protected FloatingActionButton fabText;
 
     MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
-
+    SharedPreferences sharedPreferences;
     private String deviceName;
     private boolean lastSeen;
     private String deviceId;
-
-    SharedPreferences sharedPreferences;
-
-    private BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
-
-    class MessageBroadcastReceiver extends BroadcastReceiver {
-        MessageBroadcastReceiver() {
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.CHAT_MESSAGE_RECEIVED)) {
-                Bundle extras = intent.getExtras();
-                String string = extras.getString(Constants.OTHER_USER_ID, "");
-                if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
-                    Message message = new Message(extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                    message.setDirection(Message.INCOMING_MESSAGE);
-                    ChatActivity.this.pushMessageToView(message);
-                }
-            }
-        }
-    }
+    private final BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
 
     public void pushMessageToView(Message message) {
         this.messageAdapter.addMessage(message);
@@ -86,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.CHAT_MESSAGE_RECEIVED);
+        intentFilter.addAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED);
         LocalBroadcastManager.getInstance(this).registerReceiver(this.messageBroadcastReceiver, intentFilter);
     }
 
@@ -104,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
-        lastSeen = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_LAST_SEEN,false);
+        lastSeen = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_LAST_SEEN, false);
         deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -172,7 +151,7 @@ public class ChatActivity extends AppCompatActivity {
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
-            if (deviceId.equals(Constants.BROADCAST_CHAT)){
+            if (deviceId.equals(Constants.BROADCAST_CHAT)) {
 
                 String username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
                 if (username == null) {
@@ -189,6 +168,32 @@ public class ChatActivity extends AppCompatActivity {
                 com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
                 builder.setContent(content).setReceiverId(deviceId);
                 Meshify.sendMessage(builder.build(), ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
+            }
+        }
+    }
+
+    class MessageBroadcastReceiver extends BroadcastReceiver {
+        MessageBroadcastReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Constants.CHAT_MESSAGE_RECEIVED)) {
+                Bundle extras = intent.getExtras();
+                String string = extras.getString(Constants.OTHER_USER_ID, "");
+                if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
+                    Message message = new Message(extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
+                    message.setDirection(Message.INCOMING_MESSAGE);
+                    ChatActivity.this.pushMessageToView(message);
+                }
+            } else if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
+                Bundle extras = intent.getExtras();
+                String string = extras.getString(Constants.OTHER_USER_ID, "");
+
+                Message message = new Message(extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
+                message.setDirection(Message.INCOMING_MESSAGE);
+                ChatActivity.this.pushMessageToView(message);
+
             }
         }
     }

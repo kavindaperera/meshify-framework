@@ -47,6 +47,7 @@ import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
 import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
+import com.codewizards.meshify_chat.ui.broadcast.BroadcastActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, Constants.BROADCAST_CHAT);
             LocalBroadcastManager
                     .getInstance(getBaseContext())
-                    .sendBroadcast(new Intent().setAction(Constants.CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
+                    .sendBroadcast(new Intent().setAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
 
         }
 
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void newConversation(View v) {
-        startActivity(new Intent(this, ChooseAvatarActivity.class));
+        startActivity(new Intent(this, BroadcastActivity.class));
     }
 
     private void showSplashActivity() {

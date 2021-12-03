@@ -92,5 +92,8 @@
         android:layout_marginBottom="11dp"
         android:src="@drawable/ic_baseline_send_24"
         android:visibility="visible"
-        app:fab_colorNormal="@color/colorPrimary" />
+        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
+        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+        app:fab_colorNormal="@color/colorPrimary"
+        app:fab_colorPressed="@color/colorPrimaryDark"/>
 </RelativeLayout>

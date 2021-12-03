@@ -4,6 +4,7 @@ package com.codewizards.meshify_chat.util;
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";
     public static final int FOREGROUND_SERVICE = 333;
+    public static final String BROADCAST_CHAT_MESSAGE_RECEIVED = "broadcastChatMessage";
     public static final String CHAT_MESSAGE_RECEIVED = "chatMessage";
     public static final String CHAT_MESSAGE_RECEIVED_BACKGROUND = "chatMessageBackground";
     public static final String CONNECTION_TYPE = "neighborConnectionType";
