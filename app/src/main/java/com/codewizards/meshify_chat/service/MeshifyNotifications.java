@@ -57,6 +57,7 @@ public class MeshifyNotifications {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.OTHER_USER_NAME, str);
         bundle.putString(Constants.OTHER_USER_ID, message.getSenderId());
+        bundle.putString(Constants.MESSAGE_UUID, message.getUuid());
         bundle.putString(Constants.MESSAGE, (String) message.getContent().get("text"));
         return bundle;
     }

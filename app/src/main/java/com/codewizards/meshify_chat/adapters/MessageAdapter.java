@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
@@ -47,8 +48,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     public void addMessage(Message message) {
-        messages.add(0, message);
-        notifyDataSetChanged();
+        if (!isMessageExist(message)) {
+            messages.add(0, message);
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isMessageExist(Message message) {
+        return messages.contains(message);
     }
 
     @Override

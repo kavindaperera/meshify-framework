@@ -35,6 +35,7 @@ public class Constants {
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
     public static final String DATABASE_PASSWORD = "database_password";
     public static final String OTHER_USER_NAME = "otherUserName";
-    public static final String OTHER_USER_ID = "otherUserName";
+    public static final String OTHER_USER_ID = "otherUserId";
+    public static final String MESSAGE_UUID = "messageUuid";
     public static final String MESSAGE_LABEL = "meshifyMessageLabel";
 }
