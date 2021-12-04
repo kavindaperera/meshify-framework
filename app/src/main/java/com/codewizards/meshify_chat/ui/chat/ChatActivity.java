@@ -64,7 +64,6 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.CHAT_MESSAGE_RECEIVED);
-        intentFilter.addAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED);
         LocalBroadcastManager.getInstance(this).registerReceiver(this.messageBroadcastReceiver, intentFilter);
     }
 
@@ -150,31 +149,15 @@ public class ChatActivity extends AppCompatActivity {
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
-            if (deviceId.equals(Constants.BROADCAST_CHAT)) {
 
-                String username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
-                if (username == null) {
-                    username = Build.MANUFACTURER + " " + Build.MODEL;
-                }
-                content.put(Constants.PAYLOAD_DEVICE_NAME, username);
+            com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+            builder.setContent(content).setReceiverId(deviceId);
+            com.codewizards.meshify.client.Message message2 = builder.build();
 
-                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
-                builder.setContent(content);
-                com.codewizards.meshify.client.Message message1 = builder.build();
-                Meshify.sendBroadcastMessage(message1, ConfigProfile.Default);
+            Meshify.sendMessage(message2, ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
 
-                message.setUuid(message1.getUuid());
-                chatMessageAdapter.addMessage(message);
-
-            } else {
-                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
-                builder.setContent(content).setReceiverId(deviceId);
-                com.codewizards.meshify.client.Message message2 = builder.build();
-                Meshify.sendMessage(message2, ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
-
-                message.setUuid(message2.getUuid());
-                chatMessageAdapter.addMessage(message);
-            }
+            message.setUuid(message2.getUuid());
+            chatMessageAdapter.addMessage(message);
         }
     }
 
@@ -193,13 +176,6 @@ public class ChatActivity extends AppCompatActivity {
                     message2.setDirection(Message.INCOMING_MESSAGE);
                     ChatActivity.this.pushMessageToView(message2);
                 }
-            } else if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
-                Bundle extras = intent.getExtras();
-                String string = extras.getString(Constants.OTHER_USER_ID, "");
-                com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
-                Message message2 = new Message(extras.getString(Constants.MESSAGE_UUID), (String) message.getContent().get("text"), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                message2.setDirection(Message.INCOMING_MESSAGE);
-                ChatActivity.this.pushMessageToView(message2);
             }
         }
     }
