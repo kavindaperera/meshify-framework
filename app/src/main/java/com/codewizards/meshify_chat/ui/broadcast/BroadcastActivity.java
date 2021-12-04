@@ -2,6 +2,7 @@ package com.codewizards.meshify_chat.ui.broadcast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +12,7 @@ import com.codewizards.meshify.logs.Log;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.MessageAdapter;
 import com.codewizards.meshify_chat.models.Message;
+import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -20,6 +22,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +52,7 @@ public class BroadcastActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     private String deviceId;
 
+    private final BroadcastReceiver messageBroadcastReceiver = new BroadcastActivity.MessageBroadcastReceiver();
     MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
     public void pushMessageToView(Message message) {
         this.messageAdapter.addMessage(message);
@@ -57,6 +61,20 @@ public class BroadcastActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(this.messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(this.messageBroadcastReceiver);
+        super.onPause();
     }
 
     @Override
@@ -74,7 +92,7 @@ public class BroadcastActivity extends AppCompatActivity {
 
         this.fabText.setVisibility(View.INVISIBLE);
 
-        RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+        RecyclerView messagesRecyclerView = findViewById(R.id.messages_recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(true);
         messagesRecyclerView.setLayoutManager(mLinearLayoutManager);
