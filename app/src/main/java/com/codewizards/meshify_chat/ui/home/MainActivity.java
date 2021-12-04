@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_broadcast: {
-                startActivity(new Intent(getBaseContext(), ChatActivity.class)
+                startActivity(new Intent(getBaseContext(), BroadcastActivity.class)
                         .putExtra(Constants.INTENT_EXTRA_NAME, BROADCAST_CHAT)
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
                 return true;
