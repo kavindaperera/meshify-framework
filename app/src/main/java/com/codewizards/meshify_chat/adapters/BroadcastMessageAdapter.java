@@ -1,24 +1,34 @@
 package com.codewizards.meshify_chat.adapters;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Message;
+import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -74,21 +84,33 @@ public class BroadcastMessageAdapter extends RecyclerView.Adapter<BroadcastMessa
     }
 
     class MessageViewHolder extends RecyclerView.ViewHolder {
-        final TextView mInitialsTextView;
-        final TextView userName;
-        final TextView txtMessage;
-        final TextView dateSentView;
-        final ImageView statusView;
+
+        @Nullable
+        @BindView(R.id.contactInitials)
+        TextView mInitialsTextView;
+
+        @Nullable
+        @BindView(R.id.broadcast_user_name)
+        TextView userName;
+
+        @BindView(R.id.txtMessage)
+        TextView txtMessage;
+
+        @BindView(R.id.msgDate)
+        TextView dateSentView;
+
+        @Nullable
+        @BindView(R.id.msgStatus)
+        ImageView statusView;
 
         Message message;
 
+        Context context;
+
         MessageViewHolder(View view) {
             super(view);
-            mInitialsTextView = view.findViewById(R.id.contactInitials);
-            userName = view.findViewById(R.id.broadcast_user_name);
-            txtMessage = view.findViewById(R.id.txtMessage);
-            dateSentView = view.findViewById(R.id.msgDate);
-            statusView = view.findViewById(R.id.msgStatus);
+            ButterKnife.bind(this, view);
+            this.context = view.getContext();
         }
 
         void setMessage(Message message) {
@@ -115,9 +137,33 @@ public class BroadcastMessageAdapter extends RecyclerView.Adapter<BroadcastMessa
         @OnClick({R.id.contactInitials, R.id.broadcast_user_name})
         @Optional
         public void showNeighborAction() {
+
             Bundle bundle = new Bundle();
             bundle.putString(Constants.USER_ID, this.message.getSenderId());
             bundle.putString(Constants.USER_NAME, this.message.getUserName());
+
+            String[] stringArray = context.getResources().getStringArray(R.array.peer_actions);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setItems(stringArray, (dialog, which) -> {
+                switch (which) {
+                    case 0: {
+                        context.startActivity(new Intent(context.getApplicationContext(), ChatActivity.class)
+                                .putExtra(Constants.INTENT_EXTRA_NAME,this.message.getUserName())
+                                .putExtra(Constants.INTENT_EXTRA_LAST_SEEN, true)
+                                .putExtra(Constants.INTENT_EXTRA_UUID,  this.message.getSenderId()));
+                        break;
+                    }
+                    case 1:{
+                        Toast.makeText(context, "Not Implemented", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+            });
+
+            AlertDialog create = builder.create();
+            create.setCanceledOnTouchOutside(true);
+            create.show();
         }
     }
 }
