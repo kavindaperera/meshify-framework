@@ -38,4 +38,7 @@ public class Constants {
     public static final String OTHER_USER_ID = "otherUserId";
     public static final String MESSAGE_UUID = "messageUuid";
     public static final String MESSAGE_LABEL = "meshifyMessageLabel";
+    public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
+
 }

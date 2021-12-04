@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.adapters.MessageAdapter;
+import com.codewizards.meshify_chat.adapters.ChatMessageAdapter;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.util.Constants;
 import com.github.clans.fab.FloatingActionButton;
@@ -48,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.fabText)
     protected FloatingActionButton fabText;
 
-    MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
+    ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(new ArrayList<Message>());
     SharedPreferences sharedPreferences;
     private String deviceName;
     private boolean lastSeen;
@@ -56,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     private final BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
 
     public void pushMessageToView(Message message) {
-        this.messageAdapter.addMessage(message);
+        this.chatMessageAdapter.addMessage(message);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(true);
         messagesRecyclerView.setLayoutManager(mLinearLayoutManager);
-        messagesRecyclerView.setAdapter(messageAdapter);
+        messagesRecyclerView.setAdapter(chatMessageAdapter);
 
     }
 
@@ -164,7 +164,7 @@ public class ChatActivity extends AppCompatActivity {
                 Meshify.sendBroadcastMessage(message1, ConfigProfile.Default);
 
                 message.setUuid(message1.getUuid());
-                messageAdapter.addMessage(message);
+                chatMessageAdapter.addMessage(message);
 
             } else {
                 com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
@@ -173,7 +173,7 @@ public class ChatActivity extends AppCompatActivity {
                 Meshify.sendMessage(message2, ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
 
                 message.setUuid(message2.getUuid());
-                messageAdapter.addMessage(message);
+                chatMessageAdapter.addMessage(message);
             }
         }
     }
@@ -188,18 +188,18 @@ public class ChatActivity extends AppCompatActivity {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
                 if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
-                    Message message = new Message(extras.getString(Constants.MESSAGE_UUID), extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                    message.setDirection(Message.INCOMING_MESSAGE);
-                    ChatActivity.this.pushMessageToView(message);
+                    com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                    Message message2 = new Message(extras.getString(Constants.MESSAGE_UUID), (String) message.getContent().get("text"), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
+                    message2.setDirection(Message.INCOMING_MESSAGE);
+                    ChatActivity.this.pushMessageToView(message2);
                 }
             } else if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
-
-                Message message = new Message(extras.getString(Constants.MESSAGE_UUID), extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                message.setDirection(Message.INCOMING_MESSAGE);
-                ChatActivity.this.pushMessageToView(message);
-
+                com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                Message message2 = new Message(extras.getString(Constants.MESSAGE_UUID), (String) message.getContent().get("text"), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
+                message2.setDirection(Message.INCOMING_MESSAGE);
+                ChatActivity.this.pushMessageToView(message2);
             }
         }
     }

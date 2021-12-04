@@ -21,6 +21,10 @@ public class Message {
     public final static int INCOMING_MESSAGE = 0;
     @Ignore
     public final static int OUTGOING_MESSAGE = 1;
+    @Ignore
+    public final static int INCOMING_BROADCAST__MESSAGE = 2;
+    @Ignore
+    public final static int OUTGOING_BROADCAST_MESSAGE = 3;
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "messageUuid")
@@ -41,6 +45,10 @@ public class Message {
     @ColumnInfo(name = "receiverId")
     public String receiverId;
 
+    @ColumnInfo(name = "userName")
+    public String userName;
+
+
     public Message(String message, String senderId, String receiverId) {
         this.message = message;
         this.dateSent = String.valueOf(System.currentTimeMillis());
@@ -54,6 +62,15 @@ public class Message {
         this.dateSent = String.valueOf(System.currentTimeMillis());
         this.senderId = senderId;
         this.receiverId = receiverId;
+    }
+
+    public Message(String messageUuid, String message, String senderId, String receiverId, String userName) {
+        this.uuid = messageUuid;
+        this.message = message;
+        this.dateSent = String.valueOf(System.currentTimeMillis());
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.userName = userName;
     }
 
     public int getDirection() {
@@ -82,6 +99,30 @@ public class Message {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public void setReceiverId(String receiverId) {
+        this.receiverId = receiverId;
     }
 
     @Override

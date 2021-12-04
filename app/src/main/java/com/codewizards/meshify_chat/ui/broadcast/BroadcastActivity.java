@@ -1,21 +1,5 @@
 package com.codewizards.meshify_chat.ui.broadcast;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.logs.Log;
-import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.adapters.MessageAdapter;
-import com.codewizards.meshify_chat.models.Message;
-import com.codewizards.meshify_chat.ui.chat.ChatActivity;
-import com.codewizards.meshify_chat.util.Constants;
-import com.github.clans.fab.FloatingActionButton;
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -28,6 +12,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.codewizards.meshify.client.ConfigProfile;
+import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.adapters.BroadcastMessageAdapter;
+import com.codewizards.meshify_chat.models.Message;
+import com.codewizards.meshify_chat.util.Constants;
+import com.github.clans.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,18 +40,25 @@ public class BroadcastActivity extends AppCompatActivity {
 
     public static String TAG = "[Meshify][BroadcastActivity]";
 
-    @BindView(R.id.broadcast_toolbar)
-    Toolbar toolbar;
+    private final BroadcastReceiver messageBroadcastReceiver = new BroadcastActivity.MessageBroadcastReceiver();
+
     @BindView(R.id.fabText)
     protected FloatingActionButton fabText;
+
     @BindView(R.id.txtChatLine)
     protected EditText chatLine;
 
+    @BindView(R.id.broadcast_toolbar)
+    Toolbar toolbar;
+
     SharedPreferences sharedPreferences;
+
+    BroadcastMessageAdapter messageAdapter = new BroadcastMessageAdapter(new ArrayList<Message>());
+
     private String deviceId;
 
-    private final BroadcastReceiver messageBroadcastReceiver = new BroadcastActivity.MessageBroadcastReceiver();
-    MessageAdapter messageAdapter = new MessageAdapter(new ArrayList<Message>());
+    public HashMap<String, Integer> colorIndex;
+
     public void pushMessageToView(Message message) {
         this.messageAdapter.addMessage(message);
     }
@@ -129,7 +134,7 @@ public class BroadcastActivity extends AppCompatActivity {
             chatLine.setText("");
 
             Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
-            message.setDirection(Message.OUTGOING_MESSAGE);
+            message.setDirection(Message.OUTGOING_BROADCAST_MESSAGE);
 
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);
@@ -163,11 +168,16 @@ public class BroadcastActivity extends AppCompatActivity {
             if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
-
-                Message message = new Message(extras.getString(Constants.MESSAGE_UUID), extras.getString(Constants.MESSAGE), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                message.setDirection(Message.INCOMING_MESSAGE);
-                BroadcastActivity.this.pushMessageToView(message);
-
+                com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                Message message2 = new Message(
+                        extras.getString(Constants.MESSAGE_UUID),
+                        (String) message.getContent().get("text"),
+                        deviceId,
+                        Meshify.getInstance().getMeshifyClient().getUserUuid(),
+                        (String) message.getContent().get("device_name")
+                );
+                message2.setDirection(Message.INCOMING_BROADCAST__MESSAGE);
+                BroadcastActivity.this.pushMessageToView(message2);
             }
         }
     }
