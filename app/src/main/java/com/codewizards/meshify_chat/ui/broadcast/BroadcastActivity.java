@@ -57,8 +57,6 @@ public class BroadcastActivity extends AppCompatActivity {
 
     private String deviceId;
 
-    public HashMap<String, Integer> colorIndex;
-
     public void pushMessageToView(Message message) {
         this.messageAdapter.addMessage(message);
     }
@@ -94,6 +92,7 @@ public class BroadcastActivity extends AppCompatActivity {
         setSupportActionBar(this.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+
 
         this.fabText.setVisibility(View.INVISIBLE);
 
@@ -172,7 +171,7 @@ public class BroadcastActivity extends AppCompatActivity {
                 Message message2 = new Message(
                         extras.getString(Constants.MESSAGE_UUID),
                         (String) message.getContent().get("text"),
-                        deviceId,
+                        (String) message.getSenderId(),
                         Meshify.getInstance().getMeshifyClient().getUserUuid(),
                         (String) message.getContent().get("device_name")
                 );

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -49,10 +48,15 @@ public class ChatActivity extends AppCompatActivity {
     protected FloatingActionButton fabText;
 
     ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(new ArrayList<Message>());
+
     SharedPreferences sharedPreferences;
+
     private String deviceName;
+
     private boolean lastSeen;
+
     private String deviceId;
+
     private final BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
 
     public void pushMessageToView(Message message) {
