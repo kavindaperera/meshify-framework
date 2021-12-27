@@ -24,7 +24,7 @@ public class MeshifyEntity<T> implements Parcelable {
     public static final int ENTITY_TYPE_HANDSHAKE = 0;
     public static final int ENTITY_TYPE_MESSAGE = 1;
     public static final int ENTITY_TYPE_MESH = 2;
-    public static final int ENTITY_MESH_REACH = 2;
+    public static final int ENTITY_MESH_REACH = 3;
 
     @JsonProperty(value="id")
     private String id;
