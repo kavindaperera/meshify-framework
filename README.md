@@ -62,6 +62,12 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#initialization">Initialization</a>
+         <ul>
+            <li><a href="#starting-meshify">Starting Meshify</a></li>
+            <li><a href="#configuration">Configuration</a></li>
+        </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -70,3 +76,124 @@
   </ol>
 </details>
 
+## About The Project
+
+
+
+### Built With
+
+
+
+## Getting Started
+
+### Prerequisites
+
+The first step is to add the following permissions in `AndroidManifest.xml`:
+
+```xml
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```
+
+Meshify supports both Bluetooth Classic and Bluetooth Classic capable devices
+
+
+## Usage
+
+Add the dependency:
+
+```javascript
+implementation project(path: ':meshify')
+```
+
+## Initialization
+
+You need to create a `UUID` include that in your `AndroidManifest.xml` file. This will be used to uniquely identify your application.
+
+```xml
+<meta-data
+  android:name="com.codewizards.meshify.API_KEY"
+  android:value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+```
+### Starting Meshify
+
+Call the `Meshify.initialize(...)` method of Meshify.
+
+```java
+Meshify.initialize(getApplicationContext());
+```
+
+
+### ConnectionListener
+
+You can either extend `ConnectionListener` abstract class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `ConnectionListener`.
+
+```java
+// Anonymous Class
+ConnectionListener connectionListener = new ConnectionListener() {...}
+```
+
+Some of the method names in `ConnectionListener` were inspired by [`gaulthiergain/adhoclibrary`](https://github.com/gaulthiergain/AdHocLib)
+
+```java
+        @override
+        public void onStarted() {
+            
+        }
+
+        @override
+        public void onDeviceDiscovered(Device device) {
+            
+        }
+
+        @override
+        public void onDeviceConnected(Device device, Session session) {
+            
+        }
+
+        @override
+        public void onDeviceBlackListed(Device device) {
+            
+        }
+
+        @override
+        public void onDeviceLost(Device device) {
+            
+        }
+```
+
+### MessageListener
+
+
+### Configuration
+
+You can customize the `Meshify` framework according to your requirement using `Config` Builder.
+
+```java
+Config.Builder builder = new Config.Builder();
+```
+
+#### Set the wireless technology to use:
+
+
+```java
+builder.setAntennaType(Config.Antenna.BLUETOOTH);
+```
+or
+```java
+builder.setAntennaType(Config.Antenna.BLUETOOTH_LE);
+```
+or
+```java
+builder.setAntennaType(Config.Antenna.BT_DUAL);
+```
+
+Finally 
+
+```java
+Meshify.start(messageListener, connectionListener, builder.build());
+```
