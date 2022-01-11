@@ -116,7 +116,7 @@ You need to create a `UUID` include that in your `AndroidManifest.xml` file. Thi
 
 ```xml
 <meta-data
-  android:name="com.codewizards.meshify.API_KEY"
+  android:name="com.codewizards.meshify.APP_KEY"
   android:value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
 ```
 ### Starting Meshify

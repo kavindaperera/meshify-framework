@@ -87,7 +87,7 @@
             android:label="Meshify Service" />
 
         <meta-data
-            android:name="com.codewizards.meshify.API_KEY"
+            android:name="com.codewizards.meshify.APP_KEY"
             android:value="7f6371ea-340d-4abc-bbf3-b81457b8e669" />
     </application>
 
