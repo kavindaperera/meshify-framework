@@ -1,4 +1,4 @@
-package com.codewizards.meshify_chat.ui.chat;
+package com.codewizards.meshify_chat.ui.broadcast;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -8,11 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
-import com.codewizards.meshify_chat.adapters.ChatMessageAdapter;
+import com.codewizards.meshify_chat.adapters.BroadcastMessageAdapter;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.util.Constants;
 import com.github.clans.fab.FloatingActionButton;
@@ -36,38 +36,41 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnTextChanged;
 
+public class BroadcastActivity extends AppCompatActivity {
 
-public class ChatActivity extends AppCompatActivity {
+    public static String TAG = "[Meshify][BroadcastActivity]";
 
-    public static String TAG = "[Meshify][ChatActivity]";
-
-    @BindView(R.id.txtChatLine)
-    protected EditText chatLine;
+    private final BroadcastReceiver messageBroadcastReceiver = new BroadcastActivity.MessageBroadcastReceiver();
 
     @BindView(R.id.fabText)
     protected FloatingActionButton fabText;
 
-    ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter(new ArrayList<Message>());
+    @BindView(R.id.txtChatLine)
+    protected EditText chatLine;
+
+    @BindView(R.id.broadcast_toolbar)
+    Toolbar toolbar;
 
     SharedPreferences sharedPreferences;
 
-    private String deviceName;
-
-    private boolean lastSeen;
+    BroadcastMessageAdapter messageAdapter = new BroadcastMessageAdapter(new ArrayList<Message>());
 
     private String deviceId;
 
-    private final BroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
-
     public void pushMessageToView(Message message) {
-        this.chatMessageAdapter.addMessage(message);
+        this.messageAdapter.addMessage(message);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.CHAT_MESSAGE_RECEIVED);
+        intentFilter.addAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED);
         LocalBroadcastManager.getInstance(this).registerReceiver(this.messageBroadcastReceiver, intentFilter);
     }
 
@@ -80,43 +83,25 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_broadcast);
         ButterKnife.bind(this);
 
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-
-        deviceName = getIntent().getStringExtra(Constants.INTENT_EXTRA_NAME);
-        lastSeen = getIntent().getBooleanExtra(Constants.INTENT_EXTRA_LAST_SEEN, false);
         deviceId = getIntent().getStringExtra(Constants.INTENT_EXTRA_UUID);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(this.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        ActionBar actionBar = getSupportActionBar();
-
-        if (actionBar != null) {
-            actionBar.setTitle(deviceName);
-            if (!deviceId.equals(Constants.BROADCAST_CHAT)) {
-                actionBar.setSubtitle(lastSeen ? "Nearby" : "Not in Range");
-            } else {
-                actionBar.setSubtitle("");
-            }
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
         this.fabText.setVisibility(View.INVISIBLE);
 
-        RecyclerView messagesRecyclerView = findViewById(R.id.messages);
+        RecyclerView messagesRecyclerView = findViewById(R.id.messages_recyclerview);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setReverseLayout(true);
         messagesRecyclerView.setLayoutManager(mLinearLayoutManager);
-        messagesRecyclerView.setAdapter(chatMessageAdapter);
+        messagesRecyclerView.setAdapter(messageAdapter);
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @OnTextChanged(R.id.txtChatLine)
@@ -148,20 +133,28 @@ public class ChatActivity extends AppCompatActivity {
             chatLine.setText("");
 
             Message message = new Message(messageString, Meshify.getInstance().getMeshifyClient().getUserUuid(), deviceId);
-            message.setDirection(Message.OUTGOING_MESSAGE);
+            message.setDirection(Message.OUTGOING_BROADCAST_MESSAGE);
 
             HashMap<String, Object> content = new HashMap<>();
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
+            if (deviceId.equals(Constants.BROADCAST_CHAT)) {
 
-            com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
-            builder.setContent(content).setReceiverId(deviceId);
-            com.codewizards.meshify.client.Message message2 = builder.build();
+                String username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
+                if (username == null) {
+                    username = Build.MANUFACTURER + " " + Build.MODEL;
+                }
+                content.put(Constants.PAYLOAD_DEVICE_NAME, username);
 
-            Meshify.sendMessage(message2, ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
+                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+                builder.setContent(content);
+                com.codewizards.meshify.client.Message message1 = builder.build();
+                Meshify.sendBroadcastMessage(message1, ConfigProfile.Default);
 
-            message.setUuid(message2.getUuid());
-            chatMessageAdapter.addMessage(message);
+                message.setUuid(message1.getUuid());
+                messageAdapter.addMessage(message);
+
+            }
         }
     }
 
@@ -171,16 +164,23 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Constants.CHAT_MESSAGE_RECEIVED)) {
+            if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
-                if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
-                    com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
-                    Message message2 = new Message(extras.getString(Constants.MESSAGE_UUID), (String) message.getContent().get("text"), deviceId, Meshify.getInstance().getMeshifyClient().getUserUuid());
-                    message2.setDirection(Message.INCOMING_MESSAGE);
-                    ChatActivity.this.pushMessageToView(message2);
-                }
+                com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                Message message2 = new Message(
+                        extras.getString(Constants.MESSAGE_UUID),
+                        (String) message.getContent().get("text"),
+                        (String) message.getSenderId(),
+                        Meshify.getInstance().getMeshifyClient().getUserUuid(),
+                        (String) message.getContent().get("device_name")
+                );
+                message2.setDirection(Message.INCOMING_BROADCAST__MESSAGE);
+                BroadcastActivity.this.pushMessageToView(message2);
             }
         }
     }
 }
+
+
+

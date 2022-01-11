@@ -20,6 +20,10 @@ public abstract class AbstractSession {
 
     protected final String TAG = "[Meshify][AbstractSession]";
 
+    private BluetoothGattServer gattServer;
+
+    private BluetoothGatt bluetoothGatt;
+
     private BluetoothDevice bluetoothDevice;
 
     private ArrayList<byte[]> arrayList = new ArrayList();
@@ -118,6 +122,10 @@ public abstract class AbstractSession {
         return this.bluetoothDevice;
     }
 
+    public BluetoothGatt getBluetoothGatt() {
+        return this.bluetoothGatt;
+    }
+
     public String getUuid() {
         return this.uuid;
     }
@@ -174,7 +182,9 @@ public abstract class AbstractSession {
         this.bluetoothDevice = bluetoothDevice;
     }
 
-
+    public void setBluetoothGatt(BluetoothGatt bluetoothGatt) {
+        this.bluetoothGatt = bluetoothGatt;
+    }
 
     public synchronized void setArrayList(ArrayList<byte[]> arrayList) {
         this.arrayList = arrayList;

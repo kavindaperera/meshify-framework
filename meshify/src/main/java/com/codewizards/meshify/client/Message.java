@@ -174,6 +174,11 @@ public class Message implements Parcelable {
         this.uuid = uuid;
     }
 
+    public String serialize() {
+        return new Gson().toJson(this);
+    }
+
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj != null && obj instanceof Message) {

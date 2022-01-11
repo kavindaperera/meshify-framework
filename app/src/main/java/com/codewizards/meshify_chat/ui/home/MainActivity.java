@@ -1,16 +1,20 @@
 package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,30 +30,33 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.Session;
-import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
+import com.codewizards.meshify_chat.adapters.NeighborAdapter;
 import com.codewizards.meshify_chat.auth.MeshifySession;
 import com.codewizards.meshify_chat.models.Neighbor;
-import com.codewizards.meshify_chat.adapters.NeighborAdapter;
+import com.codewizards.meshify_chat.permissions.RationaleDialog;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
 import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
+import com.codewizards.meshify_chat.ui.broadcast.BroadcastActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -91,10 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 hideProgressBar();
 
             } else {
-                String text = (String) message.getContent().get("text");
-                LocalBroadcastManager
-                        .getInstance(getBaseContext())
-                        .sendBroadcast(new Intent(message.getSenderId()).putExtra(Constants.INTENT_EXTRA_MSG, text));
+
 
                 //TODO- Remove later
                 Neighbor neighbor = adapter.getNeighborById(message.getSenderId());
@@ -102,7 +106,14 @@ public class MainActivity extends AppCompatActivity {
                 if (neighbor != null) {
                     nName = neighbor.getDeviceName();
                 }
+
                 MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, nName);
+
+
+                Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, nName);
+                LocalBroadcastManager
+                        .getInstance(getBaseContext())
+                        .sendBroadcast(new Intent().setAction(Constants.CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
 
             }
         }
@@ -112,12 +123,13 @@ public class MainActivity extends AppCompatActivity {
             super.onBroadcastMessageReceived(message);
             String Msg = (String) message.getContent().get(PAYLOAD_TEXT);
             String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
+            Log.i(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
 
-            Log.e(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
-            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(
-                    new Intent(BROADCAST_CHAT)
-                            .putExtra(Constants.INTENT_EXTRA_NAME, deviceName)
-                            .putExtra(Constants.INTENT_EXTRA_MSG,  Msg));
+            Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, Constants.BROADCAST_CHAT);
+            LocalBroadcastManager
+                    .getInstance(getBaseContext())
+                    .sendBroadcast(new Intent().setAction(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED).putExtras(prepareMessageBundle));
+
         }
 
         @Override
@@ -158,9 +170,21 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
             if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
-                Toast.makeText(getApplicationContext(), "ERROR! Please turn on Location Services and Restart", Toast.LENGTH_LONG).show();
+
+                RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
+                        .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
+                        .setPositiveButton(R.string.Permissions_continue, (dialog, whichButton) -> {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        })
+                        .setCancelable(false)
+                        .show()
+                        .getWindow()
+                        .setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
             }
         }
+
 
         @Override
         public void onDeviceConnected(Device device, Session session) {
@@ -223,9 +247,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @OnClick(R.id.fab)
     public void newConversation(View v) {
-        startActivity(new Intent(this, ChooseAvatarActivity.class));
+        startActivity(new Intent(this, BroadcastActivity.class));
     }
 
     private void showSplashActivity() {
@@ -350,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case R.id.action_broadcast: {
-                startActivity(new Intent(getBaseContext(), ChatActivity.class)
+                startActivity(new Intent(getBaseContext(), BroadcastActivity.class)
                         .putExtra(Constants.INTENT_EXTRA_NAME, BROADCAST_CHAT)
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
                 return true;
