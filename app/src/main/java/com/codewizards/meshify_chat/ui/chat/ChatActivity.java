@@ -27,7 +27,6 @@ import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.ChatMessageAdapter;
-import com.codewizards.meshify_chat.models.MeshifyFile;
 import com.codewizards.meshify_chat.models.Message;
 import com.codewizards.meshify_chat.util.Constants;
 import com.github.clans.fab.FloatingActionButton;

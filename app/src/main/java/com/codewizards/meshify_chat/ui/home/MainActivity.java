@@ -52,6 +52,7 @@ import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.codewizards.meshify_chat.util.MeshifyUtils;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MeshifyNotifications.getInstance().createChatNotification(message.getSenderId(), message, nName);
 
+                mainViewModel.updateLastSeen(message.getSenderId(), String.valueOf(System.currentTimeMillis()));
 
                 Bundle prepareMessageBundle = MeshifyNotifications.prepareMessageBundle(message, nName);
                 LocalBroadcastManager
@@ -194,9 +196,11 @@ public class MainActivity extends AppCompatActivity {
             neighbor.setNearby(true);
             neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
             neighbor.setDevice(device);
+            neighbor.setLastSeen(String.valueOf(System.currentTimeMillis()));
 
             mainViewModel.insert(neighbor);
             mainViewModel.updateNearby(device.getUserId(), true);
+            mainViewModel.updateLastSeen(device.getUserId(), String.valueOf(System.currentTimeMillis()));
 
             //send username and phone number
             username = sharedPreferences.getString(Constants.PREFS_USERNAME, null);
@@ -255,6 +259,8 @@ public class MainActivity extends AppCompatActivity {
     private void init(Bundle bundle) {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        this.fab.setVisibility(View.INVISIBLE);
 
         this.sharedPreferences = getApplicationContext().getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 

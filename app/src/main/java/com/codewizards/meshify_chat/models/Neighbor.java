@@ -33,6 +33,8 @@ public class Neighbor {
     @TypeConverters(DeviceTypeConverter.class)
     private Device device;
 
+    @ColumnInfo(name = "lastSeen")
+    private String lastSeen;
 
     public Neighbor(@NonNull String uuid, String deviceName) {
         this.uuid = uuid;
@@ -73,6 +75,15 @@ public class Neighbor {
 
     public void setNearby(boolean nearby) {
         isNearby = nearby;
+    }
+
+
+    public String getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(String lastSeen) {
+        this.lastSeen = lastSeen;
     }
 
     @Override

@@ -83,7 +83,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/meshify_margin_large"
                     android:layout_alignTop="@id/popupMenu"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:textSize="12dp"/>
 
 
