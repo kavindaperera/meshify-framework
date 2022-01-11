@@ -25,6 +25,10 @@ public class Message {
     public final static int INCOMING_BROADCAST__MESSAGE = 2;
     @Ignore
     public final static int OUTGOING_BROADCAST_MESSAGE = 3;
+    @Ignore
+    public final static int INCOMING_IMAGE = 4;
+    @Ignore
+    public final static int OUTGOING_IMAGE = 5;
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "messageUuid")

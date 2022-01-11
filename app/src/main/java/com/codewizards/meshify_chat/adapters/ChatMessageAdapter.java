@@ -35,6 +35,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             case Message.OUTGOING_MESSAGE:
                 messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_message_row_outbound), parent, false);
                 break;
+            case Message.INCOMING_IMAGE:
+                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_image_row_inbound), parent, false);
+                break;
         }
 
         return new MessageViewHolder(messageView);

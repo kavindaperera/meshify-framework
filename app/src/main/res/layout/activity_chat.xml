@@ -83,4 +83,41 @@
         app:fab_colorNormal="@color/colorPrimary"
         app:fab_colorPressed="@color/colorPrimaryDark"/>
 
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:menu_icon="@drawable/ic_baseline_attach_file_24"
+        app:menu_animationDelayPerItem="0"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorPrimaryDark"
+        app:menu_colorRipple="@color/colorPrimary"
+        app:menu_labels_maxLines="2"
+        app:menu_labels_ellipsize="end"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabGif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_label="GIF"
+            android:src="@drawable/ic_baseline_gif_24"
+            style="@style/MenuButtonsSmallGreen"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_image_24"
+            app:fab_label="Image"
+            style="@style/MenuButtonsSmallGreen"/>
+
+
+    </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>
