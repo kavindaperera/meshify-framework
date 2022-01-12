@@ -53,6 +53,14 @@ public class ResponseJson implements Parcelable {
         return responseJson;
     }
 
+    public static ResponseJson ResponseTypeGeneral(String uuid, ArrayList<Device> neighborDetails) {
+        ResponseJson responseJson = new ResponseJson();
+        responseJson.setUuid(uuid);
+        responseJson.setType(0);
+        responseJson.setNeighborDetails(neighborDetails);
+        return responseJson;
+    }
+
     public static ResponseJson ResponseTypeKey(String key) {
         ResponseJson responseJson = new ResponseJson();
         responseJson.setType(2);
@@ -60,12 +68,12 @@ public class ResponseJson implements Parcelable {
         return responseJson;
     }
 
-    public static ResponseJson ResponseTypeNeighborDetails(ArrayList<Device> neighborDetails) {
-        ResponseJson responseJson = new ResponseJson();
-        responseJson.setType(1);
-        responseJson.setNeighborDetails(neighborDetails);
-        return responseJson;
-    }
+//    public static ResponseJson ResponseTypeNeighborDetails(ArrayList<Device> neighborDetails) {
+//        ResponseJson responseJson = new ResponseJson();
+//        responseJson.setType(1);
+//        responseJson.setNeighborDetails(neighborDetails);
+//        return responseJson;
+//    }
 
     @JsonProperty(value="type")
     public int getType() {

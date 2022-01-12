@@ -161,6 +161,8 @@ public class MessageController {
         this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true); // add broadcast message and send
     }
 
+    public ForwardController getForwardController() { return this.forwardController; }
+
     public Config getConfig() {
         return this.config;
     }

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.utils.Utils;
@@ -74,6 +75,9 @@ public class MeshifyEntity<T> implements Parcelable {
         }
     };
 
+    public static MeshifyEntity generateForwardHandShake(MeshifyForwardHandshake meshifyForwardHandshake) {
+        return new MeshifyEntity<MeshifyForwardHandshake>(3, meshifyForwardHandshake);
+    }
 
     public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> meshifyForwardEntities, String sender) {
         MeshifyForwardTransaction meshifyForwardTransaction = new MeshifyForwardTransaction(sender, meshifyForwardEntities);
@@ -91,8 +95,8 @@ public class MeshifyEntity<T> implements Parcelable {
         return new MeshifyEntity<MeshifyContent>(1, new MeshifyContent(message.getContent(), message.getUuid()));
     }
 
-    public static MeshifyEntity generateHandShake() {
-        return new MeshifyEntity<MeshifyHandshake>(0, new MeshifyHandshake(0, ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid())));
+    public static MeshifyEntity generateHandShake(ArrayList<Device> neighborDetails) {
+        return new MeshifyEntity<MeshifyHandshake>(0, new MeshifyHandshake(0, ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails)));
     }
 
     public static MeshifyEntity generateHandShake(MeshifyHandshake meshifyHandshake) {

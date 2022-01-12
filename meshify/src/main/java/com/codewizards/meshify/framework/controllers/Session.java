@@ -13,6 +13,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardHandshake;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.entities.ResponseJson;
@@ -163,27 +164,25 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 case 0: {
                     Log.i(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
-                    break;
-                }
-                case 1: {
-                    Log.i(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
-                    Log.i(TAG, "processHandshake: neighbor details requested:");
 
-                    ArrayList<Session> sessions= SessionManager.getSessions();
+
+                    ArrayList<Session> sessions = SessionManager.getSessions();
                     if (sessions != null) {
                         ArrayList<Device> neighborDetails = new ArrayList<>();
-                        for (Session session : sessions) {
-                            Device device = session.getDevice();
+                        for (Session session1 : sessions) {
+                            Device device = session1.getDevice();
                             if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
                                 neighborDetails.add(device);
                             }
                         }
-                        responseJson = ResponseJson.ResponseTypeNeighborDetails(neighborDetails);
+                        MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails);
+                        Meshify.getInstance().getMeshifyCore().getMessageController().getForwardController().sendEntity(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
                     }
                     break;
                 }
-                case 2: {
-                    Log.i(TAG, "processHandshake: request type 2 device: " + this.getDevice().getDeviceAddress());
+                case 1: {
+
+                    Log.i(TAG, "processHandshake: request type 1 device: " + this.getDevice().getDeviceAddress());
                     Log.i(TAG, "processHandshake: public key requested: " + Meshify.getInstance().getMeshifyClient().getPublicKey());
                     responseJson = ResponseJson.ResponseTypeKey(Meshify.getInstance().getMeshifyClient().getPublicKey());
                     break;
@@ -200,24 +199,21 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     this.getDevice().setUserId(meshifyHandshake.getRp().getUuid());
                     DeviceManager.addDevice(this.getDevice());
 
-                    Log.i(TAG, "processHandshake: asking for neighbor details");
-                    rq = 1;
 
-                    break;
-                }
-                case 1: {
-                    Log.i(TAG, "processHandshake: response type 2 : neighbor details received ");
-
+                    Log.i(TAG, "processHandshake: response type 0 : neighbor details received ");
                     ArrayList<Device> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
+                    if (neighborDetails.size() > 0) {
+                        for (Device indirectDevice : neighborDetails) {
 
-                    for(Device indirectDevice: neighborDetails) {
+                            if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
+                                continue;
 
-                        if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null) continue;
-
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
-                        });
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                            });
+                        }
                     }
+
 
                     // check whether public key already exists
                     HashMap<String,String> publicKeysMap = getKeys();
@@ -225,13 +221,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                         if (Meshify.getInstance().getConfig().isEncryption()) {
                             Log.i(TAG, "processHandshake: asking for key");
-                            rq = 2;
+                            rq = 1;
                         }
                     }
                     break;
                 }
-                case 2: {
-                    Log.i(TAG, "processHandshake: response type 2 : public key received " + meshifyHandshake.getRp().getKey());
+                case 1: {
+                    Log.i(TAG, "processHandshake: response type 1 : public key received " + meshifyHandshake.getRp().getKey());
                     this.setPublicKey(meshifyHandshake.getRp().getKey());
                     Session.saveKey(this.getUserId(), meshifyHandshake.getRp().getKey());
                 }
@@ -327,6 +323,24 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                     break;
                 }
+                case 3: {
+
+                    MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
+
+                    ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
+                    if (neighborDetails.size() > 0) {
+                        for (Device indirectDevice : neighborDetails) {
+                            Log.i(TAG, "processEntity: entity type 3: neighbor details received: " + indirectDevice.getDeviceName());
+                            if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
+                                continue;
+
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                            });
+                        }
+                    }
+                    break;
+                }
 
             }
         }
@@ -398,9 +412,19 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         if (session.isClient()) {
             try {
                 Log.e(this.TAG, "Handshake request type 0 |  session: " + getSessionId());
-                MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
 
-                MeshifyCore.sendEntity(session, meshifyEntity); // send handshake first
+                ArrayList<Session> sessions= SessionManager.getSessions();
+                if (sessions != null) {
+                    ArrayList<Device> neighborDetails = new ArrayList<>();
+                    for (Session session1 : sessions) {
+                        Device device = session1.getDevice();
+                        if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
+                            neighborDetails.add(device);
+                        }
+                    }
+                    MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake(neighborDetails);
+                    MeshifyCore.sendEntity(session, meshifyEntity); // send handshake first
+                }
             }
             catch (MessageException | IOException exception) {
                 exception.printStackTrace();
