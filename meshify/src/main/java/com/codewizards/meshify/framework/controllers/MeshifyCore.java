@@ -23,7 +23,7 @@ public class MeshifyCore {
     /*Shared Preference Keys*/
     public static final String PREFS_NAME = "com.codewizards.meshify.client";
     public static final String PREFS_USER_UUID = "com.codewizards.meshify.uuid";
-    public static final String PREFS_API_KEY = "com.codewizards.meshify.API_KEY";
+    public static final String PREFS_APP_KEY = "com.codewizards.meshify.APP_KEY";
     public static final String PREFS_PUBLIC_KEY ="com.codewizards.meshify.key.public";
     public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.private";
     public static final String PREFS_KEY_PAIRS ="com.codewizards.meshify.key.pairs";

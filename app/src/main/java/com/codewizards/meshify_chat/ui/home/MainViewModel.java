@@ -45,6 +45,8 @@ public class MainViewModel extends AndroidViewModel {
 
     public void updateNearby(String userId, boolean b) { mRepository.updateNearby(userId, b); }
 
+    public void updateLastSeen(String userId, String lastSeen) { mRepository.updateLastSeen(userId, lastSeen); }
+
     @Override
     protected void onCleared() {
         Log.e(TAG, "onCleared");

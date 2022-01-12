@@ -40,5 +40,6 @@ public class Constants {
     public static final String MESSAGE_LABEL = "meshifyMessageLabel";
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
+    public static final int FILE_PICKER_REQUEST_CODE = 1997;
 
 }

@@ -27,6 +27,9 @@ public interface NeighborDao {
     @Query("UPDATE neighbor_table SET isNearby = :b WHERE neighborUuid=:userId")
     void updateNearby(String userId, boolean b);
 
+    @Query("UPDATE neighbor_table SET lastSeen = :lastSeen WHERE neighborUuid=:userId")
+    void updateLastSeen(String userId, String lastSeen);
+
     @Query("UPDATE neighbor_table SET isNearby = 0")
     void updateAllNearby();
 

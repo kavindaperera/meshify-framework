@@ -160,6 +160,7 @@
     <string name="placeholder_date">12:20</string>
     <string name="placeholder_broadcast_chat">Broadcast Chat</string>
     <string name="messages_paginator">LOAD OLDER MESSAGES</string>
+    <string name="placeholder_filename">IMG_012391049104.jpg</string>
 
 
 </resources>

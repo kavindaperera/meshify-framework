@@ -55,6 +55,12 @@ public class NeighborRepository {
         });
     }
 
+    public void updateLastSeen(String userId, String lastSeen) {
+        MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mNeighborDao.updateLastSeen(userId, lastSeen);
+        });
+    }
+
     public void updateAllNearby() {
         MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
             mNeighborDao.updateAllNearby();

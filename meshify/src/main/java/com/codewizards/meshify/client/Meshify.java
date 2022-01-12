@@ -80,9 +80,9 @@ public class Meshify {
             SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.LIBRARY_PACKAGE_NAME, 0);
             if (providedApiKey == null) {
                 try {
-                    providedApiKey = (String) context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.get(MeshifyCore.PREFS_API_KEY);
+                    providedApiKey = (String) context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.get(MeshifyCore.PREFS_APP_KEY);
 
-                    if (providedApiKey == null && (providedApiKey = sharedPreferences.getString(MeshifyCore.PREFS_API_KEY, (String) null)) == null) {
+                    if (providedApiKey == null && (providedApiKey = sharedPreferences.getString(MeshifyCore.PREFS_APP_KEY, (String) null)) == null) {
                         throw new IllegalArgumentException("Missing UUID KEY ");
                     }
                     break block4;
@@ -91,7 +91,7 @@ public class Meshify {
                     throw new IllegalArgumentException("Missing or incorrect UUID KEY");
                 }
             }
-            sharedPreferences.edit().putString(MeshifyCore.PREFS_API_KEY, providedApiKey).apply();
+            sharedPreferences.edit().putString(MeshifyCore.PREFS_APP_KEY, providedApiKey).apply();
         }
         return providedApiKey;
     }
