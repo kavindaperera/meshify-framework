@@ -46,16 +46,15 @@ public class MeshifyUtils {
 
     public static String getMessageDate(String str) {
         LocalDateTime localDateTime = new DateTime().toLocalDateTime();
-        Resources resources = Resources.getSystem();
         try {
             LocalDateTime localDateTime2 = new DateTime(Long.parseLong(str)).toLocalDateTime();
             if (localDateTime.getDayOfMonth() == localDateTime2.getDayOfMonth()) {
                 return String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime2.getHourOfDay())) + ":" + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime2.getMinuteOfHour()));
             } else if (localDateTime2.getDayOfMonth() == localDateTime.minusDays(1).getDayOfMonth()) {
-                return resources.getString(R.string.message_date_yesterday);
+                return Constants.MSG_DATE_YESTERDAY;
             } else {
                 if (localDateTime.minusDays(6).isBefore(localDateTime2)) {
-                    return resources.getStringArray(R.array.days_of_the_week)[localDateTime2.getDayOfWeek() - 1];
+                    return Constants.daysOfWeek[localDateTime2.getDayOfWeek() - 1];
                 }
                 return String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime2.getDayOfMonth())) + "/" + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime2.getMonthOfYear())) + "/" + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime2.getYear()));
             }

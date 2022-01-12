@@ -41,5 +41,6 @@ public class Constants {
     public static final String USER_ID = "userId";
     public static final String USER_NAME = "userName";
     public static final int FILE_PICKER_REQUEST_CODE = 1997;
-
+    public static final String MSG_DATE_YESTERDAY = "Yesterday";
+    public static final String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 }
