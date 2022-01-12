@@ -202,7 +202,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                     Log.i(TAG, "processHandshake: response type 0 : neighbor details received ");
                     ArrayList<Device> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
-                    if (neighborDetails.size() > 0) {
+                    if (neighborDetails != null && neighborDetails.size() > 0) {
                         for (Device indirectDevice : neighborDetails) {
 
                             if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
@@ -328,7 +328,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
 
                     ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
-                    if (neighborDetails.size() > 0) {
+                    if (neighborDetails != null && neighborDetails.size() > 0) {
                         for (Device indirectDevice : neighborDetails) {
                             Log.i(TAG, "processEntity: entity type 3: neighbor details received: " + indirectDevice.getDeviceName());
                             if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
