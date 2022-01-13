@@ -45,6 +45,15 @@ public class BluetoothUtils {
         return bluetoothUuid;
     }
 
+
+    static UUID getCharacteristicUuid() {
+        if (characteristicUuid == null) {
+            characteristicUuid = BluetoothUtils.getHashedCharacteristicUuid(Meshify.getInstance().getMeshifyClient().getApiKey() + "CHARACTERISTIC");
+            Log.i(TAG, "Bluetooth UUID characteristic is: " + characteristicUuid);
+        }
+        return characteristicUuid;
+    }
+
     static UUID getHashedBluetoothUuid(boolean bl) {
         UUID uUID = UUID.fromString(Meshify.getInstance().getMeshifyClient().getApiKey());
         byte[] arrby = BluetoothUtils.getSHA(uUID.toString()); //get SHA-256 Hash
@@ -57,6 +66,15 @@ public class BluetoothUtils {
         long l3 = byteBuffer.getLong();
         UUID uUID2 = new UUID(l2, l3);
         return uUID2;
+    }
+
+    static UUID getHashedCharacteristicUuid(String string) {
+        byte[] arrby = BluetoothUtils.getSHA(string);
+        byte[] arrby2 = Arrays.copyOfRange(arrby, 0, 16);
+        arrby2[arrby2.length - 1] = (byte)(Meshify.getInstance().getConfig().isAutoConnect() ? 255 : 238);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(arrby2);
+        UUID uUID = new UUID(byteBuffer.getLong(), byteBuffer.getLong());
+        return uUID;
     }
 
 
