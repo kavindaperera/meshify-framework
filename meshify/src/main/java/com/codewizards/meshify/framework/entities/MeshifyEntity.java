@@ -60,6 +60,10 @@ public class MeshifyEntity<T> implements Parcelable {
                 this.content = in.readParcelable(MeshifyForwardTransaction.class.getClassLoader());
                 break;
             }
+            case 3: {
+                this.content = in.readParcelable(MeshifyForwardHandshake.class.getClassLoader());
+                break;
+            }
         }
     }
 
@@ -152,6 +156,9 @@ public class MeshifyEntity<T> implements Parcelable {
         }
         else if (this.content instanceof MeshifyForwardTransaction) {
             dest.writeParcelable((MeshifyForwardTransaction)this.content, flags);
+        }
+        else if (this.content instanceof MeshifyForwardHandshake) {
+            dest.writeParcelable((MeshifyForwardHandshake)this.content, flags);
         }
     }
 

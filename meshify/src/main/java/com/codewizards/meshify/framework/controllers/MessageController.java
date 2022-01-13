@@ -105,27 +105,30 @@ public class MessageController {
     public void incomingForwardHandshakeAction(Session session, MeshifyEntity meshifyEntity) {
 
         MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
-        forwardHandshake.decreaseHops();
 
-        // add received neighbor details to your device
-        ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
-        if (neighborDetails != null && neighborDetails.size() > 0) {
-            for (Device indirectDevice : neighborDetails) {
+        if (forwardHandshake != null) {
+            forwardHandshake.decreaseHops();
 
-                if (!(session.getDevice().getDeviceAddress().equals(indirectDevice.getDeviceAddress()))) {
-                    Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
-                    if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
-                        continue;
+            // add received neighbor details to your device
+            ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
+            if (neighborDetails != null && neighborDetails.size() > 0) {
+                for (Device indirectDevice : neighborDetails) {
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
-                    });
+                    if (!indirectDevice.getUserId().equalsIgnoreCase(session.getDevice().getUserId()) && !indirectDevice.getUserId().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid())) {
+                        Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
+                        if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
+                            continue;
+
+                        new Handler(Looper.getMainLooper()).post(() -> {
+                            Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                        });
+                    }
                 }
             }
-        }
 
-        if (forwardHandshake != null && forwardHandshake.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardHandshake.getSender())) {
-            this.forwardHandshake(forwardHandshake);
+            if (forwardHandshake.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardHandshake.getSender())) {
+                this.forwardHandshake(forwardHandshake);
+            }
         }
     }
 

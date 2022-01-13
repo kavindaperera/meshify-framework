@@ -19,11 +19,11 @@ public class MeshifyForwardHandshake implements Parcelable {
     @JsonProperty(value="sender")
     String sender;
 
-    @JsonProperty(value="hops")
-    int hops;
-
     @JsonProperty(value="profile")
     int profile;
+
+    @JsonProperty(value="hops")
+    int hops;
 
     @JsonProperty(value="neighborDetails")
     private ArrayList<Device> neighborDetails;
@@ -31,14 +31,14 @@ public class MeshifyForwardHandshake implements Parcelable {
     public MeshifyForwardHandshake(String sender, ArrayList<Device> neighborDetails, ConfigProfile profile) {
         this.sender = sender;
         this.neighborDetails = neighborDetails;
-        this.hops = this.getHopLimitForConfigProfile();
         this.profile = profile.ordinal();
+        this.hops = this.getHopLimitForConfigProfile();
     }
 
     protected MeshifyForwardHandshake(Parcel in) {
         sender = in.readString();
-        hops = in.readInt();
         profile = in.readInt();
+        hops = in.readInt();
         neighborDetails = in.readArrayList(Device.class.getClassLoader());
     }
 
@@ -50,8 +50,8 @@ public class MeshifyForwardHandshake implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(sender);
-        dest.writeInt(hops);
         dest.writeInt(profile);
+        dest.writeInt(hops);
         dest.writeList(this.neighborDetails);
     }
 
