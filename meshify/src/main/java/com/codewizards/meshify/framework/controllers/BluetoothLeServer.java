@@ -1,6 +1,8 @@
 package com.codewizards.meshify.framework.controllers;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
 class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServer> {
@@ -20,7 +23,7 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
 
     private boolean isRunningLe = false;
 
-    Object object = new Object();
+    Object syncLock = new Object();
 
     protected BluetoothLeServer(Config config, Context context) throws ConnectionException {
         super(config, context);
@@ -30,12 +33,10 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
     }
 
 
-
     @Override
     public void startServer() throws ConnectionException {
-        //TODO -> [kavinda]
-        Object object = this.object;
-        synchronized (object) {
+        Object syncLock1 = this.syncLock;
+        synchronized (syncLock1) {
             if (!this.isAlive() && !this.isRunningLe()) {
                 this.setRunning(true);
                 this.setRunningLe(true);
@@ -49,7 +50,20 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
 
     @Override
     public void stopServer() throws ConnectionException {
-        //TODO -> [kavinda]
+        if (this.alive()) {
+            try {
+                this.setRunning(false);
+                ((BluetoothGattServer)this.getServerSocket()).clearServices();
+                ((BluetoothGattServer)this.getServerSocket()).close();
+            }
+            catch (Exception exception) {
+                Log.e(TAG, "stopServer: " + exception.getMessage());
+            }
+            finally {
+                //TODO - nullify device
+                this.setRunningLe(false);
+            }
+        }
     }
 
 
@@ -67,24 +81,36 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
         this.isRunningLe = b;
     }
 
+    private boolean addCharacteristic() {
+        byte[] arrby = new MeshifyHandshake(null, null).toString().getBytes();
+        BluetoothGattCharacteristic bluetoothGattCharacteristic = this.bluetoothGattService.getCharacteristic(BluetoothUtils.getCharacteristicUuid());
+        if (bluetoothGattCharacteristic == null) {
+            BluetoothGattCharacteristic bluetoothGattCharacteristic2 = new BluetoothGattCharacteristic(BluetoothUtils.getCharacteristicUuid(), 26, 17);
+            bluetoothGattCharacteristic2.addDescriptor(new BluetoothGattDescriptor(BluetoothUtils.batteryServiceUuid, 16));
+            bluetoothGattCharacteristic2.setValue(arrby);
+            if (this.bluetoothGattService != null) {
+                this.bluetoothGattService.addCharacteristic(bluetoothGattCharacteristic2);
+                return true;
+            }
+            return false;
+        }
+        bluetoothGattCharacteristic.setValue(arrby);
+        return true;
+    }
+
     @Override
     public void run() {
         super.run();
-
         if (this.getServerSocket() != null) {
             this.bluetoothGattService = ((BluetoothGattServer) this.getServerSocket()).getService(BluetoothUtils.getBluetoothUuid());
         }
-
         if (this.bluetoothGattService == null && this.getServerSocket() != null) {
             this.bluetoothGattService = new BluetoothGattService(BluetoothUtils.getBluetoothUuid(), 0);
-
-            //TODO - addService
-
+            if (this.addCharacteristic()) {
+                ((BluetoothGattServer) this.getServerSocket()).addService(this.bluetoothGattService);
+            }
         }
-
     }
-
-
 
     private void openGattServer(Context context) {
         if (this.getServerSocket() == null) {

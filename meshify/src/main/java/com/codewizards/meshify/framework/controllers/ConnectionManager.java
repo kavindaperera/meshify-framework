@@ -67,7 +67,7 @@ public class ConnectionManager {
                 break;
             }
             case BLUETOOTH_LE: {
-
+                ConnectionManager.setMeshifyDevice(new BleMeshifyDevice(device));
             }
         }
         return meshifyDevice;

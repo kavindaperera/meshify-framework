@@ -65,9 +65,7 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
             };
 
             if (device.getAntennaType() == Config.Antenna.BLUETOOTH_LE) {
-
-                //TODO - subscribe BLE
-
+                meshifyDevice.create().subscribe(completableObserver);
             } else {
                 Log.e(TAG, "isAutoConnect: " + Meshify.getInstance().getConfig().isAutoConnect());
 //                if ( Meshify.getInstance().getConfig().isAutoConnect() ) {
