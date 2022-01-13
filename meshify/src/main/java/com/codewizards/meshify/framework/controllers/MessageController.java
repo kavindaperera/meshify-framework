@@ -1,6 +1,8 @@
 package com.codewizards.meshify.framework.controllers;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
@@ -9,6 +11,7 @@ import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardHandshake;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
@@ -99,6 +102,37 @@ public class MessageController {
         }
     }
 
+    public void incomingForwardHandshakeAction(Session session, MeshifyEntity meshifyEntity) {
+
+        MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
+        forwardHandshake.decreaseHops();
+
+        // add received neighbor details to your device
+        ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
+        if (neighborDetails != null && neighborDetails.size() > 0) {
+            for (Device indirectDevice : neighborDetails) {
+
+                if (!(session.getDevice().getDeviceAddress().equals(indirectDevice.getDeviceAddress()))) {
+                    Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
+                    if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
+                        continue;
+
+                    new Handler(Looper.getMainLooper()).post(() -> {
+                        Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                    });
+                }
+            }
+        }
+
+        if (forwardHandshake != null && forwardHandshake.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardHandshake.getSender())) {
+            this.forwardHandshake(forwardHandshake);
+        }
+    }
+
+    public void forwardHandshake(MeshifyForwardHandshake meshifyForwardHandshake) {
+        this.forwardController.sendEntity(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
+    }
+
     private Message getMessageFromForwardEntity(MeshifyForwardEntity forwardEntity) {
         Message message = new Message(
                 forwardEntity.getPayload(),
@@ -160,8 +194,6 @@ public class MessageController {
     void sendMessage(Message message, ConfigProfile profile) {
         this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true); // add broadcast message and send
     }
-
-    public ForwardController getForwardController() { return this.forwardController; }
 
     public Config getConfig() {
         return this.config;
