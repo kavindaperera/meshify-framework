@@ -104,17 +104,18 @@ public class MessageController {
 
     public void incomingForwardHandshakeAction(Session session, MeshifyEntity meshifyEntity) {
 
-        MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
+        if (!(this.forwardController.checkHandshakeAlreadyForwarded(meshifyEntity.getId()))) {
 
-        if (forwardHandshake != null) {
-            forwardHandshake.decreaseHops();
+            this.forwardController.updateAlreadyForwardedHandshakes(meshifyEntity.getId());
+            ((MeshifyForwardHandshake) meshifyEntity.getContent()).decreaseHops();
+            MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
 
             // add received neighbor details to your device
             ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
             if (neighborDetails != null && neighborDetails.size() > 0) {
                 for (Device indirectDevice : neighborDetails) {
-
-                    if (!indirectDevice.getUserId().equalsIgnoreCase(session.getDevice().getUserId()) && !indirectDevice.getUserId().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid())) {
+                    //if (!(session.getDevice().getUserId().equalsIgnoreCase(indirectDevice.getUserId())) && !(Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()))) {
+                    if (!(Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()))) {
                         Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
                         if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
                             continue;
@@ -127,13 +128,13 @@ public class MessageController {
             }
 
             if (forwardHandshake.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardHandshake.getSender())) {
-                this.forwardHandshake(forwardHandshake);
+                this.forwardHandshake(meshifyEntity);
             }
         }
     }
 
-    public void forwardHandshake(MeshifyForwardHandshake meshifyForwardHandshake) {
-        this.forwardController.sendEntity(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
+    public void forwardHandshake(MeshifyEntity<MeshifyForwardHandshake> meshifyEntity) {
+        this.forwardController.sendEntity(meshifyEntity);
     }
 
     private Message getMessageFromForwardEntity(MeshifyForwardEntity forwardEntity) {

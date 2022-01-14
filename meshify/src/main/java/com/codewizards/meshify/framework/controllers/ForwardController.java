@@ -12,6 +12,7 @@ import com.codewizards.meshify.logs.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -21,8 +22,24 @@ public class ForwardController {
 
     private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>(); // DD Cache
     private ConcurrentNavigableMap<String, Boolean> reachedNavigableMap = new ConcurrentSkipListMap<String, Boolean>();
+    private ConcurrentHashMap<String, Boolean> alreadyForwardedHandshakes = new ConcurrentHashMap<>();
 
     ForwardController() {
+    }
+
+    public void updateAlreadyForwardedHandshakes(String meshifyEntityUUID) {
+        synchronized (alreadyForwardedHandshakes) {
+            alreadyForwardedHandshakes.put(meshifyEntityUUID, true);
+        }
+    }
+
+    public Boolean checkHandshakeAlreadyForwarded(String meshifyEntityUUID){
+        if ( this.alreadyForwardedHandshakes.containsKey(meshifyEntityUUID)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     void addForwardEntitiesToList(MeshifyForwardEntity forwardEntity, boolean z) {

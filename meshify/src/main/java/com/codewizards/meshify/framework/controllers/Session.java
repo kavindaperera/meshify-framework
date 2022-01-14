@@ -164,20 +164,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 case 0: {
                     Log.i(TAG, "processHandshake: request type 0 device: " + this.getDevice().getDeviceAddress());
                     responseJson = ResponseJson.ResponseTypeGeneral(Meshify.getInstance().getMeshifyClient().getUserUuid());
-
-                    ArrayList<Session> sessions = SessionManager.getSessions();
-                    if (sessions != null) {
-                        ArrayList<Device> neighborDetails = new ArrayList<>();
-                        for (Session session1 : sessions) {
-                            Device device = session1.getDevice();
-                            /*if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
-                                neighborDetails.add(device);
-                            }*/
-                            neighborDetails.add(device);
-                        }
-                        MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails, Meshify.getInstance().getConfig().getConfigProfile());
-                        Meshify.getInstance().getMeshifyCore().getMessageController().forwardHandshake(meshifyForwardHandshake);
-                    }
                     break;
                 }
                 case 1: {
@@ -214,6 +200,24 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                         }
                     }
 
+                    // broadcast neighbor details with MeshifyForwardHandshake
+                    if (meshifyHandshake.getRq() == 0) {
+                        ArrayList<Session> sessions = SessionManager.getSessions();
+                        if (sessions != null) {
+                            ArrayList<Device> neighborDetails1 = new ArrayList<>();
+                            for (Session session1 : sessions) {
+                                Log.i(TAG, "processHandshake: session: " + session1);
+                                Device device = session1.getDevice();
+                                Log.i(TAG, "processHandshake: device: " + device);
+                            /*if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
+                                neighborDetails.add(device);
+                            }*/
+                                neighborDetails1.add(device);
+                            }
+                            MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails1, Meshify.getInstance().getConfig().getConfigProfile());
+                            Meshify.getInstance().getMeshifyCore().getMessageController().forwardHandshake(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
+                        }
+                    }
 
                     // check whether public key already exists
                     HashMap<String,String> publicKeysMap = getKeys();
