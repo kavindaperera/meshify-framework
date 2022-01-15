@@ -17,7 +17,7 @@ public class NeighborRepository {
     public NeighborRepository(Application application) {
         MeshifyRoomDatabase db = MeshifyRoomDatabase.getDatabase(application);
         mNeighborDao = db.neighborDao();
-        mAllNeighbors = mNeighborDao.getAlphabetizedNeighbors();
+        mAllNeighbors = mNeighborDao.getOrderedNeighbors();
 
     }
 
