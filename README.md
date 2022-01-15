@@ -99,8 +99,15 @@ The first step is to add the following permissions in `AndroidManifest.xml`:
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
 
-Meshify supports both Bluetooth Classic and Bluetooth Classic capable devices
+Meshify supports both Bluetooth Classic and Bluetooth Low Energy (BLE) capable devices.
 
+If you only planning to use BLE, you can optionally declare that your app uses BLE features on Android devices. By doing so, users on devices without BLE capabilities won’t see your app on the Google Play Store. If this behavior sounds good to you, add the following snippet below the `<uses-permission>` tags.
+
+```xml
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+```
 
 ## Usage
 
