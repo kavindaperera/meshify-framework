@@ -115,7 +115,7 @@ public class MeshifyCore {
         return this.context;
     }
 
-    ConnectionListener getConnectionListener() {
+    public ConnectionListener getConnectionListener() {
         return this.connectionListener;
     }
 

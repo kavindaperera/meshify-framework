@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.codewizards.meshify.BuildConfig;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.framework.controllers.MeshifyCore;
 import com.codewizards.meshify.logs.Log;
 

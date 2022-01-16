@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetoothLe;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -10,10 +10,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.ThreadServer;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattServerCallback;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
-class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServer> {
+public class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServer> {
 
     final String TAG = "[Meshify][BleServer]";
 
@@ -25,7 +28,7 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
 
     Object syncLock = new Object();
 
-    protected BluetoothLeServer(Config config, Context context) throws ConnectionException {
+    public BluetoothLeServer(Config config, Context context) throws ConnectionException {
         super(config, context);
         this.bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         this.openGattServer(context);
@@ -69,7 +72,7 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
 
 
     @Override
-    boolean alive() {
+    public boolean alive() {
         return this.getServerSocket() != null && ((BluetoothGattServer) this.getServerSocket()).getServices().size() > 0;
     }
 

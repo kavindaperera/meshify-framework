@@ -14,7 +14,7 @@ import io.reactivex.Completable;
  * @author Kavinda Perera
  * @version 1.0
  */
-abstract class MeshifyDevice  implements Comparable {
+public abstract class MeshifyDevice  implements Comparable {
 
     private Device device;
 

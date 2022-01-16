@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetoothLe;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -12,8 +12,14 @@ import android.os.ParcelUuid;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.DeviceProfile;
+import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.ConnectionManager;
+import com.codewizards.meshify.framework.controllers.DeviceManager;
+import com.codewizards.meshify.framework.controllers.Discovery;
+import com.codewizards.meshify.framework.controllers.Session;
+import com.codewizards.meshify.framework.controllers.SessionManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.Collection;
@@ -61,7 +67,7 @@ public class BluetoothLeDiscovery extends Discovery {
 
     @SuppressLint("CheckResult")
     @Override
-    void startDiscovery(Context context, Config config) {
+    public void startDiscovery(Context context, Config config) {
         this.deviceFlowable = Flowable.create(new FlowableOnSubscribe<Device>() {
             @SuppressLint("MissingPermission")
             @Override
@@ -121,7 +127,7 @@ public class BluetoothLeDiscovery extends Discovery {
 
     @SuppressLint("MissingPermission")
     @Override
-    void stopDiscovery(Context context) {
+    public void stopDiscovery(Context context) {
         super.stopDiscovery(context);
         this.disposable.clear();
         if (this.bluetoothAdapter != null && this.scanCallback != null && this.bluetoothAdapter.isEnabled() && this.bluetoothAdapter.getBluetoothLeScanner() != null){
