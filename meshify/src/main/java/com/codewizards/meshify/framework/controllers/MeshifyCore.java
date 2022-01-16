@@ -9,12 +9,12 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.ConnectionListener;
+import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import io.reactivex.Completable;
 
@@ -98,7 +98,7 @@ public class MeshifyCore {
         this.messageController.sendMessage( message, profile);
     }
 
-    MessageListener getMessageListener() {
+    public MessageListener getMessageListener() {
         Log.d(TAG, "getMessageListener:");
         return this.messageListener;
     }

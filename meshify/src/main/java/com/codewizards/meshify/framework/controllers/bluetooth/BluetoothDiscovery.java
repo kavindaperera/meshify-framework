@@ -16,8 +16,8 @@ import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.DeviceManager;
-import com.codewizards.meshify.framework.controllers.Discovery;
-import com.codewizards.meshify.framework.controllers.RetryWhenLambda;
+import com.codewizards.meshify.framework.controllers.base.Discovery;
+import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;

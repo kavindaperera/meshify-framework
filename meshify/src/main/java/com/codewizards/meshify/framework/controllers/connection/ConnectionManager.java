@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.connection;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,6 +6,8 @@ import android.os.Looper;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.exceptions.MeshifyException;
+import com.codewizards.meshify.framework.controllers.base.MeshifyDevice;
+import com.codewizards.meshify.framework.controllers.SessionManager;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.BleMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
