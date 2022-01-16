@@ -15,7 +15,7 @@ public class SessionManager {
 
 //    private static final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 9, 3L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-    static ConcurrentSkipListMap<String, Session> sessionMap = new ConcurrentSkipListMap<>();
+    public static ConcurrentSkipListMap<String, Session> sessionMap = new ConcurrentSkipListMap<>();
 
     private SessionManager() {
     }
@@ -24,7 +24,7 @@ public class SessionManager {
         return new ArrayList<Session>(sessionMap.values());
     }
 
-    static void queueSession(Session session) {
+    public static void queueSession(Session session) {
         if (!sessionMap.containsKey(session.getSessionId())) {
             Log.d(TAG, "queueSession: " + session.getSessionId() + " -> first time.");
             session.setConnected(true);

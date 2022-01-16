@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetooth;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -7,12 +7,17 @@ import android.bluetooth.BluetoothSocket;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.DeviceManager;
+import com.codewizards.meshify.framework.controllers.MeshifyDevice;
+import com.codewizards.meshify.framework.controllers.RetryWhenLambda;
+import com.codewizards.meshify.framework.controllers.Session;
+import com.codewizards.meshify.framework.controllers.SessionManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 
 import io.reactivex.Completable;
-import io.reactivex.functions.Function;
 
 /**
  * <p>This class represents a Bluetooth-enabled meshify device..</p>

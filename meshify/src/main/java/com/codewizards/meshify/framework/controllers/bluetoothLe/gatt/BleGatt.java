@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetoothLe.gatt;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;

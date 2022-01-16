@@ -3,28 +3,29 @@ package com.codewizards.meshify.framework.controllers;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.MeshifyException;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothDiscovery;
+import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothServer;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.BluetoothLeDiscovery;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattManager;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.MeshifyAdvertiseCallback;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
-
-import java.io.IOException;
 
 public class BluetoothController {
 
     private static String TAG = "[Meshify][BluetoothController]";
 
-    static int state = 0; // BLE Advertising state
+    public static int state = 0; // BLE Advertising state
 
     private Config config;
 

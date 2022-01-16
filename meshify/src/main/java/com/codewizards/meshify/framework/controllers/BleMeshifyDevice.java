@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattDescriptor;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BleGatt;
 import com.codewizards.meshify.logs.Log;
 
 import io.reactivex.Completable;

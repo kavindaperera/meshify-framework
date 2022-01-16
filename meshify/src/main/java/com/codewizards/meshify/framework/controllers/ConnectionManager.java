@@ -5,7 +5,8 @@ import android.os.Looper;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.MeshifyException;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
+import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class ConnectionManager {
         return meshifyDevice;
     }
 
-    static boolean checkConnection(String string) {
+    public static boolean checkConnection(String string) {
         Connection connection = connections.get(string);
         return connection != null && !connection.isConnected();
     }

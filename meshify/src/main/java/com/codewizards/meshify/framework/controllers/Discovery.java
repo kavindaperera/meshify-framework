@@ -9,28 +9,28 @@ import com.codewizards.meshify.logs.Log;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-abstract class Discovery {
+public abstract class Discovery {
 
     protected String TAG = "[Meshify][Discovery]";
 
-    DisposableSubscriber<Device> disposableSubscriber;
+    public DisposableSubscriber<Device> disposableSubscriber;
 
-    Flowable<Device> deviceFlowable; //emits device objects
+    public Flowable<Device> deviceFlowable; //emits device objects
 
     private Config config;
 
     private boolean discoveryRunning = false;
 
-    Discovery() {
+    public Discovery() {
     }
 
-    void startDiscovery(Context context, Config config) {
+    public void startDiscovery(Context context, Config config) {
         Log.d(TAG, "startDiscovery:");
         this.disposableSubscriber = new ConnectionSubscriber();
         this.deviceFlowable.subscribe(this.disposableSubscriber); //subscribe to the connection
     }
 
-    void stopDiscovery(Context context) {
+    public void stopDiscovery(Context context) {
         Log.d(TAG, "stopDiscovery:");
         if (this.disposableSubscriber != null) {
             this.disposableSubscriber.dispose();
