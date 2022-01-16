@@ -50,7 +50,7 @@ public class DeviceManager {
 
     private static void onDeviceConnected(Device device, Session session) {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (Meshify.getInstance().getMeshifyCore() != null && session != null && Meshify.getInstance().getMeshifyCore().getConnectionListener() != null) {
+            if (Meshify.getInstance().getMeshifyCore() != null && session != null && Meshify.getInstance().getMeshifyCore().getConnectionListener() != null && isPublicKeyAvailable(device)) {
                 Meshify.getInstance().getMeshifyCore().getConnectionListener().onDeviceConnected(device, session);
             }
         });
@@ -155,6 +155,20 @@ public class DeviceManager {
             return device;
         }
         return null;
+    }
+
+    static boolean isPublicKeyAvailable(Device device) {
+
+        if (Meshify.getInstance().getConfig().isEncryption()) {
+            if(Session.getKeys().get(device.getUserId()) == null) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+
     }
 
 }
