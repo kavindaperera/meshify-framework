@@ -50,7 +50,7 @@ public class SessionManager {
         return session;
     }
 
-    static void removeSession(String string) {
+    public static void removeSession(String string) {
 
         Session session = SessionManager.getSession(string);
         if (session != null && session.getState() != 1) {

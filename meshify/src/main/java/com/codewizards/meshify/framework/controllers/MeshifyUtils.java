@@ -41,40 +41,5 @@ public class MeshifyUtils {
         return result;
     }
 
-    static int method_a(BluetoothGattCharacteristic bluetoothGattCharacteristic) {
-        byte[] arrby = bluetoothGattCharacteristic.getValue();
-        try {
-            return arrby[0];
-        }
-        catch (Exception exception) {
-            return -1;
-        }
-    }
-
-    public static ArrayList<byte[]> getCompressedChunk(MeshifyEntity meshifyEntity) {
-
-        ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
-
-        if (meshifyEntity.getEntity() == 2 ) {
-
-            ArrayList arrayList1 = new ArrayList();
-            MeshifyForwardTransaction meshifyEntityContent = (MeshifyForwardTransaction) meshifyEntity.getContent();
-            meshifyEntity.setContent(null);
-
-            if (meshifyEntityContent.getReach() == null){
-
-                ArrayList arrayList2 = new ArrayList();
-
-                if (arrayList2.size() > 0) {
-
-                    meshifyEntityContent.getMesh().removeAll(arrayList2);
-
-                }
-
-            }
-
-        }
-        return arrayList;
-    }
 
 }
