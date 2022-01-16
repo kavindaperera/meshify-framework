@@ -5,7 +5,7 @@ import android.content.Context;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
-abstract class ThreadServer<SOCKET, SERVER_SOCKET> extends Thread { //can be of type socket or server socket
+public abstract class ThreadServer<SOCKET, SERVER_SOCKET> extends Thread { //can be of type socket or server socket
 
     protected Context context;
 
@@ -23,7 +23,7 @@ abstract class ThreadServer<SOCKET, SERVER_SOCKET> extends Thread { //can be of 
 
     public abstract void stopServer() throws ConnectionException;
 
-    abstract boolean alive();
+    public abstract boolean alive();
 
     public SERVER_SOCKET getServerSocket() {
         return this.server_socket;

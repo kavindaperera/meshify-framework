@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetooth;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -9,13 +9,18 @@ import android.content.Context;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.DeviceManager;
+import com.codewizards.meshify.framework.controllers.Session;
+import com.codewizards.meshify.framework.controllers.SessionManager;
+import com.codewizards.meshify.framework.controllers.ThreadServer;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
-public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServerSocket>  {
+public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServerSocket> {
 
     final String TAG = "[Meshify][BluetoothServer]";
 
@@ -79,7 +84,7 @@ public class BluetoothServer extends ThreadServer<BluetoothSocket, BluetoothServ
     }
 
     @Override
-    boolean alive() {
+    public boolean alive() {
         return super.isAlive() && this.getServerSocket() != null;
     }
 

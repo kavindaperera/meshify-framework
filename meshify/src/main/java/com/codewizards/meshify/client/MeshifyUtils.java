@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 
-import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 
 public class MeshifyUtils {
 

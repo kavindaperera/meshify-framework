@@ -39,7 +39,7 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
         @Override
         public boolean areContentsTheSame(@NonNull Neighbor oldItem, @NonNull Neighbor newItem) {
             return oldItem.getDeviceName().equals(newItem.getDeviceName()) &&
-                    oldItem.isNearby() == newItem.isNearby();
+                    oldItem.isNearby() == newItem.isNearby() && oldItem.getLastSeen().equals(newItem.getLastSeen());
         }
     };
 
@@ -87,6 +87,7 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
         final TextView mInitialsTextView;
         final ImageView mPopupMenu;
         final TextView mLastMsg;
+        final TextView mLastSeen;
         Neighbor neighbor;
 
         NeighborViewHolder(View view) {
@@ -95,6 +96,7 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
             mInitialsTextView = view.findViewById(R.id.contactInitials);
             mPopupMenu = view.findViewById(R.id.popupMenu);
             mLastMsg = view.findViewById(R.id.lastMessage);
+            mLastSeen =view.findViewById(R.id.lastSeen);
 
             mPopupMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -145,6 +147,7 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
                 case ANDROID:
                     this.mContentView.setText(neighbor.getDeviceName());
                     this.mInitialsTextView.setText(MeshifyUtils.generateInitials(neighbor.getDeviceName()));
+                    this.mLastSeen.setText(MeshifyUtils.getMessageDate(neighbor.getLastSeen()));
                     break;
             }
             if (neighbor.isNearby()) {

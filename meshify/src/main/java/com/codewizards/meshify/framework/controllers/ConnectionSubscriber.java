@@ -6,8 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.MeshifyException;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
 
 import io.reactivex.CompletableObserver;
@@ -65,9 +66,7 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
             };
 
             if (device.getAntennaType() == Config.Antenna.BLUETOOTH_LE) {
-
-                //TODO - subscribe BLE
-
+                meshifyDevice.create().subscribe(completableObserver);
             } else {
                 Log.e(TAG, "isAutoConnect: " + Meshify.getInstance().getConfig().isAutoConnect());
 //                if ( Meshify.getInstance().getConfig().isAutoConnect() ) {

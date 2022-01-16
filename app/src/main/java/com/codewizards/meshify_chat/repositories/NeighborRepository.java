@@ -17,7 +17,7 @@ public class NeighborRepository {
     public NeighborRepository(Application application) {
         MeshifyRoomDatabase db = MeshifyRoomDatabase.getDatabase(application);
         mNeighborDao = db.neighborDao();
-        mAllNeighbors = mNeighborDao.getAlphabetizedNeighbors();
+        mAllNeighbors = mNeighborDao.getOrderedNeighbors();
 
     }
 
@@ -52,6 +52,12 @@ public class NeighborRepository {
     public void updateNearby(String userId, boolean b) {
         MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
             mNeighborDao.updateNearby(userId, b);
+        });
+    }
+
+    public void updateLastSeen(String userId, String lastSeen) {
+        MeshifyRoomDatabase.databaseWriteExecutor.execute(() -> {
+            mNeighborDao.updateLastSeen(userId, lastSeen);
         });
     }
 

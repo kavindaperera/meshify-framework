@@ -1,10 +1,10 @@
 package com.codewizards.meshify_chat.util;
 
-import android.content.Intent;
 
 public class Constants {
     public static final String BROADCAST_CHAT = "Broadcast";
     public static final int FOREGROUND_SERVICE = 333;
+    public static final String BROADCAST_CHAT_MESSAGE_RECEIVED = "broadcastChatMessage";
     public static final String CHAT_MESSAGE_RECEIVED = "chatMessage";
     public static final String CHAT_MESSAGE_RECEIVED_BACKGROUND = "chatMessageBackground";
     public static final String CONNECTION_TYPE = "neighborConnectionType";
@@ -34,4 +34,13 @@ public class Constants {
     public static final String PREFS_NOTIFICATION_SOUND = "notificationSound";
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
     public static final String DATABASE_PASSWORD = "database_password";
+    public static final String OTHER_USER_NAME = "otherUserName";
+    public static final String OTHER_USER_ID = "otherUserId";
+    public static final String MESSAGE_UUID = "messageUuid";
+    public static final String MESSAGE_LABEL = "meshifyMessageLabel";
+    public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
+    public static final int FILE_PICKER_REQUEST_CODE = 1997;
+    public static final String MSG_DATE_YESTERDAY = "Yesterday";
+    public static final String[] daysOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 }

@@ -41,52 +41,32 @@ public class ForwardController {
 
             MeshifyForwardEntity forwardEntity1 = null;
 
-            if (this.meshNavigableMap.size() < 10) { // DD Cache
-
+            if (this.meshNavigableMap.size() < 10) { // TODO - Queue Size
                 forwardEntity1 = forwardEntity;
-
             } else {
-
                 MeshifyForwardEntity forwardEntity2 = null;
-
                 for (MeshifyForwardEntity forwardEntity3 : this.meshNavigableMap.descendingKeySet()) {
                     if (forwardEntity2 == null) {
                         forwardEntity2 = forwardEntity3;
                         continue;
                     }
-
                     if (forwardEntity2.getAdded().getTime() <= forwardEntity3.getAdded().getTime()) continue;
-
                     forwardEntity2 = forwardEntity3;
-
                 }
-
                 if (forwardEntity2.getAdded().getTime() < forwardEntity.getAdded().getTime()) {
-
                     this.meshNavigableMap.remove(forwardEntity2); // delete oldest entity
-
                     forwardEntity1 = forwardEntity;
-
                 }
-
             }
-
             if (forwardEntity1 != null) {
-
                 this.meshNavigableMap.put(forwardEntity1, true);
-
             } else {
-
                 this.reachedNavigableMap.put(forwardEntity.getId(), Boolean.TRUE);
-
             }
-
         }
         
         if (z) {
-
             this.sendEntity(SessionManager.getSessions(), false); // forward to all available neighbors
-
         } 
     }
 
@@ -124,7 +104,7 @@ public class ForwardController {
     private MeshifyForwardEntity checkAvailability(MeshifyForwardEntity forwardEntity) {
         if (this.meshNavigableMap.containsKey(forwardEntity)) {
             for (MeshifyForwardEntity forwardEntity1 : this.meshNavigableMap.descendingKeySet()) {
-                if (!forwardEntity1.equals(forwardEntity1)) continue;
+                if (!forwardEntity1.equals(forwardEntity)) continue;
                 return forwardEntity1;
             }
         }

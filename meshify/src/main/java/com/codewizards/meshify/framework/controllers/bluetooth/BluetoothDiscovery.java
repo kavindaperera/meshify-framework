@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetooth;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -12,8 +12,12 @@ import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.DeviceProfile;
+import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.DeviceManager;
+import com.codewizards.meshify.framework.controllers.Discovery;
+import com.codewizards.meshify.framework.controllers.RetryWhenLambda;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -26,8 +30,6 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.subscribers.DisposableSubscriber;
 
 public class BluetoothDiscovery extends Discovery {
 
@@ -115,7 +117,7 @@ public class BluetoothDiscovery extends Discovery {
     }
 
     @SuppressLint("MissingPermission")
-    void DiscoveryFinishedAction(Context context) {
+    public void DiscoveryFinishedAction(Context context) {
         this.setDiscoveryRunning(false);
         this.devices.clear();
         if (this.bluetoothAdapter.isEnabled()) {
@@ -145,7 +147,7 @@ public class BluetoothDiscovery extends Discovery {
     }
 
     @SuppressLint(value = {"HardwareIds", "MissingPermission"})
-    void addBluetoothDevice(Intent intent) {
+    public void addBluetoothDevice(Intent intent) {
 
         BluetoothDevice bluetoothDevice = (BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         Log.d(TAG, "addBluetoothDevice: " + bluetoothDevice.getName());
@@ -213,7 +215,7 @@ public class BluetoothDiscovery extends Discovery {
     }
 
     @SuppressLint("MissingPermission")
-    void pair(Intent intent){
+    public void pair(Intent intent){
         BluetoothDevice bluetoothDevice = (BluetoothDevice)intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         Parcelable[] arrparcelable = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
         if (bluetoothDevice != null && bluetoothDevice.getAddress() != null) {

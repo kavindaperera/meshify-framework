@@ -31,7 +31,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:minEms="3"
-            android:lineSpacingExtra="2sp"/>
+            android:lineSpacingExtra="2sp"
+            android:text="@string/placeholder_message"/>
         <TextView
             android:textSize="8sp"
             android:textColor="@color/black"
@@ -41,7 +42,8 @@
             android:layout_marginTop="1dp"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/msgStatus"
-            android:layout_below="@+id/txtMessage"/>
+            android:layout_below="@+id/txtMessage"
+            android:text="@string/placeholder_date"/>
         <TextView
             android:textSize="8sp"
             android:textColor="@color/verify_error"

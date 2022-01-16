@@ -26,7 +26,7 @@ public class BluetoothUtils {
 
     private static String TAG = "[Meshify][BluetoothUtils]";
 
-    static UUID batteryServiceUuid  = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static UUID batteryServiceUuid  = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private static UUID bluetoothUuid;
 
@@ -38,14 +38,23 @@ public class BluetoothUtils {
         d = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
     }
 
-    static UUID getBluetoothUuid() {
+    public static UUID getBluetoothUuid() {
         if (bluetoothUuid == null) {
             bluetoothUuid = BluetoothUtils.getHashedBluetoothUuid(Meshify.getInstance().getConfig().isAutoConnect());
         }
         return bluetoothUuid;
     }
 
-    static UUID getHashedBluetoothUuid(boolean bl) {
+
+    public static UUID getCharacteristicUuid() {
+        if (characteristicUuid == null) {
+            characteristicUuid = BluetoothUtils.getHashedCharacteristicUuid(Meshify.getInstance().getMeshifyClient().getApiKey() + "CHARACTERISTIC");
+            Log.i(TAG, "Bluetooth UUID characteristic is: " + characteristicUuid);
+        }
+        return characteristicUuid;
+    }
+
+    public static UUID getHashedBluetoothUuid(boolean bl) {
         UUID uUID = UUID.fromString(Meshify.getInstance().getMeshifyClient().getApiKey());
         byte[] arrby = BluetoothUtils.getSHA(uUID.toString()); //get SHA-256 Hash
         byte[] arrby2 = Arrays.copyOfRange(arrby, 0, 16);
@@ -57,6 +66,15 @@ public class BluetoothUtils {
         long l3 = byteBuffer.getLong();
         UUID uUID2 = new UUID(l2, l3);
         return uUID2;
+    }
+
+    public static UUID getHashedCharacteristicUuid(String string) {
+        byte[] arrby = BluetoothUtils.getSHA(string);
+        byte[] arrby2 = Arrays.copyOfRange(arrby, 0, 16);
+        arrby2[arrby2.length - 1] = (byte)(Meshify.getInstance().getConfig().isAutoConnect() ? 255 : 238);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(arrby2);
+        UUID uUID = new UUID(byteBuffer.getLong(), byteBuffer.getLong());
+        return uUID;
     }
 
 
@@ -75,7 +93,7 @@ public class BluetoothUtils {
     }
 
 
-    static List<ScanFilter> getBluetoothLeScanFilter() {
+    public static List<ScanFilter> getBluetoothLeScanFilter() {
         ArrayList<ScanFilter> arrayList = new ArrayList<ScanFilter>();
         ScanFilter.Builder builder = new ScanFilter.Builder();
         builder.setServiceUuid(new ParcelUuid(BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect())));
@@ -86,7 +104,7 @@ public class BluetoothUtils {
         return arrayList;
     }
 
-    static UUID getHashedBluetoothLeUuid(boolean bl) {
+    public static UUID getHashedBluetoothLeUuid(boolean bl) {
         UUID uUID = UUID.fromString(Meshify.getInstance().getMeshifyClient().getApiKey());
         UUID uUID2 = UUID.fromString("00000000-0000-1000-8000-00805f9b34fb");
         byte[] arrby = BluetoothUtils.getSignificantBits(uUID2.toString());
@@ -100,7 +118,7 @@ public class BluetoothUtils {
         return uUID3;
     }
 
-    static String getHashedBluetoothLeUuid(String string) {
+    public static String getHashedBluetoothLeUuid(String string) {
         UUID uUID = UUID.fromString(string);
         UUID uUID2 = UUID.fromString("00000000-0000-1000-8000-00805f9b34fb");
         byte[] arrby = BluetoothUtils.getSignificantBits(uUID2.toString());
@@ -121,7 +139,7 @@ public class BluetoothUtils {
         return arrby;
     }
 
-    static ScanSettings getScanSettings() {
+    public static ScanSettings getScanSettings() {
         ScanSettings.Builder builder = new ScanSettings.Builder();
         if (Build.VERSION.SDK_INT >= 23) {
             builder.setNumOfMatches(1);
@@ -144,14 +162,14 @@ public class BluetoothUtils {
         return string2.getBytes();
     }
 
-    static AdvertiseData getAdvertiseData(String uuid) throws IOException{
+    public static AdvertiseData getAdvertiseData(String uuid) throws IOException{
         AdvertiseData.Builder builder = new AdvertiseData.Builder();
         builder.addServiceData(new ParcelUuid(BluetoothUtils.getHashedBluetoothLeUuid(Meshify.getInstance().getConfig().isAutoConnect())), BluetoothUtils.getData(uuid));
         builder.setIncludeDeviceName(false);
         return builder.build();
     }
 
-    static AdvertiseSettings getAdvertiseSettings() {
+    public static AdvertiseSettings getAdvertiseSettings() {
         AdvertiseSettings.Builder builder = new AdvertiseSettings.Builder();
         // TODO - add switch case
 //        builder.setAdvertiseMode(0); //ENERGY_SAVER
@@ -162,7 +180,7 @@ public class BluetoothUtils {
         return builder.build();
     }
 
-    static String getUuidFromDataString(String string) {
+    public static String getUuidFromDataString(String string) {
         Log.d(TAG, "DataString: " + string);
         String string2 = null;
         byte[] arrby = Ascii85.decode(string);
@@ -176,9 +194,5 @@ public class BluetoothUtils {
         UUID uUID = new UUID(l2, l3);
         return uUID.toString();
     }
-
-
-
-
 
 }

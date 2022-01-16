@@ -1,6 +1,5 @@
 package com.codewizards.meshify_chat.adapters;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,11 @@ import com.codewizards.meshify_chat.util.MeshifyUtils;
 
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
+public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.MessageViewHolder> {
 
     private final List<Message> messages;
 
-    public MessageAdapter(List<Message> messages) {
+    public ChatMessageAdapter(List<Message> messages) {
         this.messages = messages;
     }
 
@@ -36,6 +35,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             case Message.OUTGOING_MESSAGE:
                 messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_message_row_outbound), parent, false);
                 break;
+            case Message.INCOMING_IMAGE:
+                messageView = LayoutInflater.from(parent.getContext()).inflate((R.layout.chat_image_row_inbound), parent, false);
+                break;
         }
 
         return new MessageViewHolder(messageView);
@@ -47,8 +49,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     public void addMessage(Message message) {
-        messages.add(0, message);
-        notifyDataSetChanged();
+        if (!isMessageExist(message)) {
+            messages.add(0, message);
+            notifyDataSetChanged();
+        }
+    }
+
+    public boolean isMessageExist(Message message) {
+        return messages.contains(message);
     }
 
     @Override

@@ -27,6 +27,9 @@ public interface NeighborDao {
     @Query("UPDATE neighbor_table SET isNearby = :b WHERE neighborUuid=:userId")
     void updateNearby(String userId, boolean b);
 
+    @Query("UPDATE neighbor_table SET lastSeen = :lastSeen WHERE neighborUuid=:userId")
+    void updateLastSeen(String userId, String lastSeen);
+
     @Query("UPDATE neighbor_table SET isNearby = 0")
     void updateAllNearby();
 
@@ -35,6 +38,9 @@ public interface NeighborDao {
 
     @Query("SELECT * FROM neighbor_table ORDER BY isNearby DESC, neighborName ASC")
     LiveData<List<Neighbor>> getAlphabetizedNeighbors();
+
+    @Query("SELECT * FROM neighbor_table ORDER BY isNearby DESC, lastSeen DESC")
+    LiveData<List<Neighbor>> getOrderedNeighbors();
 
     @Query("UPDATE neighbor_table SET neighborName = :userName WHERE neighborUuid=:userId")
     void updateNameByUuid(String userId, String userName);
