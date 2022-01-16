@@ -1,9 +1,10 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.base;
 
 import android.content.Context;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.framework.controllers.connection.ConnectionSubscriber;
 import com.codewizards.meshify.logs.Log;
 
 import io.reactivex.Flowable;

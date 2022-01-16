@@ -13,7 +13,7 @@ import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.DeviceManager;
 import com.codewizards.meshify.framework.controllers.Session;
 import com.codewizards.meshify.framework.controllers.SessionManager;
-import com.codewizards.meshify.framework.controllers.ThreadServer;
+import com.codewizards.meshify.framework.controllers.base.ThreadServer;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 import com.google.gson.GsonBuilder;

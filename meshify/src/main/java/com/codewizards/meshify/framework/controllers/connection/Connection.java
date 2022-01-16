@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.connection;
 
 public class Connection {
 

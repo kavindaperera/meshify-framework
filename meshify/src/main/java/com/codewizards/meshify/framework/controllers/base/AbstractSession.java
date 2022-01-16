@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.base;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -56,23 +56,23 @@ public abstract class AbstractSession {
         return this.emitter;
     }
 
-    AbstractSession(BluetoothSocket bluetoothSocket) {
+    public AbstractSession(BluetoothSocket bluetoothSocket) {
         this.setBluetoothSocket(bluetoothSocket);
         this.setAntennaType(Config.Antenna.BLUETOOTH);
         this.uuid = Utils.generateSessionId();
     }
 
-    AbstractSession(Socket socket, Config.Antenna antenna) {
+    public AbstractSession(Socket socket, Config.Antenna antenna) {
         this.setSocket(socket);
         this.setAntennaType(antenna);
         this.uuid = Utils.generateSessionId();
     }
 
-    AbstractSession(Config.Antenna antenna) {
+    public AbstractSession(Config.Antenna antenna) {
         this.setAntennaType(antenna);
     }
 
-    AbstractSession(BluetoothDevice bluetoothDevice, boolean z, CompletableEmitter completableEmitter) {
+    public AbstractSession(BluetoothDevice bluetoothDevice, boolean z, CompletableEmitter completableEmitter) {
         this.emitter = completableEmitter;
         setBluetoothDevice(bluetoothDevice);
         if (z) {
@@ -82,7 +82,7 @@ public abstract class AbstractSession {
         }
     }
 
-    AbstractSession() {
+    public AbstractSession() {
 
     }
 
