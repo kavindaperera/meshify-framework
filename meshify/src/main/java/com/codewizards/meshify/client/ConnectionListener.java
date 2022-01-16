@@ -22,6 +22,15 @@ public abstract class ConnectionListener {
     }
 
     /**
+     * Callback when a device is discovered successfully
+     * @param device the Device object which was discovered
+     */
+    public void onDeviceDiscovered(Device device) {
+
+    }
+
+
+    /**
      * Callback when a device is connected successfully
      * @param device the Device object which was connected
      * @param session the Session object created for the device's connection

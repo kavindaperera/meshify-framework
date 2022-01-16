@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.codewizards.meshify.BuildConfig;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.framework.controllers.MeshifyCore;
 import com.codewizards.meshify.logs.Log;
 
@@ -80,9 +81,9 @@ public class Meshify {
             SharedPreferences sharedPreferences = context.getSharedPreferences(BuildConfig.LIBRARY_PACKAGE_NAME, 0);
             if (providedApiKey == null) {
                 try {
-                    providedApiKey = (String) context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.get(MeshifyCore.PREFS_API_KEY);
+                    providedApiKey = (String) context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData.get(MeshifyCore.PREFS_APP_KEY);
 
-                    if (providedApiKey == null && (providedApiKey = sharedPreferences.getString(MeshifyCore.PREFS_API_KEY, (String) null)) == null) {
+                    if (providedApiKey == null && (providedApiKey = sharedPreferences.getString(MeshifyCore.PREFS_APP_KEY, (String) null)) == null) {
                         throw new IllegalArgumentException("Missing UUID KEY ");
                     }
                     break block4;
@@ -91,7 +92,7 @@ public class Meshify {
                     throw new IllegalArgumentException("Missing or incorrect UUID KEY");
                 }
             }
-            sharedPreferences.edit().putString(MeshifyCore.PREFS_API_KEY, providedApiKey).apply();
+            sharedPreferences.edit().putString(MeshifyCore.PREFS_APP_KEY, providedApiKey).apply();
         }
         return providedApiKey;
     }
@@ -157,11 +158,22 @@ public class Meshify {
         Meshify.isMessageNull(message);
         try {
             message.setSenderId(getInstance().getMeshifyClient().getUserUuid());
-            getInstance().getMeshifyCore().sendMessage(message, message.getReceiverId(), configProfile);
+            Meshify.getInstance().getMeshifyCore().sendMessage(message, message.getReceiverId(), configProfile);
             return message.getUuid();
         } catch (NullPointerException e) {
             Log.e(TAG, "Meshify must be started with Meshify.start() to send a message" );
-            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String sendBroadcastMessage(@NonNull Message message, ConfigProfile configProfile) {
+        Meshify.isMessageNull(message);
+        message.setReceiverId(null);
+        try {
+            Meshify.getInstance().getMeshifyCore().sendBroadcastMessage(message, configProfile);
+            return message.getUuid();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Meshify must be started with Meshify.start() to send a message" );
             return null;
         }
     }

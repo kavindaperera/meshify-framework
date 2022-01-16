@@ -4,6 +4,8 @@ package com.codewizards.meshify.framework.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.framework.utils.Utils;
@@ -18,6 +20,11 @@ import java.util.UUID;
 @JsonInclude(value=JsonInclude.Include.NON_NULL)
 @JsonDeserialize(using= MeshifyEntityDeserializer.class)
 public class MeshifyEntity<T> implements Parcelable {
+
+    public static final int ENTITY_TYPE_HANDSHAKE = 0;
+    public static final int ENTITY_TYPE_MESSAGE = 1;
+    public static final int ENTITY_TYPE_MESH = 2;
+    public static final int ENTITY_MESH_REACH = 3;
 
     @JsonProperty(value="id")
     private String id;
@@ -68,12 +75,19 @@ public class MeshifyEntity<T> implements Parcelable {
     };
 
 
-    public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> forwardEntities, String sender) {
-        MeshifyForwardTransaction forwardTransaction = new MeshifyForwardTransaction(sender, forwardEntities);
-        return new MeshifyEntity<MeshifyForwardTransaction>(2, forwardTransaction);
+    public static MeshifyEntity<MeshifyForwardTransaction> meshMessage(ArrayList<MeshifyForwardEntity> meshifyForwardEntities, String sender) {
+        MeshifyForwardTransaction meshifyForwardTransaction = new MeshifyForwardTransaction(sender, meshifyForwardEntities);
+        return new MeshifyEntity<MeshifyForwardTransaction>(2, meshifyForwardTransaction);
     }
 
-    public static  MeshifyEntity message(Message message) {
+    public static MeshifyEntity<MeshifyForwardTransaction> reachMessage(String uuid) {
+        MeshifyForwardTransaction meshifyForwardTransaction = new MeshifyForwardTransaction();
+        meshifyForwardTransaction.setReach(uuid);
+        meshifyForwardTransaction.setMesh(null);
+        return new MeshifyEntity<MeshifyForwardTransaction>(2, meshifyForwardTransaction);
+    }
+
+    public static  MeshifyEntity message(Message message) { // TODO
         return new MeshifyEntity<MeshifyContent>(1, new MeshifyContent(message.getContent(), message.getUuid()));
     }
 
@@ -135,5 +149,18 @@ public class MeshifyEntity<T> implements Parcelable {
         else if (this.content instanceof MeshifyForwardTransaction) {
             dest.writeParcelable((MeshifyForwardTransaction)this.content, flags);
         }
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) {
+            throw new IllegalArgumentException("Object can't be null.");
+        }
+
+        if (obj instanceof MeshifyEntity) {
+            return ((MeshifyEntity) obj).getId() != null && ((MeshifyEntity) obj).getId().trim().equalsIgnoreCase(this.getId().trim());
+        }
+
+        throw new IllegalArgumentException(obj.getClass().getName() + " is not a " + this.getClass().getName());
     }
 }

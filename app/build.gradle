@@ -41,14 +41,30 @@ dependencies {
     implementation 'androidx.cardview:cardview'
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation "com.j256.ormlite:ormlite-android:5.5" // not used
+    implementation "com.j256.ormlite:ormlite-core:5.6" // not used
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.28'
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+    implementation 'net.danlew:android.joda:2.10.12.2'
+    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.nbsp:materialfilepicker:1.9.1'
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
+
+    implementation 'com.annimon:stream:1.2.2'
+
+    // ViewPager2
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     def lifecycle_version = "2.4.0-alpha02"
-    def arch_version = "2.1.0"
 
-    // ViewModel
-    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
-    // LiveData
-    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
     // Annotation processor
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
@@ -61,4 +77,31 @@ dependencies {
 
     // Java language implementation
     implementation "androidx.fragment:fragment:$fragment_version"
+
+    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
+
+    // Room components
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+
+    // Lifecycle components
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleVersion"
+
+    // UI
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
+
+    // Testing
+    testImplementation "junit:junit:$rootProject.junitVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
+    androidTestImplementation ("androidx.test.espresso:espresso-core:$rootProject.espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.androidxJunitVersion"
+
 }
+
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin

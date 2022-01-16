@@ -4,19 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/chat_background"
     tools:context=".ui.chat.ChatActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/MeshifyTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:title="@string/placeholder_device_name"
+            app:subtitle="@string/placeholder_last_seen"
+            app:popupTheme="@style/MeshifyTheme.PopupOverlay"/>
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -26,35 +29,95 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/app_bar"
-        android:layout_above="@+id/textbox"
-        android:paddingBottom="8dp"
-        tools:listitem="@layout/msg_row_outgoing"/>
+        android:layout_above="@+id/chatLineHolder"
+        android:paddingBottom="@dimen/meshify_margin_large"
+        tools:listitem="@layout/chat_message_row_outbound"/>
 
-    <LinearLayout
-        android:id="@+id/textbox"
-        android:layout_margin="4dp"
+    <RelativeLayout
+        android:id="@+id/chatLineHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/txtMessage"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/txtChatLine"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="9dp"
+            android:layout_marginEnd="66dp"
+            android:layout_marginRight="66dp"
+            android:layout_marginBottom="2dp"
+            android:paddingStart="@dimen/meshify_margin_medium"
+            android:background="@android:color/transparent"
+            android:focusableInTouchMode="true"
             android:hint="@string/placeholder"
-            android:textColor="@color/black"
             android:inputType="none|text|textCapSentences|textMultiLine|textShortMessage"
-            android:textColorHint="@color/colorAccent" />
+            android:maxLength="@integer/max_text_input"
+            android:maxLines="@integer/max_text_lines"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textCursorDrawable="@drawable/cursor"
+            android:textColor="@color/black"
+            android:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/btnSend"
-            android:layout_width="55dp"
+    </RelativeLayout>
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fabText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/chatLineHolder"
+        android:layout_alignBottom="@+id/chatLineHolder"
+        android:layout_gravity="bottom|right|center_vertical|center_horizontal|center|end"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="11dp"
+        android:src="@drawable/ic_baseline_send_24"
+        android:visibility="visible"
+        app:fab_hideAnimation="@anim/fab_slide_out_to_right"
+        app:fab_showAnimation="@anim/fab_slide_in_from_right"
+        app:fab_colorNormal="@color/colorPrimary"
+        app:fab_colorPressed="@color/colorPrimaryDark"/>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fabFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:menu_icon="@drawable/ic_baseline_attach_file_24"
+        app:menu_animationDelayPerItem="0"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorPrimaryDark"
+        app:menu_colorRipple="@color/colorPrimary"
+        app:menu_labels_maxLines="2"
+        app:menu_labels_ellipsize="end"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabGif"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:src="@drawable/ic_send" />
-    </LinearLayout>
+            app:fab_label="GIF"
+            android:src="@drawable/ic_baseline_gif_24"
+            style="@style/MenuButtonsSmallGreen"/>
 
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fabImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_image_24"
+            app:fab_label="Image"
+            style="@style/MenuButtonsSmallGreen"/>
+
+
+    </com.github.clans.fab.FloatingActionMenu>
 </RelativeLayout>

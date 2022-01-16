@@ -1,40 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="2dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="2dp"
-    android:backgroundTint="@color/neighbor_row">
+    android:layout_height="70dp"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+    android:background="@drawable/bottom_border"
+    android:backgroundTint="@color/neighbor_row"
+    android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/neighborAvatar"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_user_green" />
-
-        <TextView
-            android:id="@+id/neighborName"
-            android:layout_gravity="center"
+        <include
+            android:id="@+id/badgeInitials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/placeholder_device_name"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            layout="@layout/badge_initials"/>
+
+
+        <!--        <ImageView-->
+<!--            android:id="@+id/neighborAvatar"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:src="@drawable/ic_user_green" />-->
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_weight=".2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/neighborName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder_device_name"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+
+            <TextView
+                android:id="@+id/lastMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="@string/placeholder_last_message"
+                android:ellipsize="end"
+                android:ems="15"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="11dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="end"
+            android:orientation="vertical"
+            android:layout_marginRight="@dimen/meshify_margin_large">
+
+                <TextView
+                    android:id="@+id/lastSeen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="@string/placeholder_last_seen"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_toLeftOf="@id/popupMenu"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/meshify_margin_large"
+                    android:layout_alignTop="@id/popupMenu"
+                    android:visibility="visible"
+                    android:textSize="12dp"/>
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
+
+
     <ImageView
-        android:layout_gravity="end"
         android:id="@+id/popupMenu"
         android:layout_width="28dp"
         android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/ic_popup_menu"
         app:tint="@color/more_menu" />
 
-</androidx.cardview.widget.CardView>
+
+</RelativeLayout>

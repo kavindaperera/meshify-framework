@@ -3,12 +3,13 @@ package com.codewizards.meshify.framework.controllers;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.MeshifyRSA;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
-
 import java.util.HashMap;
+
 
 public class MeshifyUtils {
 
@@ -74,5 +75,6 @@ public class MeshifyUtils {
         parcel.recycle();
         return result;
     }
+
 
 }

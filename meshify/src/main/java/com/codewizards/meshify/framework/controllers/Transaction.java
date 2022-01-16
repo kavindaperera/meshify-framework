@@ -2,6 +2,8 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.bluetooth.BluetoothDevice;
 
+import androidx.annotation.Nullable;
+
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 
 public class Transaction implements Comparable {
@@ -28,9 +30,26 @@ public class Transaction implements Comparable {
         this.bluetoothDevice = session.getDevice().getBluetoothDevice();
     }
 
+    public String getStart() {
+        return start;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Transaction) {
+            return this.start.equalsIgnoreCase(((Transaction) obj).getStart());
+        }
+        return false;
+    }
+
     @Override
     public int compareTo(Object o) {
-        return 0;
+
+        if (o instanceof Transaction) {
+            return this.start.compareTo(((Transaction) o).getStart());
+        }
+
+        throw new IllegalArgumentException(o.getClass().getName() + " is not a " + this.getClass().getName());
     }
 
     public BluetoothDevice getBluetoothDevice() {

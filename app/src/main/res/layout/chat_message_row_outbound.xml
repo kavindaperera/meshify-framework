@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="right"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/chat_row_margin"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="@dimen/chat_row_margin"
+    android:layout_marginEnd="10dp">
+    <RelativeLayout
+        android:gravity="right"
+        android:id="@+id/messageHolder"
+        android:background="@drawable/bubble_out"
+        android:paddingTop="6dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="right"
+            android:autoLink="web"
+            android:id="@+id/txtMessage"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:minEms="3"
+            android:lineSpacingExtra="2sp"
+            android:text="@string/placeholder_message"/>
+        <TextView
+            android:textSize="8sp"
+            android:textColor="@color/black"
+            android:id="@+id/msgDate" android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@+id/msgStatus"
+            android:layout_below="@+id/txtMessage"
+            android:text="@string/placeholder_date"/>
+        <TextView
+            android:textSize="8sp"
+            android:textColor="@color/verify_error"
+            android:id="@+id/failView"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="@string/chat_message_failed"
+            android:layout_toLeftOf="@+id/msgStatus"
+            android:layout_below="@+id/txtMessage"/>
+        <ImageView
+            android:id="@+id/msgStatus"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_msg_queued"
+            android:layout_below="@+id/txtMessage"
+            android:layout_alignRight="@+id/txtMessage"
+            android:layout_alignEnd="@+id/txtMessage"/>
+    </RelativeLayout>
+</LinearLayout>

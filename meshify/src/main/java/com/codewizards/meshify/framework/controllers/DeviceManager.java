@@ -33,7 +33,7 @@ public class DeviceManager {
         }
     }
 
-    static void addDevice(Device device) {
+    public static void addDevice(Device device) {
         addDevice(device, null);
     }
 

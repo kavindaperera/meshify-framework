@@ -6,7 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
 
 import io.reactivex.CompletableObserver;
@@ -64,17 +66,24 @@ public class ConnectionSubscriber extends DisposableSubscriber<Device> {
             };
 
             if (device.getAntennaType() == Config.Antenna.BLUETOOTH_LE) {
-
-                //TODO - subscribe BLE
-
+                meshifyDevice.create().subscribe(completableObserver);
             } else {
-                meshifyDevice.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver); //completableObserver subscribes meshifyDevice on a new thread
+                Log.e(TAG, "isAutoConnect: " + Meshify.getInstance().getConfig().isAutoConnect());
+//                if ( Meshify.getInstance().getConfig().isAutoConnect() ) {
+                    meshifyDevice.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver); //completableObserver subscribes meshifyDevice on a new thread
+//                }
             }
 
         } else {
             request(1L);
         }
 
+    }
+
+    private static void isAutoConnect() {
+        if (Meshify.getInstance().getConfig().isAutoConnect()) {
+            throw new MeshifyException(100, "Meshify is configured to auto connect.");
+        }
     }
 
     @SuppressLint("MissingPermission")

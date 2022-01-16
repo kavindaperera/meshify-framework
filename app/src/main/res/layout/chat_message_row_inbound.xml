@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/bubble_in"
+    android:paddingLeft="8dp"
+    android:paddingTop="6dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="6dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="24dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="@dimen/chat_row_margin">
+    <TextView
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:autoLink="web"
+        android:id="@+id/txtMessage"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:minEms="3"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:lineSpacingExtra="2sp"
+        android:layout_alignParentStart="true"
+        android:text="@string/placeholder_message"/>
+    <TextView
+        android:textSize="8sp"
+        android:textColor="@color/black"
+        android:id="@+id/msgDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_below="@+id/txtMessage"
+        android:layout_alignRight="@+id/txtMessage"
+        android:text="@string/placeholder_date"/>
+</RelativeLayout>

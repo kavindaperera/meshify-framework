@@ -1,12 +1,27 @@
 <resources>
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <!-- Profile Preference -->
+    <string-array name="profile_entries">
+        <item>Use Bluetooth for Forwarding</item>
+        <item>Do not Forward</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="profile_values">
+        <item>Default</item>
+        <item>NoForwarding</item>
     </string-array>
+
+    <array name="days_of_the_week">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </array>
+
+    <array name="peer_actions">
+        <item>Send private message</item>
+        <item>Save to Contacts</item>
+    </array>
 </resources>

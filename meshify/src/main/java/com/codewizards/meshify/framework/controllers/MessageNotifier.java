@@ -18,6 +18,10 @@ class MessageNotifier {
         new Handler(Looper.getMainLooper()).post(() -> Meshify.getInstance().getMeshifyCore().getMessageListener().onMessageReceived(message));
     }
 
+    void onBroadcastMessageReceived(Message message) {
+        new Handler(Looper.getMainLooper()).post(() -> Meshify.getInstance().getMeshifyCore().getMessageListener().onBroadcastMessageReceived(message));
+    }
+
     void onMessageFailed(Message message, MessageException messageException) {
         new Handler(Looper.getMainLooper()).post(() -> Meshify.getInstance().getMeshifyCore().getMessageListener().onMessageFailed(message, messageException));
     }

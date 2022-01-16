@@ -8,9 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.provider.Telephony;
 
 import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.MeshifyException;
+import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
@@ -50,6 +51,11 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     private IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
+
+        if (this.config.isVerified()) { //Listen to SMS
+            this.addSmsActions(intentFilter);
+        }
+
         switch (this.config.getAntennaType()) {
             case BLUETOOTH: {
                 this.addBluetoothActions(intentFilter);
@@ -59,6 +65,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
                 this.addBleAction(intentFilter);
             }
         }
+
         return intentFilter;
     }
 
@@ -79,6 +86,11 @@ public class MeshifyReceiver extends BroadcastReceiver {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void addSmsActions(IntentFilter intentFilter) {
+        intentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        intentFilter.addAction(Telephony.Sms.Intents.SMS_DELIVER_ACTION);
     }
 
     public void registerReceiver(Context context) {
@@ -117,7 +129,8 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     @SuppressLint("MissingPermission")
     private void startServer() {
-        if (MeshifyUtils.getBluetoothAdapter(this.context).isEnabled()) {
+        BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(this.context);
+        if (bluetoothAdapter.isEnabled()) {
             try {
                 this.bluetoothController.startServer(this.context);
             } catch (ConnectionException e) {
@@ -148,6 +161,12 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     }
 
-
+    public void startAdvertising(Config.Antenna antenna) {
+        switch (antenna) {
+            case BLUETOOTH_LE: {
+//                this.bluetoothController.startAdvertising(Meshify.getInstance().getMeshifyClient().getUserUuid());
+            }
+        }
+    }
 
 }

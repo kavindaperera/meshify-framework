@@ -3,6 +3,11 @@ package com.codewizards.meshify.client;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -35,6 +40,11 @@ public class Message implements Parcelable {
         this.isMesh = mesh;
         this.hop = hop;
     }
+
+    public static Message create(String str) throws JsonSyntaxException {
+        return (Message) new Gson().fromJson(str, Message.class);
+    }
+
 
     protected Message(Parcel parcel) {
         receiverId = parcel.readString();
@@ -162,6 +172,19 @@ public class Message implements Parcelable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String serialize() {
+        return new Gson().toJson(this);
+    }
+
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj != null && obj instanceof Message) {
+            return ((Message) obj).getUuid() != null && ((Message) obj).getUuid().trim().equalsIgnoreCase(this.getUuid().trim());
+        }
+        throw new IllegalArgumentException(obj.getClass().getCanonicalName() + " is not a instance of " + Message.class.getName());
     }
 
     @Override

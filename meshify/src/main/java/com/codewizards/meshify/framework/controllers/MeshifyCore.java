@@ -14,6 +14,7 @@ import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import io.reactivex.Completable;
 
@@ -22,7 +23,7 @@ public class MeshifyCore {
     /*Shared Preference Keys*/
     public static final String PREFS_NAME = "com.codewizards.meshify.client";
     public static final String PREFS_USER_UUID = "com.codewizards.meshify.uuid";
-    public static final String PREFS_API_KEY = "com.codewizards.meshify.API_KEY";
+    public static final String PREFS_APP_KEY = "com.codewizards.meshify.APP_KEY";
     public static final String PREFS_PUBLIC_KEY ="com.codewizards.meshify.key.public";
     public static final String PREFS_PRIVATE_KEY ="com.codewizards.meshify.key.private";
     public static final String PREFS_KEY_PAIRS ="com.codewizards.meshify.key.pairs";
@@ -92,6 +93,11 @@ public class MeshifyCore {
         this.messageController.sendMessage(this.context, message, device, profile);
     }
 
+    public void sendBroadcastMessage(Message message, ConfigProfile profile) {
+//        profile = profile == null ? ConfigProfile.Default : profile;
+        this.messageController.sendMessage( message, profile);
+    }
+
     MessageListener getMessageListener() {
         Log.d(TAG, "getMessageListener:");
         return this.messageListener;
@@ -109,7 +115,7 @@ public class MeshifyCore {
         return this.context;
     }
 
-    ConnectionListener getConnectionListener() {
+    public ConnectionListener getConnectionListener() {
         return this.connectionListener;
     }
 
@@ -118,11 +124,12 @@ public class MeshifyCore {
     }
 
     public void connectDevice(Device device) {
-        //
+        Log.i(TAG, "Connect to Device: " + device );
+        ConnectionManager.connect(device);
     }
 
     public void disconnectDevice(Device device) {
-        Log.e(TAG, "Disconnect Device: " + device);
+        Log.i(TAG, "Disconnect Device: " + device);
         Session session = SessionManager.getSession(device.getDeviceAddress());
         if (session != null) {
             session.disconnect();

@@ -1,11 +1,15 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: 🛠️ Bug report
+about: Let us know that something isn't working as intended
 title: ''
 labels: ''
 assignees: ''
 
 ---
+
+- [ ] I have searched open and closed issues for duplicates
+
+----------------------------------------
 
 **Describe the bug**
 A clear and concise description of what the bug is.

@@ -22,4 +22,14 @@ public abstract class MessageListener {
     public void onMessageFailed(Message message, MessageException exception) {
     }
 
+    /**
+     * Callback when a broadcast message was successfully received
+     * @param message The Message object representing the received message
+     */
+    public void onBroadcastMessageReceived(Message message) {
+    }
+
+    public void onMessageSent(String messageId) {
+    }
+
 }

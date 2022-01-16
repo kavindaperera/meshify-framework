@@ -84,7 +84,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 try {
                     Parcel parcel = MeshifyUtils.unmarshall(bytes);
                     MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
-                    Log.e(TAG, "Received: " + meshifyEntity);
+                    Log.d(TAG, "Received: " + meshifyEntity);
                     Session.this.processEntity(meshifyEntity);
                 } catch (Exception exception) {
                     Log.e(TAG, "Received: reading entity failed " + exception.getMessage(), exception);
@@ -168,6 +168,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
             }
         }
+
         if (meshifyHandshake.getRp() != null) {
             switch (meshifyHandshake.getRp().getType()) {
                 case 0: {
@@ -185,6 +186,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                             Log.i(TAG, "processHandshake: asking for key");
                             rq = 1;
                         }
+
                     }
                     break;
                 }
@@ -195,7 +197,9 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 }
             }
         }
+
         return new MeshifyHandshake(rq, responseJson);
+
     }
 
     private static SharedPreferences getSharedPreferences() {
@@ -232,7 +236,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
                     if (meshifyHandshake2.getRq() != -1 || meshifyHandshake2.getRp() != null) {
                         try {
-                            MeshifyCore.sendEntity(this, MeshifyEntity.generateHandShake(meshifyHandshake2));
+                            MeshifyCore.sendEntity(this, MeshifyEntity.generateHandShake(meshifyHandshake2)); // send handshake reply
                         }
                         catch (MessageException | IOException exception) {
                             exception.printStackTrace();
@@ -264,8 +268,15 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     break;
                 }
                 case 2: {
+
                     MeshifyForwardTransaction forwardTransaction = (MeshifyForwardTransaction) meshifyEntity.getContent();
-                    if (forwardTransaction.getMesh() != null && forwardTransaction.getMesh().size() == 0 ) {
+
+
+                    if (forwardTransaction.getReach() != null || (forwardTransaction.getMesh() != null && forwardTransaction.getMesh().size() == 0) ) {
+                        Meshify.getInstance()
+                                .getMeshifyCore()
+                                .getMessageController()
+                                .incomingReachAction(forwardTransaction.getReach());
                         return;
                     }
 
@@ -283,7 +294,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
 
     void flush(MeshifyEntity meshifyEntity) throws IOException, MessageException, InterruptedException {
         try {
-            Log.e(TAG, "Flushed:" + meshifyEntity);
+            Log.d(TAG, "Flushed:" + meshifyEntity);
 
             byte[] arrby = MeshifyUtils.marshall(meshifyEntity, this.getUserId(), meshifyEntity.getEntity());
 
@@ -349,7 +360,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 Log.e(this.TAG, "Handshake request type 0 |  session: " + getSessionId());
                 MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
 
-                MeshifyCore.sendEntity(session, meshifyEntity);
+                MeshifyCore.sendEntity(session, meshifyEntity); // send handshake first
             }
             catch (MessageException | IOException exception) {
                 exception.printStackTrace();

@@ -1,31 +1,166 @@
-<resources>
-    <string name="app_name">Meshify</string>
-    <string name="sign_up_text">Welcome to Meshify!</string>
-    <string name="username_text">Please select a nickname.</string>
-    <string name="user_entry">Type Here...</string>
-    <string name="action_sign_up">Register</string>
-    <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
-    <string name="is_nearby">Nearby</string>
-    <string name="powered_by">Powered by Meshify</string>
-    <string name="placeholder">Type a message</string>
-    <string name="placeholder_message">Hello Placeholder Message</string>
-    <string name="placeholder_device_name">Jon Snow\'s Pixel 3XL (android)</string>
-    <string name="add_to_contacts">Add to Contacts</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="settings">Settings</string>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="about">About</string>
-    <string name="share">Share</string>
-
-    <!-- Preference Titles -->
-    <string name="settings_category_account">ACCOUNT</string>
-    <string name="settings_category_messages">NOTIFICATIONS</string>
-    <string name="settings_category_help">HELP</string>
-
-    <!-- Notification Preferences -->
-    <string name="settings_messages_notifications_title">Enable message notifications</string>
+    <string name="action_broadcast">Broadcast</string>
+    <string name="action_sign_up">Register</string>
+    <string name="add_to_contacts">Update Contact</string>
+    <string name="app_name">Meshify</string>
+    <string name="channel_description">Meshify Notifications</string>
+    <string name="channel_name">Meshify</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="done">Done</string>
+    <string name="dummy_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</string>
+    <string name="foreground_notification_action_stop">Stop</string>
+    <string name="foreground_notification_content_title">Meshify is now running in the background</string>
+    <string name="invite">Invite Friends</string>
+    <string name="is_nearby">Nearby</string>
+    <string name="message_date_yesterday">Yesterday</string>
     <string name="notification_sound">Notification sound</string>
-
-    <!-- Account Preferences -->
+    <string name="onboarding_title_1">Welcome</string>
+    <string name="onboarding_description_1">Meshify gives you the power to connect with others without internet.</string>
+    <string name="onboarding_title_2">Verification</string>
+    <string name="onboarding_description_2">Verify your phone number to see the full potential of Meshify.</string>
+    <string name="phone_hint">Phone Number</string>
+    <string name="placeholder">Type a message</string>
+    <string name="placeholder_device_name">Jon Snow Note 10 Pro</string>
+    <string name="placeholder_last_message">Near by</string>
+    <string name="placeholder_message">Hello Placeholder Message</string>
+    <string name="powered_by">Powered by Meshify</string>
+    <string name="save">Save</string>
+    <string name="selected_avatar_description">Current selected user avatar</string>
+    <string name="settings">Settings</string>
+    <string name="settings_category_account">ACCOUNT</string>
+    <string name="settings_category_help">HELP</string>
+    <string name="settings_category_messages">NOTIFICATIONS</string>
+    <string name="settings_category_mesh_forwarding">MESH FORWARDING</string>
     <string name="settings_category_user_name">Username</string>
+    <string name="settings_feedback_summary">Report technical issues or suggest new features</string>
+    <string name="settings_feedback_title">Send feedback</string>
+    <string name="settings_messages_notifications_title">Enable message notifications</string>
+    <string name="settings_profile_summary">Select your preferred mesh forwarding profile</string>
+    <string name="settings_profile_title">Forward Profile</string>
+    <string name="sign_up_text">Welcome to Meshify!</string>
+    <string name="terms">By registering your account, you accept our Terms and Conditions.</string>
+    <string name="user_entry">Type Here...</string>
+    <string name="username_text">Please select a nickname.</string>
+    <string name="verify">Continue</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="verify_hint">Verifying your phone number allows you to contact friend via SMS</string>
+    <string name="verify_title">Phone Verification</string>
+    <string name="from">from</string>
+    <string name="spaced_meshify">M E S H I F Y</string>
+    <string name="phone_error">verification error</string>
+    <string name="cancel">Cancel</string>
+    <string name="verify_skip">Skip</string>
+    <string name="placeholder_last_seen">Not seen in a while</string>
+
+
+    <!-- Common -->
+    <string name="fui_default_toolbar_title" translatable="false">@string/app_name</string>
+    <string name="fui_progress_dialog_loading" translation_description="Loading text in dialog">Loading…</string>
+    <string name="fui_sign_in_default" translation_description="Button text to sign in">Sign in</string>
+    <string name="fui_continue" translation_description="Button text to continue">Continue</string>
+    <string name="fui_tos_and_pp" translation_description="Global ToS and privacy policy message">By continuing, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="Terms of service text">%1$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="Privacy policy text">%2$s</xliff:g>.</string>
+    <string name="fui_tos_and_pp_footer" translation_description="Global ToS and Privacy policy footer"><xliff:g example="https://google.com/terms" id="tos" translation_description="Footer ToS text">%1$s</xliff:g> \u00A0 \u00A0 <xliff:g example="https://google.com/privacy" id="pp" translation_description="Footer privacy policy text">%2$s</xliff:g></string>
+    <string name="fui_no_internet" translation_descripition="User message shown when sign-in is attempted while offline.">Network error, check your internet connection.</string>
+
+    <!-- Provider -->
+    <string name="fui_idp_name_google">Google</string>
+    <string name="fui_idp_name_facebook">Facebook</string>
+    <string name="fui_idp_name_twitter">Twitter</string>
+    <string name="fui_idp_name_github">GitHub</string>
+    <string name="fui_idp_name_phone">Phone</string>
+    <string name="fui_idp_name_email">Email</string>
+
+    <!-- Auth method picker -->
+    <string name="fui_sign_in_with_google" translation_description="Sign in button text">Sign in with Google</string>
+    <string name="fui_sign_in_with_facebook" translation_description="Sign in button text">Sign in with Facebook</string>
+    <string name="fui_sign_in_with_twitter" translation_description="Sign in button text">Sign in with Twitter</string>
+    <string name="fui_sign_in_with_github" translation_description="Sign in button text">Sign in with GitHub</string>
+    <string name="fui_sign_in_with_email" translation_description="Sign in button text">Sign in with email</string>
+    <string name="fui_sign_in_with_phone" translation_description="Sign in button text">Sign in with phone</string>
+    <string name="fui_sign_in_anonymously" translation_description="Continue as guest">Continue as guest</string>
+    <string name="fui_sign_in_with_apple" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Apple</string>
+    <string name="fui_sign_in_with_microsoft" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Microsoft</string>
+    <string name="fui_sign_in_with_yahoo" translation_description="Sign in button text. [CHAR_LIMIT=40]">Sign in with Yahoo</string>
+
+    <!-- Common-->
+    <string name="fui_next_default" translation_description="Button text to continue">Next</string>
+    <string name="fui_email_hint" translation_description="Hint in email input field">Email</string>
+    <string name="fui_phone_hint" translation_description="Hint for phone input field">Phone Number</string>
+    <string name="fui_country_hint" translation_description="Hint for phone input field">Country</string>
+    <string name="fui_password_hint" translation_description="Hint for password input field for existing passwords">Password</string>
+    <string name="fui_new_password_hint" translation_description="Hint for password input field for new passwords">New password</string>
+    <string name="fui_required_field" translation_description="Inline error for required field">You can\'t leave this empty.</string>
+    <string name="fui_invalid_email_address" translation_description="Inline error for invalid email address">That email address isn\'t correct</string>
+    <string name="fui_missing_email_address" translation_description="Inline error for empty email address in input field">Enter your email address to continue</string>
+    <string name="fui_missing_first_and_last_name" translation_description="Inline error for empty email address in input field. [CHAR_LIMIT=60]">Please enter a first and last name.</string>
+    <string name="fui_progress_dialog_checking_accounts" translation_description="Progress dialog text while checking for existing accounts">Checking for existing accounts…</string>
+
+
+    <!-- Idp/Email welcome back -->
+    <string name="fui_title_welcome_back_idp_prompt" translatable="false">@string/fui_sign_in_default</string>
+    <string name="fui_title_welcome_back_password_prompt" translatable="false">@string/fui_sign_in_default</string>
+    <string name="fui_welcome_back_idp_header" translation_description="Inline subtitle to users whose signup was interrupted since an existing account was detected">You already have an account</string>
+    <string name="fui_welcome_back_email_header" translation_description="Message for returning users">Welcome back!</string>
+    <string name="fui_welcome_back_email_link_header" translation_description="Message for returning users">You already have an account\n</string>
+
+    <string name="fui_welcome_back_idp_prompt" translation_description="Message to users that need to signin using existing IDP accounts">
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
+        Sign in with <xliff:g example="Google" id="provider_name" translation_description="">%2$s</xliff:g> to continue.
+    </string>
+    <string name="fui_welcome_back_password_prompt_body" translation_description="Message to users that need to signin using existing email accounts">
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>
+        to sign in. Enter your password for that account.
+    </string>
+    <string name="fui_welcome_back_email_link_prompt_body" translation_description="Message to users that need to signin using existing email link accounts">
+        You\'ve already used <xliff:g example="jane.doe@example.com" id="email_addr" translation_description="">%1$s</xliff:g>.
+        You can connect your %2$s account with %1$s by signing in with email link below.\n\nFor this flow to successfully connect your %2$s account with this email, you have to open the link on the same device or browser.
+    </string>
+    <string name="fui_progress_dialog_signing_in" translation_description="Progress dialog text">Signing in…</string>
+    <string name="fui_trouble_signing_in" translation_description="Link leading to forgot password flow">Trouble signing in?</string>
+
+
+    <!-- Other error messages -->
+    <string name="fui_error_unknown" translation_description="General error messages for an unknown failure.">An unknown error occurred.</string>
+    <string name="fui_error_invalid_password" translation_description="Error message for when the user enters an invalid or wrong password.">Incorrect password.</string>
+
+    <!-- Accessibility -->
+    <string name="fui_accessibility_logo" translation_description="Content description for app logo">App logo</string>
+
+
+    <!-- Phone number auth -->
+    <string name="fui_verify_phone_number_title" translation_description="Phone number entry form title">Enter your phone number</string>
+    <string name="fui_invalid_phone_number" translation_description="Inline error when phone number entered is invalid">Enter a valid phone number</string>
+    <string name="fui_enter_confirmation_code" translation_description="Phone number verification code entry form title">Enter the 6-digit code we sent to</string>
+    <string name="fui_resend_code_in" translation_description="Countdown timer text that the user needs to wait for before attempting to resend verification sms">Resend code in 0:%02d</string>
+    <string name="fui_verify_your_phone_title" translation_description="Button text to complete phone number verification">Verify your phone number</string>
+    <string name="fui_verifying" translation_description="Progress dialog text while phone number is being verified">Verifying…</string>
+    <string name="fui_incorrect_code_dialog_body" translation_description="Inline error when incorrect sms verification code is being used to verify">Wrong code. Try again.</string>
+    <string name="fui_error_too_many_attempts" translation_description="Error message when the phone number has been used too many times">This phone number has been used too many times</string>
+    <string name="fui_error_quota_exceeded" translation_description="Error message when the Firebase project's quota has been exceeded.">There was a problem verifying your phone number</string>
+    <string name="fui_error_session_expired" translation_description="Error message when SMS confirmation code has expired.">This code is no longer valid</string>
+    <string name="fui_sign_in_with_phone_number" translation_description="Label for phone number input form">Sign in with phone number</string>
+    <string name="fui_auto_verified" translation_description="Popup informing the user that their phone number was automatically verified">Phone number automatically verified</string>
+    <string name="fui_resend_code" translation_description="Link text to resend verification sms">Resend Code</string>
+    <string name="fui_verify_phone_number" translation_description="Button text to submit confirmation code and complete phone verification">Verify Phone Number</string>
+    <string name="fui_sms_terms_of_service" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, an SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="fui_sms_terms_of_service_and_privacy_policy_extended" translation_description="Fine print warning displayed below Verify Phone Number button">By tapping “%1$s”, you are indicating that you accept our <xliff:g example="https://google.com/terms" id="tos" translation_description="">%2$s</xliff:g> and <xliff:g example="https://google.com/privacy" id="pp" translation_description="">%3$s</xliff:g>. An SMS may be sent. Message &amp; data rates may apply.</string>
+    <string name="Permissions_continue">Continue</string>
+    <string name="Permissions_not_now">Not Now</string>
+    <string name="conversation_list_fragment__fab_content_description">New Conversation</string>
+    <string name="build_number">Version 1.0</string>
+    <string name="url_tos">https://www.meshify.xyz/tos</string>
+    <string name="url_privacy">https://www.meshify.xyz/privacy-policy</string>
+    <string name="connectivity_dialog_text">Meshify requires an active internet connection in the first time it is used.</string>
+    <string name="remove_from_contacts">Remove from Contacts</string>
+    <string name="user_avatar_description">User Avater</string>
+    <string name="chat_message_failed">Retry</string>
+    <string name="choose_avatar_image_description">Avatar option</string>
+    <string name="placeholder_date">12:20</string>
+    <string name="placeholder_broadcast_chat">Broadcast Chat</string>
+    <string name="messages_paginator">LOAD OLDER MESSAGES</string>
+    <string name="placeholder_filename">IMG_012391049104.jpg</string>
+
 
 </resources>
