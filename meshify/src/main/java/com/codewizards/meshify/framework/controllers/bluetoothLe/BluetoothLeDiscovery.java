@@ -12,7 +12,7 @@ import android.os.ParcelUuid;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.DeviceProfile;
+import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.ConnectionManager;

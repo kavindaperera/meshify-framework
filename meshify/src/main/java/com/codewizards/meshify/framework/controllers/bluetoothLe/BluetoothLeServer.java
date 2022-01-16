@@ -16,7 +16,7 @@ import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattServer
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
-class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServer> {
+public class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServer> {
 
     final String TAG = "[Meshify][BleServer]";
 
@@ -28,7 +28,7 @@ class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothGattServ
 
     Object syncLock = new Object();
 
-    protected BluetoothLeServer(Config config, Context context) throws ConnectionException {
+    public BluetoothLeServer(Config config, Context context) throws ConnectionException {
         super(config, context);
         this.bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         this.openGattServer(context);

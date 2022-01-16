@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.bluetoothLe;
 
 
 import android.bluetooth.BluetoothDevice;
@@ -9,13 +9,14 @@ import android.bluetooth.BluetoothGattDescriptor;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.framework.controllers.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BleGatt;
 import com.codewizards.meshify.logs.Log;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
 
-class BleMeshifyDevice extends MeshifyDevice {
+public class BleMeshifyDevice extends MeshifyDevice {
 
     final String TAG = "[Meshify][BleMeshifyDevice]";
 

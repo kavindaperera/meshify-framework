@@ -12,7 +12,7 @@ import android.os.Parcelable;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.DeviceProfile;
+import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.DeviceManager;

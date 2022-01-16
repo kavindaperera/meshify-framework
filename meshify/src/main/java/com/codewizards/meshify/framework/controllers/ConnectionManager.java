@@ -7,6 +7,7 @@ import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.exceptions.MeshifyException;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.BleMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.HashMap;
