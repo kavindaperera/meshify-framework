@@ -10,11 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class MeshifyForwardHandshake implements Parcelable {
 
     private static  int[] hopLimits = new int[]{ 10, 0};
+    private static int[] expiration = new int[]{15000, 10000};
 
     @JsonProperty(value="sender")
     String sender;
@@ -28,18 +30,23 @@ public class MeshifyForwardHandshake implements Parcelable {
     @JsonProperty(value="neighborDetails")
     private ArrayList<Device> neighborDetails;
 
+    @JsonIgnore
+    Date added;
+
     public MeshifyForwardHandshake(String sender, ArrayList<Device> neighborDetails, ConfigProfile profile) {
         this.sender = sender;
         this.neighborDetails = neighborDetails;
         this.profile = profile.ordinal();
         this.hops = this.getHopLimitForConfigProfile();
+        this.added = new Date(System.currentTimeMillis());
     }
 
     protected MeshifyForwardHandshake(Parcel in) {
-        sender = in.readString();
-        profile = in.readInt();
-        hops = in.readInt();
-        neighborDetails = in.readArrayList(Device.class.getClassLoader());
+        this.sender = in.readString();
+        this.profile = in.readInt();
+        this.hops = in.readInt();
+        this.neighborDetails = in.readArrayList(Device.class.getClassLoader());
+        this.added = new Date(in.readLong());
     }
 
     @Override
@@ -49,10 +56,14 @@ public class MeshifyForwardHandshake implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(sender);
-        dest.writeInt(profile);
-        dest.writeInt(hops);
+        dest.writeString(this.sender);
+        dest.writeInt(this.profile);
+        dest.writeInt(this.hops);
         dest.writeList(this.neighborDetails);
+        if (this.added == null) {
+            this.added = new Date(System.currentTimeMillis());
+        }
+        dest.writeLong(this.added.getTime());
     }
 
     public static final Creator<MeshifyForwardHandshake> CREATOR = new Creator<MeshifyForwardHandshake>() {
@@ -91,9 +102,10 @@ public class MeshifyForwardHandshake implements Parcelable {
     }
 
     @JsonIgnore
-    public int getHopLimitForConfigProfile() {
-        return hopLimits[this.profile];
-    }
+    public int getHopLimitForConfigProfile() { return hopLimits[this.profile]; }
+
+    @JsonIgnore
+    public int getExpirationForConfigProfile() { return expiration[this.profile]; }
 
     public void setHops(int hops) {
         this.hops = hops;
@@ -103,8 +115,16 @@ public class MeshifyForwardHandshake implements Parcelable {
         return --this.hops;
     }
 
-    public void setSender(String id) {
-        this.sender = id;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public void setAdded(Date added) {
+        this.added = added;
+    }
+
+    public Date getAdded() {
+        return this.added;
     }
 
     public String toString() {

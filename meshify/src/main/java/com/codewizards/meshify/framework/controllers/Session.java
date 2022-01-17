@@ -283,6 +283,26 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                             exception.printStackTrace();
                         }
                     }
+
+                    // broadcast neighbor details with MeshifyForwardHandshake
+                    if (meshifyHandshake.getRq() == 0) {
+                        ArrayList<Session> sessions = SessionManager.getSessions();
+                        if (sessions != null) {
+                            ArrayList<Device> neighborDetails = new ArrayList<>();
+                            for (Session session : sessions) {
+                                Log.i(TAG, "processEntity: session: " + session);
+                                Device device = session.getDevice();
+                                Log.i(TAG, "processEntity: device: " + device);
+                            /*if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
+                                neighborDetails.add(device);
+                            }*/
+                                neighborDetails.add(device);
+                            }
+                            MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails, Meshify.getInstance().getConfig().getConfigProfile());
+                            Meshify.getInstance().getMeshifyCore().getMessageController().forwardHandshake(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
+                        }
+                    }
+
                     DeviceManager.addDevice(this.getDevice(), this);
                     if (!this.isClient() || this.getEmitter() == null) break;
                     this.getEmitter().onComplete();

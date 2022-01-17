@@ -106,16 +106,16 @@ public class MessageController {
 
         if (!(this.forwardController.checkHandshakeAlreadyForwarded(meshifyEntity.getId()))) {
 
-            this.forwardController.updateAlreadyForwardedHandshakes(meshifyEntity.getId());
             ((MeshifyForwardHandshake) meshifyEntity.getContent()).decreaseHops();
             MeshifyForwardHandshake forwardHandshake = (MeshifyForwardHandshake) meshifyEntity.getContent();
+            this.forwardController.updateAlreadyForwardedHandshakes(meshifyEntity.getId(), forwardHandshake.getAdded());
 
             // add received neighbor details to your device
             ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
             if (neighborDetails != null && neighborDetails.size() > 0) {
                 for (Device indirectDevice : neighborDetails) {
-                    //if (!(session.getDevice().getUserId().equalsIgnoreCase(indirectDevice.getUserId())) && !(Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()))) {
-                    if (!(Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()))) {
+                    // check whether it is not our device and not a directly connected device
+                    if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()) && DeviceManager.getDevice(indirectDevice.getDeviceAddress())==null) {
                         Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
                         if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
                             continue;
@@ -130,6 +130,10 @@ public class MessageController {
             if (forwardHandshake.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardHandshake.getSender())) {
                 this.forwardHandshake(meshifyEntity);
             }
+        }
+        else {
+            // check and remove if ForwardHandshake is expired
+            this.forwardController.removeExpiredHandshakes(meshifyEntity.getId(), (long) ((MeshifyForwardHandshake) meshifyEntity.getContent()).getExpirationForConfigProfile());
         }
     }
 

@@ -63,7 +63,7 @@ public class ResponseJson implements Parcelable {
 
     public static ResponseJson ResponseTypeKey(String key) {
         ResponseJson responseJson = new ResponseJson();
-        responseJson.setType(2);
+        responseJson.setType(1);
         responseJson.setKey(key);
         return responseJson;
     }

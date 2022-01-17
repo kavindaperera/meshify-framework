@@ -10,6 +10,7 @@ import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,14 +23,14 @@ public class ForwardController {
 
     private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>(); // DD Cache
     private ConcurrentNavigableMap<String, Boolean> reachedNavigableMap = new ConcurrentSkipListMap<String, Boolean>();
-    private ConcurrentHashMap<String, Boolean> alreadyForwardedHandshakes = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Date> alreadyForwardedHandshakes = new ConcurrentHashMap<>();
 
     ForwardController() {
     }
 
-    public void updateAlreadyForwardedHandshakes(String meshifyEntityUUID) {
+    public void updateAlreadyForwardedHandshakes(String meshifyEntityUUID, Date date) {
         synchronized (alreadyForwardedHandshakes) {
-            alreadyForwardedHandshakes.put(meshifyEntityUUID, true);
+            alreadyForwardedHandshakes.put(meshifyEntityUUID, date);
         }
     }
 
@@ -39,6 +40,13 @@ public class ForwardController {
         }
         else {
             return false;
+        }
+    }
+
+    public void removeExpiredHandshakes(String meshifyEntityUUID, Long expiration){
+        long period = new Date(System.currentTimeMillis()).getTime() - alreadyForwardedHandshakes.get(meshifyEntityUUID).getTime();
+        if (period > expiration) {
+            alreadyForwardedHandshakes.remove(meshifyEntityUUID);
         }
     }
 
