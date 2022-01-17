@@ -24,6 +24,8 @@ public class MeshifyClient {
 
     private DeviceProfile deviceProfile;
 
+    private long ownSequenceNum;
+
     static class Builder {
 
         private SharedPreferences sharedPreferences;
@@ -42,11 +44,14 @@ public class MeshifyClient {
 
         private DeviceProfile deviceProfile;
 
+        private long ownSequenceNum;
+
         Builder(Context context) {
             if (context != null) {
                 Context applicationContext = context.getApplicationContext();
                 this.sharedPreferences = applicationContext.getSharedPreferences(MeshifyCore.PREFS_NAME, 0);
                 this.editor = sharedPreferences.edit();
+                this.ownSequenceNum = Constants.FIRST_SEQUENCE_NUMBER;
                 this.deviceProfile = new DeviceProfile(applicationContext);
                 return;
             }
@@ -114,6 +119,19 @@ public class MeshifyClient {
     public String getPhone() {
         return this.phone;
     }
+
+    /**
+     * Method allowing to increment the sequence number
+     */
+    public long getNextSequenceNumber() {
+        if (ownSequenceNum < Constants.MAX_VALID_SEQ_NUM) {
+            ++ownSequenceNum;
+        } else {
+            ownSequenceNum = Constants.MIN_VALID_SEQ_NUM;
+        }
+        return ownSequenceNum;
+    }
+
 
     private MeshifyClient(Builder builder) {
         this.userUuid = builder.userUuid;
