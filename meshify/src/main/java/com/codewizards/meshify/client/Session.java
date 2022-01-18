@@ -10,4 +10,6 @@ public interface Session {
 
     void disconnect();
 
+    boolean isClient();
+
 }
