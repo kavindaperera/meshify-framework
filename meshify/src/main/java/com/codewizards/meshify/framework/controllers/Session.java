@@ -191,32 +191,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     ArrayList<Device> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
                     if (neighborDetails != null && neighborDetails.size() > 0) {
                         for (Device indirectDevice : neighborDetails) {
+                            // check whether it is not our device and not a directly connected device
+                            if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()) && DeviceManager.getDevice(indirectDevice.getDeviceAddress())==null) {
+                                Log.i(TAG, "processHandshake: neighbor details received: " + indirectDevice.getDeviceName());
+                                if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
+                                    continue;
 
-                            if (Meshify.getInstance().getMeshifyCore().getConnectionListener() == null)
-                                continue;
-
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
-                            });
-                        }
-                    }
-
-                    // broadcast neighbor details with MeshifyForwardHandshake
-                    if (meshifyHandshake.getRq() == 0) {
-                        ArrayList<Session> sessions = SessionManager.getSessions();
-                        if (sessions != null) {
-                            ArrayList<Device> neighborDetails1 = new ArrayList<>();
-                            for (Session session1 : sessions) {
-                                Log.i(TAG, "processHandshake: session: " + session1);
-                                Device device = session1.getDevice();
-                                Log.i(TAG, "processHandshake: device: " + device);
-                            /*if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
-                                neighborDetails.add(device);
-                            }*/
-                                neighborDetails1.add(device);
+                                new Handler(Looper.getMainLooper()).post(() -> {
+                                    Meshify.getInstance().getMeshifyCore().getConnectionListener().onIndirectDeviceFound(indirectDevice);
+                                });
                             }
-                            MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails1, Meshify.getInstance().getConfig().getConfigProfile());
-                            Meshify.getInstance().getMeshifyCore().getMessageController().forwardHandshake(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
                         }
                     }
 
