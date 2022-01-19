@@ -6,10 +6,12 @@ import android.content.SharedPreferences;
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.ConfigProfile;
 import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.client.Meshify;
 import com.codewizards.meshify.client.Message;
 import com.codewizards.meshify.client.MessageListener;
 import com.codewizards.meshify.client.ConnectionListener;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
+import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
@@ -17,6 +19,10 @@ import com.codewizards.meshify.logs.Log;
 import java.io.IOException;
 
 import io.reactivex.Completable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MeshifyCore {
 
@@ -88,6 +94,31 @@ public class MeshifyCore {
         this.meshifyReceiver.startDiscovery(this.config.getAntennaType());
     }
 
+
+    public void shutdownServices() {
+        Log.d(TAG, "shutdownServices:");
+        this.meshifyReceiver.unregisterReceiver(this.context);
+        this.meshifyReceiver.removeAllSessions(this.config.getAntennaType());
+        this.meshifyReceiver.stopDiscovery(this.config.getAntennaType());
+        this.meshifyReceiver.stopServer(this.config.getAntennaType());
+        ConnectionManager.reset();
+
+        Disposable disposable = this.completable.retryWhen(new RetryWhenLambda(3, 500)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread()).subscribe(()->{
+            if (this.getConnectionListener()!=null) {
+                Meshify.getInstance().setMeshifyCore(null);
+            }
+        }, throwable -> Log.e(TAG, "accept: error " + throwable.getMessage()));
+
+    }
+
+    public void pauseServices() {
+
+    }
+
+    public void resumeServices() {
+
+    }
+
     public void sendMessage(Message message, String receiverId, ConfigProfile profile) {
         Device device = DeviceManager.getDeviceByUserId(receiverId);
         this.messageController.sendMessage(this.context, message, device, profile);
@@ -135,4 +166,5 @@ public class MeshifyCore {
             session.disconnect();
         }
     }
+
 }

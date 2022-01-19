@@ -72,4 +72,11 @@ public class SessionManager {
         DeviceManager.removeDevice(device);
     }
 
+    static void removeAllSessions(Config.Antenna antenna) {
+        for (Session session : sessionMap.values()) {
+            if (antenna != session.getAntennaType()) continue;
+            session.removeSession();
+        }
+    }
+
 }

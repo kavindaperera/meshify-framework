@@ -53,7 +53,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
                 Session session = SessionManager.getSession(this.getDevice().getDeviceAddress());
                 if (session == null) {
-                    session = new Session(bluetoothDevice, true, this.completableEmitter);
+//                    session = new Session(bluetoothDevice, true, this.completableEmitter);
                 }
 
             }
@@ -91,62 +91,62 @@ public class BleMeshifyDevice extends MeshifyDevice {
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             super.onMtuChanged(gatt, mtu, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onMtuChanged()");
+            Log.e(BleMeshifyDevice.this.TAG,"onMtuChanged()" + " | mtu: " + mtu + " | status: " + status);
 
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onServicesDiscovered()");
+            Log.e(BleMeshifyDevice.this.TAG,"onServicesDiscovered()" + " | status: " + status);
         }
 
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicRead()");
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicRead()" + " | characteristic: " + characteristic + " | status: " + status);
 
         }
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicWrite()");
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicWrite()" + " | characteristic: " + characteristic + " | status: " + status);
 
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicChanged()");
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicChanged()" + " | characteristic: " + characteristic );
 
         }
 
         @Override
         public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorRead(gatt, descriptor, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorRead()");
+            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorRead()" + " | descriptor: " + descriptor + " | status: " + status);
 
         }
 
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorWrite()");
+            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorWrite()" + " | descriptor: " + descriptor + " | status: " + status);
 
         }
 
         @Override
         public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
             super.onReliableWriteCompleted(gatt, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onReliableWriteCompleted()");
+            Log.e(BleMeshifyDevice.this.TAG,"onReliableWriteCompleted()" + " | status: " + status);
 
         }
 
         @Override
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             super.onReadRemoteRssi(gatt, rssi, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onReadRemoteRssi()");
+            Log.e(BleMeshifyDevice.this.TAG,"onReadRemoteRssi()" + " | rssi: " + rssi + " | status: " + status);
 
         }
     }

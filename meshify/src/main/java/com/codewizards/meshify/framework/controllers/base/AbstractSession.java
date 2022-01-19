@@ -126,6 +126,10 @@ public abstract class AbstractSession {
         return this.bluetoothGatt;
     }
 
+    public BluetoothGattServer getGattServer() {
+        return this.gattServer;
+    }
+
     public String getUuid() {
         return this.uuid;
     }
@@ -196,5 +200,9 @@ public abstract class AbstractSession {
 
     public void setUserId(String str) {
         this.userId = str;
+    }
+
+    public void setGattServer(BluetoothGattServer gattServer) {
+        this.gattServer = gattServer;
     }
 }

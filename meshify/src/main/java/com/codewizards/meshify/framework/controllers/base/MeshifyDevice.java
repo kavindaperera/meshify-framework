@@ -16,11 +16,12 @@ import io.reactivex.Completable;
  */
 public abstract class MeshifyDevice  implements Comparable {
 
+    private String id;
     private Device device;
 
     public MeshifyDevice(Device device) {
         this.device = device;
-        UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     public abstract Completable create();
