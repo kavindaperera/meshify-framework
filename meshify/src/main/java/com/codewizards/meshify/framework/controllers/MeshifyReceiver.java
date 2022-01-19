@@ -139,11 +139,23 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
-    public void onBluetoothServerStop(Config.Antenna antenna) {
+    public void stopServer(Config.Antenna antenna) {
         switch (antenna) {
             case BLUETOOTH:
             case BLUETOOTH_LE: {
                 this.onBluetoothServerStop();
+            }
+        }
+    }
+
+    void removeAllSessions(Config.Antenna antenna) {
+        switch (antenna) {
+            case BLUETOOTH: {
+                SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH);
+                break;
+            }
+            case BLUETOOTH_LE: {
+                SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH_LE);
             }
         }
     }
@@ -157,8 +169,22 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
-    private void onBluetoothServerStop() {
+    public void stopDiscovery(Config.Antenna antenna) {
+        switch (antenna) {
+            case BLUETOOTH:
+            case BLUETOOTH_LE: {
+                this.bluetoothController.stopDiscovery(this.context);
+            }
+        }
+    }
 
+    private void onBluetoothServerStop() {
+        try {
+            this.bluetoothController.stopServer();
+        }
+        catch (ConnectionException connectionException) {
+            Log.e(TAG, "onBluetoothServerStop: " + connectionException.getMessage());
+        }
     }
 
     public void startAdvertising(Config.Antenna antenna) {
@@ -168,5 +194,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
             }
         }
     }
+
+
 
 }

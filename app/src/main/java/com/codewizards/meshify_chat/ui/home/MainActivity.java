@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
         builder.setVerified(MeshifySession.isVerified());
-        builder.setAutoConnect(false);
+        builder.setAutoConnect(true);
 
         Meshify.start(messageListener, connectionListener, builder.build());
 

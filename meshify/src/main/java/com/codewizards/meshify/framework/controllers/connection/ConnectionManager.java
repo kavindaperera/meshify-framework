@@ -112,6 +112,10 @@ public class ConnectionManager {
         }
     }
 
+    public static void reset() {
+        connections = new HashMap();
+    }
+
     private static void isAutoConnect() {
         if (Meshify.getInstance().getConfig().isAutoConnect()) {
             throw new MeshifyException(100, "Meshify is configured to auto connect.");

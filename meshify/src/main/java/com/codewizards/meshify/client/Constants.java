@@ -15,6 +15,10 @@ public class Constants {
     public static final int INITIALIZATION_ERROR = -468;
     public static final String INITIALIZATION_ERROR_STRING = "Meshify must be initialized before starting";
 
-
+    //Sequence Numbers
+    public static long MIN_VALID_SEQ_NUM = 0;
+    public static long MAX_VALID_SEQ_NUM = Long.MAX_VALUE;
+    public static long UNKNOWN_SEQUENCE_NUMBER = 0;
+    public static long FIRST_SEQUENCE_NUMBER = 1;
 
 }

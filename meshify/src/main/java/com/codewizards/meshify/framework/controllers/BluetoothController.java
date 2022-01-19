@@ -165,7 +165,7 @@ public class BluetoothController {
                     try {
                         stopDiscovery(context.getApplicationContext());
                         disconnectDevices();
-                        stopServer(context.getApplicationContext());
+                        this.stopServer();
                     } catch (Exception e2) {
                         Log.w(TAG, e2.getMessage());
                     }
@@ -295,11 +295,11 @@ public class BluetoothController {
         }
     }
 
-    public void stopServer(Context context) throws ConnectionException {
+    public void stopServer() throws ConnectionException {
         Log.i(TAG, "stopServer: ");
         switch (this.getConfig().getAntennaType()) {
             case BLUETOOTH: {
-                this.stopBluetoothServer(context.getApplicationContext());
+                this.stopBluetoothServer();
                 break;
             }
             case BLUETOOTH_LE: {
@@ -308,7 +308,7 @@ public class BluetoothController {
         }
     }
 
-    private void stopBluetoothServer(Context context) throws ConnectionException {
+    private void stopBluetoothServer() throws ConnectionException {
         ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, false);
         this.threadServer = threadServer;
         if (threadServer != null) {
