@@ -6,11 +6,16 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothProfile;
 
+import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.framework.controllers.BluetoothController;
+import com.codewizards.meshify.framework.controllers.DeviceManager;
 import com.codewizards.meshify.framework.controllers.Session;
 import com.codewizards.meshify.framework.controllers.SessionManager;
+import com.codewizards.meshify.framework.controllers.base.AbstractSession;
 import com.codewizards.meshify.framework.controllers.base.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BluetoothLeGatt;
 import com.codewizards.meshify.logs.Log;
@@ -86,6 +91,62 @@ public class BleMeshifyDevice extends MeshifyDevice {
             super.onConnectionStateChange(gatt, status, newState);
             Log.e(BleMeshifyDevice.this.TAG,"onConnectionStateChange()" + " | newState: " + newState + " | status: " + status);
 
+            Object temp;
+
+            if (status == BluetoothGatt.GATT_SUCCESS){
+
+                // check bluetooth profile states
+                if (newState == BluetoothProfile.STATE_CONNECTED) { // The profile is in connected state
+
+                    Log.i(BleMeshifyDevice.this.TAG,"BluetoothProfile.STATE_CONNECTED: " + gatt.getDevice().getAddress());
+
+                    // check and create a session
+                    temp = SessionManager.getSession(gatt.getDevice().getAddress());
+
+                    if (temp == null) {
+                        Log.i(BleMeshifyDevice.this.TAG, "onConnectionStateChange(): create new session");
+                        temp = new Session(gatt);
+                    }else {
+                        ((AbstractSession) temp).setBluetoothGatt(gatt);
+                        Log.i(BleMeshifyDevice.this.TAG, "onConnectionStateChange(): reusing previous empty session");
+                    }
+
+                    // check and create a device
+                    Device device = DeviceManager.getDevice(gatt.getDevice().getAddress());
+                    if (device == null) {
+                        device = new Device(gatt.getDevice(), true);
+                    }
+                    device.setAntennaType(Config.Antenna.BLUETOOTH_LE);
+                    device.setSessionId(((Session)temp).getSessionId());
+
+                    ((AbstractSession)temp).setClient(true);
+                    ((AbstractSession)temp).setDevice(device);
+
+                    SessionManager.queueSession((Session)temp); // Queue the session before handshake
+                    DeviceManager.addDevice(device);
+
+                    // TODO - request mtu or discover services
+
+
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED){
+                    Log.e(BleMeshifyDevice.this.TAG, "BluetoothProfile.STATE_DISCONNECTED: " + gatt.getDevice().getAddress());
+
+                    // TODO - remove device and session
+
+                    if (gatt != null) {
+                        gatt.close();
+                    }
+                }
+            } else if (status == 133){
+                Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error. " + gatt.getDevice().getAddress());
+            } else {
+                if (newState == BluetoothProfile.STATE_DISCONNECTED){
+                    Log.e(BleMeshifyDevice.this.TAG, "BluetoothProfile.STATE_DISCONNECTED: " + gatt.getDevice().getAddress());
+                    if (gatt != null) {
+                        gatt.close();
+                    }
+                }
+            }
         }
 
         @Override
@@ -149,6 +210,9 @@ public class BleMeshifyDevice extends MeshifyDevice {
             Log.e(BleMeshifyDevice.this.TAG,"onReadRemoteRssi()" + " | rssi: " + rssi + " | status: " + status);
 
         }
+
+
+
     }
 
 }

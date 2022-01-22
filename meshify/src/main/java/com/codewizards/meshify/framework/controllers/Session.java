@@ -1,5 +1,6 @@
 package com.codewizards.meshify.framework.controllers;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.os.Parcel;
@@ -51,6 +52,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
     }
 
     public Session() {
+    }
+
+    public Session(BluetoothGatt bluetoothGatt) {
+        this.setBluetoothGatt(bluetoothGatt);
+        this.setAntennaType(Config.Antenna.BLUETOOTH_LE);
+        this.setBluetoothDevice(bluetoothGatt.getDevice());
+        this.setSessionId(bluetoothGatt.getDevice().getAddress());
     }
 
     void run() {
