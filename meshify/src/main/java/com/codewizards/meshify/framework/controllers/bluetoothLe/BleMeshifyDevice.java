@@ -6,12 +6,17 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattServer;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.os.Build;
 
 import com.codewizards.meshify.client.Config;
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.client.profile.DeviceProfile;
 import com.codewizards.meshify.framework.controllers.BluetoothController;
+import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.DeviceManager;
 import com.codewizards.meshify.framework.controllers.Session;
 import com.codewizards.meshify.framework.controllers.SessionManager;
@@ -63,7 +68,19 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
             }
         });
+
+
     }
+
+
+
+    private void sendInitialHandShake(Device device){
+
+        Log.e(TAG, "sendInitialHandShake: " + device.getDeviceAddress());
+
+    }
+
+
 
     /**
      * The main interface that the app has to implement in order to receive callbacks for most BluetoothGatt-related operations
@@ -125,8 +142,13 @@ public class BleMeshifyDevice extends MeshifyDevice {
                     SessionManager.queueSession((Session)temp); // Queue the session before handshake
                     DeviceManager.addDevice(device);
 
-                    // TODO - request mtu or discover services
+                    BluetoothController.getGattManager(); // TODO
 
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        gatt.requestMtu(DeviceProfile.getMaxMtuSize()); // Requesting for a larger ATT MTU
+                    } else {
+                        gatt.discoverServices();
+                    }
 
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED){
                     Log.e(BleMeshifyDevice.this.TAG, "BluetoothProfile.STATE_DISCONNECTED: " + gatt.getDevice().getAddress());
@@ -154,12 +176,49 @@ public class BleMeshifyDevice extends MeshifyDevice {
             super.onMtuChanged(gatt, mtu, status);
             Log.e(BleMeshifyDevice.this.TAG,"onMtuChanged()" + " | mtu: " + mtu + " | status: " + status);
 
+
+            Session session = SessionManager.getSession(gatt.getDevice().getAddress());
+
+            if (mtu == DeviceProfile.getMaxMtuSize()) {
+
+            }
+
+            boolean bl = gatt.discoverServices();
+            Log.e(BleMeshifyDevice.this.TAG, "start service discovery: " + bl);
+
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onServicesDiscovered()" + " | status: " + status);
+            Log.e(BleMeshifyDevice.this.TAG,"onServicesDiscovered()" + " | status: " + status + " | size: " + gatt.getServices().size());
+
+
+
+            for (BluetoothGattService service : gatt.getServices()) {
+                Log.i(BleMeshifyDevice.this.TAG,"service discovered " + service.getUuid().toString());
+            }
+
+            if (status == 0) {
+
+                // DOUBLE_RATE
+                if (!DeviceProfile.isLeDoubleRateSupported(Meshify.getInstance().getMeshifyCore().getContext())) return;
+                gatt.setPreferredPhy(2, 2, 0);
+
+                // TODO - create a config to set DOUBLE_RATE or EXTENDED_RANGE
+
+                BluetoothGattCharacteristic bluetoothGattCharacteristic = gatt.getService(BluetoothUtils.getBluetoothUuid()).getCharacteristic(BluetoothUtils.getCharacteristicUuid());
+
+                if (gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)){
+                    BleMeshifyDevice.this.sendInitialHandShake(BleMeshifyDevice.this.getDevice());
+                    return;
+                }
+
+
+            } else {
+                // TODO
+            }
+
         }
 
         @Override

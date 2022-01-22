@@ -9,6 +9,7 @@ import com.codewizards.meshify.logs.Log;
 public class DeviceProfile {
 
     private static final String TAG = "[Meshify][DeviceProfile]" ;
+    private static int GATT_MAX_MTU_SIZE = 517;
 
     private String deviceEvaluation;
 
@@ -154,6 +155,11 @@ public class DeviceProfile {
         }
         return manufacturer + " " + model;
 
+    }
+
+
+    public static int getMaxMtuSize() {
+        return GATT_MAX_MTU_SIZE;
     }
 
 }
