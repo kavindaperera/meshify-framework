@@ -1,9 +1,9 @@
-package com.codewizards.meshify.client.profile;
+package com.codewizards.meshify.api.profile;
 
 import android.content.Context;
 import android.os.Build;
 
-import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.api.MeshifyUtils;
 import com.codewizards.meshify.logs.Log;
 
 public class DeviceProfile {

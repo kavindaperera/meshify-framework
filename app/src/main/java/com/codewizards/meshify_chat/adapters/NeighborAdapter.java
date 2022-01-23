@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.util.MeshifyUtils;

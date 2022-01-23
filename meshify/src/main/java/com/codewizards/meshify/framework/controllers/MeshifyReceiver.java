@@ -10,9 +10,9 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.provider.Telephony;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.exceptions.MeshifyException;
-import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.exceptions.MeshifyException;
+import com.codewizards.meshify.api.MeshifyUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 

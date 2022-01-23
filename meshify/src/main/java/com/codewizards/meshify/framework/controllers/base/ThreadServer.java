@@ -2,7 +2,7 @@ package com.codewizards.meshify.framework.controllers.base;
 
 import android.content.Context;
 
-import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
 public abstract class ThreadServer<SOCKET, SERVER_SOCKET> extends Thread { //can be of type socket or server socket

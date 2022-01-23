@@ -1,10 +1,12 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 public class Config {
 
     private boolean isEncryption;
 
     private boolean isVerified;
+
+    private boolean neighborDiscovery;
 
     private Antenna antennaType;
 
@@ -17,6 +19,7 @@ public class Config {
     private Config(Builder builder) {
         this.isEncryption = builder.isEncryption;
         this.isVerified = builder.isVerified;
+        this.neighborDiscovery = builder.neighborDiscovery;
         this.configProfile = builder.configProfile;
         this.antennaType = builder.antennaType;
         this.maxConnectionRetries = builder.maxConnectionRetries;
@@ -63,6 +66,8 @@ public class Config {
 
         private boolean isVerified = false;
 
+        private boolean neighborDiscovery = false;
+
         private ConfigProfile configProfile = ConfigProfile.Default;
 
         private Antenna antennaType = Antenna.BLUETOOTH_LE;
@@ -82,6 +87,11 @@ public class Config {
 
         public Builder setVerified(boolean verified) {
             this.isVerified = verified;
+            return this;
+        }
+
+        public Builder setNeighborDiscovery(boolean neighborDiscovery) {
+            this.neighborDiscovery = neighborDiscovery;
             return this;
         }
 

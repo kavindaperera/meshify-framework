@@ -1,4 +1,4 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 
-import com.codewizards.meshify.client.exceptions.MeshifyException;
+import com.codewizards.meshify.api.exceptions.MeshifyException;
 
 public class MeshifyUtils {
 

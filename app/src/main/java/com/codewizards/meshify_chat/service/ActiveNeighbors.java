@@ -2,7 +2,7 @@ package com.codewizards.meshify_chat.service;
 
 import android.util.Log;
 
-import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify_chat.models.Neighbor;
 
 import java.util.Iterator;

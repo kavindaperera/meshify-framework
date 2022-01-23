@@ -7,7 +7,7 @@ import android.bluetooth.le.ScanSettings;
 import android.os.Build;
 import android.os.ParcelUuid;
 
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.framework.utils.Ascii85;
 import com.codewizards.meshify.logs.Log;
 

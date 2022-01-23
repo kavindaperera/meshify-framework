@@ -1,4 +1,4 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.os.Parcel;
 import android.os.Parcelable;

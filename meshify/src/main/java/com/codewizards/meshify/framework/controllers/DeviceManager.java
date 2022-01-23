@@ -3,8 +3,8 @@ package com.codewizards.meshify.framework.controllers;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;

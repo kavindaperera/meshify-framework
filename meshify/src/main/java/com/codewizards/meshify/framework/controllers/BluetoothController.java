@@ -9,10 +9,10 @@ import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.content.Context;
 import android.content.Intent;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.exceptions.MeshifyException;
-import com.codewizards.meshify.client.MeshifyUtils;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.exceptions.MeshifyException;
+import com.codewizards.meshify.api.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.base.ThreadServer;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothDiscovery;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothServer;

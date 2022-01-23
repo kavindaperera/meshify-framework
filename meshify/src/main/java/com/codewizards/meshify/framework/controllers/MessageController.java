@@ -2,11 +2,11 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.content.Context;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.ConfigProfile;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;

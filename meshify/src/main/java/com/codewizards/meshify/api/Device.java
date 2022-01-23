@@ -1,4 +1,4 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;

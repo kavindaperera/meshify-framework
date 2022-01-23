@@ -1,9 +1,9 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.codewizards.meshify.client.profile.DeviceProfile;
+import com.codewizards.meshify.api.profile.DeviceProfile;
 import com.codewizards.meshify.framework.controllers.MeshifyCore;
 import com.codewizards.meshify.logs.Log;
 

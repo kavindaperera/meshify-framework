@@ -1,4 +1,4 @@
-package com.codewizards.meshify.client.exceptions;
+package com.codewizards.meshify.api.exceptions;
 
 public class MeshifyException extends RuntimeException {
 

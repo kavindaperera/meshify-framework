@@ -3,13 +3,13 @@ package com.codewizards.meshify.framework.controllers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
-import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.ConnectionListener;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.ConfigProfile;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.api.MessageListener;
+import com.codewizards.meshify.api.ConnectionListener;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -19,7 +19,6 @@ import com.codewizards.meshify.logs.Log;
 import java.io.IOException;
 
 import io.reactivex.Completable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;

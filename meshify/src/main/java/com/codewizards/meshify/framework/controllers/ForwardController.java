@@ -2,7 +2,7 @@ package com.codewizards.meshify.framework.controllers;
 
 import android.os.AsyncTask;
 
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;

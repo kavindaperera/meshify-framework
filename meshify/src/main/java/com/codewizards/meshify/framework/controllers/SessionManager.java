@@ -1,14 +1,11 @@
 package com.codewizards.meshify.framework.controllers;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class SessionManager {
     private static final String TAG = "[Meshify][SessionManager]";

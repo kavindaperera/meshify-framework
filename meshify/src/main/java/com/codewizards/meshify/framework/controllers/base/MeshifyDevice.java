@@ -2,7 +2,7 @@ package com.codewizards.meshify.framework.controllers.base;
 
 import androidx.annotation.Nullable;
 
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Device;
 
 import java.util.UUID;
 

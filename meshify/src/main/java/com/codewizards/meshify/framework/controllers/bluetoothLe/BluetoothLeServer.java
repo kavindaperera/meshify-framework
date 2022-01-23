@@ -9,7 +9,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.util.Log;
 
-import com.codewizards.meshify.client.Config;
+import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.framework.controllers.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.base.ThreadServer;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattServerCallback;

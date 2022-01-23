@@ -5,8 +5,8 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothSocket;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.framework.utils.Utils;
 
 import java.io.DataInputStream;

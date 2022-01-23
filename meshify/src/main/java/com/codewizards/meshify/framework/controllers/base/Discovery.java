@@ -2,8 +2,8 @@ package com.codewizards.meshify.framework.controllers.base;
 
 import android.content.Context;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionSubscriber;
 import com.codewizards.meshify.logs.Log;
 

@@ -1,4 +1,4 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.codewizards.meshify.BuildConfig;
-import com.codewizards.meshify.client.exceptions.MeshifyException;
+import com.codewizards.meshify.api.exceptions.MeshifyException;
 import com.codewizards.meshify.framework.controllers.MeshifyCore;
 import com.codewizards.meshify.logs.Log;
 

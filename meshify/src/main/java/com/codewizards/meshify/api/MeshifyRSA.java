@@ -1,9 +1,8 @@
-package com.codewizards.meshify.client;
+package com.codewizards.meshify.api;
 
 import android.util.Base64;
 
 import com.codewizards.meshify.logs.Log;
-import com.google.gson.JsonParseException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;

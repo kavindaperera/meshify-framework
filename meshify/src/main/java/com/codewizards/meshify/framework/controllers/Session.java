@@ -5,10 +5,10 @@ import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.os.Parcel;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.framework.controllers.base.AbstractSession;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -35,7 +35,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class Session extends AbstractSession implements com.codewizards.meshify.client.Session, Comparable<Session> {
+public class Session extends AbstractSession implements com.codewizards.meshify.api.Session, Comparable<Session> {
 
     private static final String TAG = "[Meshify][Session]";
 
