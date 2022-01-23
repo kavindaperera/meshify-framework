@@ -8,11 +8,11 @@ import android.os.Build;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class BleGatt {
+public class BluetoothLeGatt {
 
     private final Context context;
 
-    public BleGatt(Context context) {
+    public BluetoothLeGatt(Context context) {
         this.context = context;
     }
 

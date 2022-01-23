@@ -23,38 +23,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+
+import android.text.Html;
+import android.text.SpannableString;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "[Meshify][MainActivity]";
 
-    @BindView(R.id.devices_recycler_view)
-    RecyclerView devicesRecyclerView;
-    DevicesAdapter devicesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
-
-        // initialize the DevicesAdapter and the RecyclerView
-        devicesAdapter = new DevicesAdapter();
-        devicesRecyclerView.setAdapter(devicesAdapter);
-        devicesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
 
         // check that we have Location permissions
@@ -122,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeMeshify() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         Meshify.debug = BuildConfig.DEBUG;
 
@@ -151,33 +138,15 @@ public class MainActivity extends AppCompatActivity {
     ConnectionListener connectionListener = new ConnectionListener() {
         @Override
         public void onDeviceConnected(Device device, Session session) {
-            Log.i(TAG, "Device found: " + device.getUserId() + " isClient: " + session.isClient());
-
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            String device2 = timestamp + " | Device found: " + device.getDeviceName() + " isClient: " + session.isClient() ;
-            devicesAdapter.addDevice(device2);
-
-            devicesRecyclerView.post(() -> {
-                // Call smooth scroll
-                devicesRecyclerView.smoothScrollToPosition(devicesAdapter.getItemCount() - 1);
-            });
-
+            Log.i(TAG, "Device Connected: " + device.getUserId() + " isClient: " + session.isClient());
+            updateLog(Constants.NORMAL, "Device Connected: " + device.getUserId() + " | isClient: " + session.isClient()) ;
             timerHello(Constants.HELLO_PACKET_INTERVAL, device, session.isClient());
         }
 
         @Override
         public void onDeviceLost(Device device) {
             Log.w(TAG, "Device lost: " + device.getUserId());
-
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            String device2 = timestamp + " | Device lost: " + device.getDeviceName() ;
-            devicesAdapter.addDevice(device2);
-
-            devicesRecyclerView.post(() -> {
-                // Call smooth scroll
-                devicesRecyclerView.smoothScrollToPosition(devicesAdapter.getItemCount() - 1);
-            });
-
+            updateLog(Constants.ERROR, "Device lost: " + device.getUserId()) ;
         }
 
 
@@ -198,16 +167,7 @@ public class MainActivity extends AppCompatActivity {
     MessageListener messageListener = new MessageListener() {
         @Override
         public void onMessageReceived(Message message) {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-            String device = timestamp + " | Hello from " + message.getContent().get("manufacturer ") + " " + message.getContent().get("model") ;
-            Log.e(TAG, "Message Received: " + message.getSenderId() + ", content: " + message.getContent());
-            devicesAdapter.addDevice(device);
-
-            devicesRecyclerView.post(() -> {
-                // Call smooth scroll
-                devicesRecyclerView.smoothScrollToPosition(devicesAdapter.getItemCount() - 1);
-            });
-
+            updateLog(Constants.NORMAL, "Message Received: " + message.getSenderId() + ", content: " + message.getContent()) ;
         }
 
         @Override
@@ -216,8 +176,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
-
-
 
 
     private void timerHello(final int time, Device device, boolean b1) {
@@ -229,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                     HashMap<String, Object> data = new HashMap<>();
                     data.put("manufacturer ", Build.MANUFACTURER);
                     data.put("model", Build.MODEL);
-                    data.put("time", new java.sql.Timestamp(System.currentTimeMillis()).getTime());
                     device.sendMessage(data);
                     Log.d(TAG, "Hello message sent!");
                     timerHello(time, device, b1);
@@ -238,59 +195,26 @@ public class MainActivity extends AppCompatActivity {
         }, time);
     }
 
-    public class DevicesAdapter extends RecyclerView.Adapter<DeviceViewHolder> {
-        ArrayList<String> devices;
-        DevicesAdapter() {
-            devices = new ArrayList<>();
+
+    private void updateLog(int type, String msg) {
+        TextView textView = findViewById(R.id.text_log);
+        ScrollView scrollView = findViewById(R.id.scrollViewText);
+        SpannableString contentText = new SpannableString(textView.getText());
+
+        String htmlText = Html.toHtml(contentText);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        switch (type) {
+            case Constants.NORMAL:
+                textView.setText(Html.fromHtml("<font color='purple'>" +timestamp + " | " +  msg + "</font>" + htmlText ), TextView.BufferType.EDITABLE);
+                break;
+            case Constants.WARNING:
+                textView.setText(Html.fromHtml( "<font color='blue'>" + timestamp + " | " + msg + "</font>" + htmlText), TextView.BufferType.EDITABLE);
+                break;
+            case Constants.ERROR:
+            default:
+                textView.setText(Html.fromHtml( "<font color='red'>" + timestamp + " | " +  msg + "</font>" + htmlText), TextView.BufferType.EDITABLE);
+                break;
         }
 
-        @Override
-        public int getItemCount() {
-            return devices.size();
-        }
-
-        boolean addDevice(String device) {
-//            if (!devices.contains(device)) {
-                devices.add(device);
-                notifyItemInserted(devices.size() - 1);
-                return true;
-//            }
-
-//            return false;
-        }
-
-        void removeDevice(Device device) {
-            int position = devices.indexOf(device);
-            if (position > -1) {
-                devices.remove(position);
-                notifyItemRemoved(position);
-            }
-        }
-
-        @Override
-        public DeviceViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View deviceView = LayoutInflater.from(viewGroup.getContext()).
-                    inflate((R.layout.device_row), viewGroup, false);
-            return new DeviceViewHolder(deviceView);
-        }
-
-        @Override
-        public void onBindViewHolder(DeviceViewHolder deviceViewHolder, int position) {
-            deviceViewHolder.setDevice(devices.get(position));
-        }
-    }
-
-    class DeviceViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.txt_device)
-        TextView deviceView;
-
-        DeviceViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this, view);
-        }
-
-        void setDevice(String device) {
-            deviceView.setText(device);
-        }
     }
 }

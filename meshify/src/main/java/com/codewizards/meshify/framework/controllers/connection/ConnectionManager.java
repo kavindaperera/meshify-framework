@@ -1,15 +1,21 @@
 package com.codewizards.meshify.framework.controllers.connection;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.le.AdvertiseCallback;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.codewizards.meshify.client.Device;
 import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.client.MeshifyUtils;
 import com.codewizards.meshify.client.exceptions.MeshifyException;
+import com.codewizards.meshify.framework.controllers.BluetoothController;
 import com.codewizards.meshify.framework.controllers.base.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.SessionManager;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.BleMeshifyDevice;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.MeshifyAdvertiseCallback;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.HashMap;
@@ -112,6 +118,10 @@ public class ConnectionManager {
         }
     }
 
+    public static void reset() {
+        connections = new HashMap();
+    }
+
     private static void isAutoConnect() {
         if (Meshify.getInstance().getConfig().isAutoConnect()) {
             throw new MeshifyException(100, "Meshify is configured to auto connect.");
@@ -128,6 +138,7 @@ public class ConnectionManager {
     }
 
 
+    @SuppressLint("MissingPermission")
     private static void connect() {
         isAutoConnect();
         if (meshifyDevice == null && devices.size() > 0) {
@@ -145,18 +156,30 @@ public class ConnectionManager {
                 }
 
                 public void onError(Throwable e2) {
-                    Log.e(TAG, "onError: " + e2.getMessage());
+                    Log.e(TAG, "onError: " + e2);
+                    MeshifyDevice meshifyDevice2= ConnectionManager.getMeshifyDevice();
+                    if (meshifyDevice2 != null && meshifyDevice2.getDevice().equals(device)) {
+                        ConnectionManager.setMeshifyDevice(null);
+                    }
 
                 }
             };
 
-            if (meshifyDevice1 !=null) {
-                Log.i(TAG, "Sending to connect: " + meshifyDevice1.getDevice().toString() );
+            if (meshifyDevice1 != null) {
+
+                if (BluetoothController.state == 3) {
+                    BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(Meshify.getInstance().getMeshifyCore().getContext());
+                    bluetoothAdapter.getBluetoothLeAdvertiser().stopAdvertising((AdvertiseCallback)new MeshifyAdvertiseCallback());
+                    bluetoothAdapter.cancelDiscovery();
+                    Log.i(TAG, "stop advertising & discovering " + bluetoothAdapter.isDiscovering());
+                }
+
+                Log.i(TAG, "start to connect: " + meshifyDevice1.getDevice().toString());
                 meshifyDevice1.create().subscribeOn(Schedulers.newThread()).subscribe(completableObserver);
             }
 
         } else if (meshifyDevice != null) {
-            Log.i(TAG, "Waiting to connect: " + meshifyDevice.getDevice().toString());
+            Log.e(TAG, "wait to connect: " + meshifyDevice.getDevice().toString());
          }
     }
 }
