@@ -35,6 +35,7 @@ import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.MeshifyLogger;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
@@ -49,8 +50,12 @@ import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.codewizards.meshify_chat.util.MeshifyUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.HashMap;
 
@@ -372,10 +377,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     /**
      * start meshify
      */
     private void startMeshify() {
+
+        if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
+            return;
+        }
+
+        MeshifyLogger.init(this.getBaseContext(), true);
+        MeshifyLogger.startLogs(getLogFileName());
 
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
@@ -405,5 +420,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideProgressBar(){
         mProgressBar.setVisibility(View.GONE);
+    }
+
+
+    private String getLogFileName() {
+        LocalDateTime localDateTime = new DateTime().toLocalDateTime();
+        return String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getYear())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getMonthOfYear())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getDayOfMonth())) + "-" + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getHourOfDay())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getMinuteOfHour())) + " " + Build.MANUFACTURER + " " + this.sharedPreferences.getString("user_name", "") + ".txt";
     }
 }

@@ -16,6 +16,9 @@ import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify.logs.MeshifyLogFactory;
+import com.codewizards.meshify.logs.MeshifyLogger;
+import com.codewizards.meshify.logs.logentities.MessageLog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ public class MessageController {
     public void messageReceived(Message message, Session session) {
         message.setMesh(false);
         this.messageNotifier.onMessageReceived(message);
+        MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.MessageEvent.DirectMessageReceived)); //logger
     }
 
     public void incomingMeshMessageAction(Session session, MeshifyEntity meshifyEntity) {
@@ -152,6 +156,7 @@ public class MessageController {
         if (session != null) {
             try {
                 MeshifyCore.sendEntity(session, MeshifyEntity.message(message)); // send message
+                MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.MessageEvent.DirectMessageSent)); // logger
             } catch (MessageException e) {
                 e.printStackTrace();
             } catch (IOException ioException) {
