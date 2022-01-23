@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
     MessageListener messageListener = new MessageListener() {
         @Override
         public void onMessageReceived(Message message) {
-            super.onMessageReceived(message);
 
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
                 String senderId = message.getSenderId();
@@ -122,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBroadcastMessageReceived(Message message) {
-            super.onBroadcastMessageReceived(message);
             String Msg = (String) message.getContent().get(PAYLOAD_TEXT);
             String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
             Log.i(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
@@ -136,13 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onMessageSent(String messageId) {
-            super.onMessageSent(messageId);
             Log.i(TAG, "onMessageSent: " + messageId);
         }
 
         @Override
         public void onMessageFailed(Message message, MessageException exception) {
-            super.onMessageFailed(message, exception);
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
             Toast.makeText(getApplicationContext(), exception.getMessage() , Toast.LENGTH_SHORT).show();
         }
@@ -152,21 +148,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStarted() {
-            super.onStarted();
             Log.d(TAG, "onStarted:");
         }
 
 
         @Override
         public void onDeviceDiscovered(Device device) {
-            super.onDeviceDiscovered(device);
             Toast.makeText(getApplicationContext(), "Device Discovered " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Device Discovered " +  device.toString());
         }
 
         @Override
         public void onStartError(String message, int errorCode) {
-            super.onStartError(message, errorCode);
             hideProgressBar();
             if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
@@ -190,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(Device device, Session session) {
-            super.onDeviceConnected(device, session);
             Log.e(TAG, "Device Connected " +  device.toString());
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
@@ -217,14 +209,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceBlackListed(Device device) {
-            super.onDeviceBlackListed(device);
             Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
 
         }
 
         @Override
         public void onDeviceLost(Device device) {
-            super.onDeviceLost(device);
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
         }

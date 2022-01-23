@@ -354,5 +354,7 @@ public class BluetoothController {
         return this.context;
     }
 
-
+    public static GattManager getGattManager() {
+        return gattManager;
+    }
 }
