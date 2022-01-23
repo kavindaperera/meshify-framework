@@ -151,7 +151,7 @@ public class DeviceManager {
         return new ArrayList<Device>(deviceList.values());
     }
 
-    static Device getDeviceByUserId(String userId) {
+    public static Device getDeviceByUserId(String userId) {
         for (Device device : DeviceManager.getDeviceList()) {
             if (device.getUserId() == null || !device.getUserId().equals(userId)) continue;
             return device;
