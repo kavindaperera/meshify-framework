@@ -1,10 +1,12 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.discoverymanager;
 
 import android.os.Handler;
 import android.os.Looper;
 
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class DeviceManager {
         addDevice(device, null);
     }
 
-    static void addDevice(Device device, Session session) {
+    public static void addDevice(Device device, Session session) {
         Log.d(TAG, "addDevice: " + device + " | session: " + session);
         Device device2 = DeviceManager.getDevice(device.getDeviceAddress());
         DeviceManager.copyDevice(device, device2);
@@ -71,7 +73,7 @@ public class DeviceManager {
         }
     }
 
-    static synchronized void removeDevice(Device device) {
+    public static synchronized void removeDevice(Device device) {
         if (device != null) {
             Session session = SessionManager.getSession(device.getDeviceAddress());
             if (session != null && session.getState() == 1) {
@@ -145,7 +147,7 @@ public class DeviceManager {
         }, 20000L, TimeUnit.MILLISECONDS);
     }
 
-    static List<Device> getDeviceList() {
+    public static List<Device> getDeviceList() {
         return new ArrayList<Device>(deviceList.values());
     }
 

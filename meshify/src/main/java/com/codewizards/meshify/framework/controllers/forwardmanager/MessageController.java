@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.forwardmanager;
 
 import android.content.Context;
 
@@ -7,6 +7,10 @@ import com.codewizards.meshify.api.ConfigProfile;
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.MeshifyCore;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
@@ -28,7 +32,7 @@ public class MessageController {
 
     private ForwardController forwardController;
 
-    MessageController(Context context, Config config) {
+    public MessageController(Context context, Config config) {
         this.config = config;
         this.messageNotifier = new MessageNotifier(config);
         this.forwardController = new ForwardController();
@@ -119,7 +123,7 @@ public class MessageController {
         this.forwardController.addForwardEntitiesToList(forwardEntity, true); // add and send
     }
 
-    void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
+    public void sendMessage(Context context, Message message, Device device, ConfigProfile profile) {
         Log.d(TAG, "sendMessage: to device -> " + device );
         if (this.config.isEncryption() && !Session.getKeys().containsKey(message.getReceiverId())) {
             Meshify.getInstance().getMeshifyCore().getMessageListener().onMessageFailed(message, new MessageException("Missing public key of " + message.getReceiverId()));
@@ -157,7 +161,7 @@ public class MessageController {
 
     }
 
-    void sendMessage(Message message, ConfigProfile profile) {
+    public void sendMessage(Message message, ConfigProfile profile) {
         this.forwardController.addForwardEntitiesToList(new MeshifyForwardEntity(message,1, profile),true); // add broadcast message and send
     }
 

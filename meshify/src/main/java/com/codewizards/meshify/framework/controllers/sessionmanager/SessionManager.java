@@ -1,7 +1,8 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.sessionmanager;
 
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ public class SessionManager {
         DeviceManager.removeDevice(device);
     }
 
-    static void removeAllSessions(Config.Antenna antenna) {
+    public static void removeAllSessions(Config.Antenna antenna) {
         for (Session session : sessionMap.values()) {
             if (antenna != session.getAntennaType()) continue;
             session.removeSession();

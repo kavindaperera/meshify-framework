@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.sessionmanager;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothSocket;
@@ -9,7 +9,9 @@ import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.Message;
-import com.codewizards.meshify.framework.controllers.base.AbstractSession;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.MeshifyCore;
+import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
@@ -219,7 +221,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         return Meshify.getInstance().getMeshifyCore().getEditor();
     }
 
-    static HashMap<String, String> getKeys() {
+    public static HashMap<String, String> getKeys() {
         String string = Session.getSharedPreferences().getString(MeshifyCore.PREFS_KEY_PAIRS, null);
         if (string != null) {
             Type type = new TypeToken<HashMap<String, Object>>(){}.getType();
@@ -301,7 +303,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         }
     }
 
-    void flush(MeshifyEntity meshifyEntity) throws IOException, MessageException, InterruptedException {
+    public void flush(MeshifyEntity meshifyEntity) throws IOException, MessageException, InterruptedException {
         try {
             Log.d(TAG, "Flushed:" + meshifyEntity);
 
@@ -318,7 +320,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         }
     }
 
-    int getState() {
+    public int getState() {
         return this.state;
     }
 

@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.transactionmanager;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -6,6 +6,7 @@ import android.os.Looper;
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
@@ -28,7 +29,7 @@ public class TransactionManager {
     private TransactionManager() {
     }
 
-    static void sendEntity(Session session, MeshifyEntity meshifyEntity) {
+    public static void sendEntity(Session session, MeshifyEntity meshifyEntity) {
         Session session2 = session;
         synchronized (session2) {
             Transaction transaction = new Transaction(session, meshifyEntity, transactionManager);

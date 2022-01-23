@@ -8,9 +8,9 @@ import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.exceptions.MeshifyException;
 import com.codewizards.meshify.api.MeshifyUtils;
-import com.codewizards.meshify.framework.controllers.DeviceManager;
-import com.codewizards.meshify.framework.controllers.base.MeshifyDevice;
-import com.codewizards.meshify.framework.controllers.SessionManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyDevice;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothMeshifyDevice;
 import com.codewizards.meshify.logs.Log;
 

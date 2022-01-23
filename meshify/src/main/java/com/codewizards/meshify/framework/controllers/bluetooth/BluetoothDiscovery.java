@@ -14,9 +14,9 @@ import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.profile.DeviceProfile;
 import com.codewizards.meshify.api.MeshifyUtils;
-import com.codewizards.meshify.framework.controllers.BluetoothUtils;
-import com.codewizards.meshify.framework.controllers.DeviceManager;
-import com.codewizards.meshify.framework.controllers.base.Discovery;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.Discovery;
 import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
 import com.codewizards.meshify.logs.Log;
 

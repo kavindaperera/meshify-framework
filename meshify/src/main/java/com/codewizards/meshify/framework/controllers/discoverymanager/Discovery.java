@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers.base;
+package com.codewizards.meshify.framework.controllers.discoverymanager;
 
 import android.content.Context;
 

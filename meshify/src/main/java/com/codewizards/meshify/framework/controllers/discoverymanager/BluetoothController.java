@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.discoverymanager;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -13,12 +13,12 @@ import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.exceptions.MeshifyException;
 import com.codewizards.meshify.api.MeshifyUtils;
-import com.codewizards.meshify.framework.controllers.base.ThreadServer;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothDiscovery;
 import com.codewizards.meshify.framework.controllers.bluetooth.BluetoothServer;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.BluetoothLeDiscovery;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattManager;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.MeshifyAdvertiseCallback;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 

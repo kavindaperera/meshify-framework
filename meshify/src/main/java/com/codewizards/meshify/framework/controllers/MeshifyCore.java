@@ -11,7 +11,13 @@ import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.ConnectionListener;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyReceiver;
+import com.codewizards.meshify.framework.controllers.forwardmanager.MessageController;
 import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
+import com.codewizards.meshify.framework.controllers.transactionmanager.TransactionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
@@ -80,7 +86,7 @@ public class MeshifyCore {
         return this.editor;
     }
 
-    static void sendEntity(Session session, MeshifyEntity meshifyEntity) throws MessageException, IOException {
+    public static void sendEntity(Session session, MeshifyEntity meshifyEntity) throws MessageException, IOException {
         Log.d(TAG, "sendEntity:" + meshifyEntity );
         TransactionManager.sendEntity(session, meshifyEntity);
     }

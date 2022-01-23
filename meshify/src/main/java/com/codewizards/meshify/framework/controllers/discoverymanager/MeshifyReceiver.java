@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.discoverymanager;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -13,6 +13,7 @@ import android.provider.Telephony;
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.exceptions.MeshifyException;
 import com.codewizards.meshify.api.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 
@@ -28,7 +29,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
 
     private BluetoothController bluetoothController;
 
-    protected MeshifyReceiver(Config config, Context context) throws MeshifyException {
+    public MeshifyReceiver(Config config, Context context) throws MeshifyException {
         this.config = config;
         this.context = context;
         createBluetoothController(context, config);
@@ -148,7 +149,7 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
-    void removeAllSessions(Config.Antenna antenna) {
+    public void removeAllSessions(Config.Antenna antenna) {
         switch (antenna) {
             case BLUETOOTH: {
                 SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH);

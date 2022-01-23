@@ -3,7 +3,7 @@ package com.codewizards.meshify.framework.controllers.bluetoothLe;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 
-import com.codewizards.meshify.framework.controllers.BluetoothController;
+import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.logs.Log;
 
 public class MeshifyAdvertiseCallback extends AdvertiseCallback {

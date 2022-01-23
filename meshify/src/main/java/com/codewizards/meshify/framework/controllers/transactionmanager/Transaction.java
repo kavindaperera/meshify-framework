@@ -1,9 +1,10 @@
-package com.codewizards.meshify.framework.controllers;
+package com.codewizards.meshify.framework.controllers.transactionmanager;
 
 import android.bluetooth.BluetoothDevice;
 
 import androidx.annotation.Nullable;
 
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 
 public class Transaction implements Comparable {

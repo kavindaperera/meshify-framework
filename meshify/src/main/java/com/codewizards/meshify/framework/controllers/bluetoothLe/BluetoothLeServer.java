@@ -10,8 +10,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.codewizards.meshify.api.Config;
-import com.codewizards.meshify.framework.controllers.BluetoothUtils;
-import com.codewizards.meshify.framework.controllers.base.ThreadServer;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.discoverymanager.ThreadServer;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattServerCallback;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.expections.ConnectionException;

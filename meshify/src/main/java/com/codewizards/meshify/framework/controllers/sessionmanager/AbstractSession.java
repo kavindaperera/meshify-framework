@@ -1,4 +1,4 @@
-package com.codewizards.meshify.framework.controllers.base;
+package com.codewizards.meshify.framework.controllers.sessionmanager;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
