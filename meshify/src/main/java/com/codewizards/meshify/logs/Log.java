@@ -1,7 +1,7 @@
 package com.codewizards.meshify.logs;
 
 
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Meshify;
 
 public class Log {
     public static void d(String str, String str2) {

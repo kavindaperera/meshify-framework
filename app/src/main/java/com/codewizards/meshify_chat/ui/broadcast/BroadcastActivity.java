@@ -19,8 +19,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.ConfigProfile;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.BroadcastMessageAdapter;
 import com.codewizards.meshify_chat.models.Message;
@@ -146,9 +146,9 @@ public class BroadcastActivity extends AppCompatActivity {
                 }
                 content.put(Constants.PAYLOAD_DEVICE_NAME, username);
 
-                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+                com.codewizards.meshify.api.Message.Builder builder = new com.codewizards.meshify.api.Message.Builder();
                 builder.setContent(content);
-                com.codewizards.meshify.client.Message message1 = builder.build();
+                com.codewizards.meshify.api.Message message1 = builder.build();
                 Meshify.sendBroadcastMessage(message1, ConfigProfile.Default);
 
                 message.setUuid(message1.getUuid());
@@ -167,7 +167,7 @@ public class BroadcastActivity extends AppCompatActivity {
             if (intent.getAction().equals(Constants.BROADCAST_CHAT_MESSAGE_RECEIVED)) {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
-                com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                com.codewizards.meshify.api.Message message = com.codewizards.meshify.api.Message.create(extras.getString(Constants.MESSAGE));
                 Message message2 = new Message(
                         extras.getString(Constants.MESSAGE_UUID),
                         (String) message.getContent().get("text"),

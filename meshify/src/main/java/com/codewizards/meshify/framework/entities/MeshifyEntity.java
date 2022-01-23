@@ -6,9 +6,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
-import com.codewizards.meshify.framework.utils.Utils;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

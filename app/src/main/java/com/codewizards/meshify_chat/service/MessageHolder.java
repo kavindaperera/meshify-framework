@@ -1,6 +1,6 @@
 package com.codewizards.meshify_chat.service;
 
-import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.api.Message;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 

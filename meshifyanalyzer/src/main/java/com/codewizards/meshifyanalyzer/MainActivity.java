@@ -1,20 +1,18 @@
 package com.codewizards.meshifyanalyzer;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.ConnectionListener;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
-import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.Session;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.ConfigProfile;
+import com.codewizards.meshify.api.ConnectionListener;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.api.MessageListener;
+import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -167,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     MessageListener messageListener = new MessageListener() {
         @Override
         public void onMessageReceived(Message message) {
+            Log.e(TAG, "Message Received");
             updateLog(Constants.NORMAL, "Message Received: " + message.getSenderId() + ", content: " + message.getContent()) ;
         }
 
@@ -175,6 +174,12 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "Message failed", e);
         }
 
+        @Override
+        public void onMessageSent(String messageId) {
+            super.onMessageSent(messageId);
+            Log.e(TAG, "Message Sent");
+
+        }
     };
 
 

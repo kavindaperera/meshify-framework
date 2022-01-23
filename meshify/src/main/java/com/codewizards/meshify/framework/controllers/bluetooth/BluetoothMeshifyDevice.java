@@ -4,15 +4,15 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.MeshifyUtils;
-import com.codewizards.meshify.framework.controllers.BluetoothUtils;
-import com.codewizards.meshify.framework.controllers.DeviceManager;
-import com.codewizards.meshify.framework.controllers.base.MeshifyDevice;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.MeshifyUtils;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.helper.RetryWhenLambda;
-import com.codewizards.meshify.framework.controllers.Session;
-import com.codewizards.meshify.framework.controllers.SessionManager;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;

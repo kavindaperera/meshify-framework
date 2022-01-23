@@ -4,11 +4,10 @@ package com.codewizards.meshify_chat.models;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify_chat.database.typeconveters.DeviceTypeConverter;
 import com.google.gson.Gson;
 

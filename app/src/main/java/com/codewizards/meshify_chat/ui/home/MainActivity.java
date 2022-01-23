@@ -1,9 +1,7 @@
 package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -29,13 +27,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConnectionListener;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
-import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.Session;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.ConnectionListener;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.api.MessageListener;
+import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
@@ -46,17 +44,13 @@ import com.codewizards.meshify_chat.permissions.RationaleDialog;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
-import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
 import com.codewizards.meshify_chat.ui.broadcast.BroadcastActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
-import com.codewizards.meshify_chat.util.MeshifyUtils;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 
 import java.util.HashMap;
 
@@ -161,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onStartError(String message, int errorCode) {
             hideProgressBar();
-            if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
+            if (errorCode == com.codewizards.meshify.api.Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
-            if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
+            if (errorCode == com.codewizards.meshify.api.Constants.LOCATION_SERVICES_DISABLED) {
 
                 RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
                         .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
@@ -386,6 +380,7 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
         builder.setVerified(MeshifySession.isVerified());
+        builder.setNeighborDiscovery(false);
         builder.setAutoConnect(true);
 
         Meshify.start(messageListener, connectionListener, builder.build());
