@@ -369,6 +369,11 @@ public class MainActivity extends AppCompatActivity {
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
                 return true;
             }
+            case R.id.action_clearlogs:{
+                MeshifyLogger.clearLogs();
+                Toast.makeText(getApplicationContext(), "Log File Cleared", Toast.LENGTH_SHORT).show();
+                break;
+            }
             case R.id.action_about: {
                 startActivity(new Intent(getBaseContext(), AboutActivity.class));
                 return true;

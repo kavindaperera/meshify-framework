@@ -3,10 +3,12 @@ package com.codewizards.meshify.logs;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.widget.Toast;
 
 import com.codewizards.meshify.logs.logentities.LogEntity;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,7 +27,6 @@ public class MeshifyLogger {
     private Context context;
     private String filename;
     private ArrayList<LogEntity> activeLogEntityList = new ArrayList();
-    private HashMap<String, Object> i = new HashMap();
     private boolean writeToFile;
 
     public MeshifyLogger(boolean writeToTempFile, Context context) {
@@ -59,7 +60,6 @@ public class MeshifyLogger {
         try {
             String string = MeshifyLogger.getInstance().getContext().getExternalCacheDir().getAbsolutePath() + "/" + DIR_LOG;
             File file = new File(string + "/" + fileName);
-            Log.e(TAG, "write to: " + file.getAbsolutePath());
             if (!file.exists()) {
                 File file2 = new File(string);
                 file2.mkdirs();
@@ -107,12 +107,36 @@ public class MeshifyLogger {
         return this.activeLogEntityList;
     }
 
+    public void setActiveLogEntityList(ArrayList<LogEntity> logEntityList) {
+        this.activeLogEntityList = logEntityList;
+    }
+
+
     public String getFileName() {
         return this.filename;
     }
 
     public Context getContext() {
         return this.context;
+    }
+
+    public static synchronized void clearLogs() {
+        MeshifyLogger.getInstance().setActiveLogEntityList(new ArrayList<LogEntity>());
+        MeshifyLogger.empty(LOG_FILE, new byte[0]);
+
+    }
+
+    private static boolean empty(String string, byte[] arrby) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(MeshifyLogger.getOrCreateFile(string));
+            fileOutputStream.write(arrby);
+            fileOutputStream.close();
+            return true;
+        }
+        catch (IOException iOException) {
+            iOException.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -54,6 +54,10 @@ public class Config {
         return this.isAutoConnect;
     }
 
+    public boolean isNeighborDiscovery() {
+        return neighborDiscovery;
+    }
+
     public enum Antenna {
         BLUETOOTH,
         BLUETOOTH_LE,
