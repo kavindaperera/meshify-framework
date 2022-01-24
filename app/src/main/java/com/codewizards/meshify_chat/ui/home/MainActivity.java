@@ -220,7 +220,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onIndirectDeviceDiscovered(Device device) {
+            Log.i(TAG, "onIndirectDeviceFound: " + device.getDeviceName());
 
+            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
+            neighbor.setNearby(false);
+            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+            neighbor.setDevice(device);
+            neighbor.setLastSeen(String.valueOf(System.currentTimeMillis()));
+
+            mainViewModel.insert(neighbor);
+            mainViewModel.updateNearby(device.getUserId(), false);
+            mainViewModel.updateLastSeen(device.getUserId(), String.valueOf(System.currentTimeMillis()));
         }
     };
 
