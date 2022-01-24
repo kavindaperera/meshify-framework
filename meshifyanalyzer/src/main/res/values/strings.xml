@@ -10,4 +10,6 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="clear_logs">Clear Logs</string>
+    <string name="broadcast">Broadcast Test</string>
+    <string name="button_send">Run Test</string>
 </resources>

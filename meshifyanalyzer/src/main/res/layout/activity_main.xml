@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:background="@color/colorPrimary"
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/MeshifyTheme.AppBarOverlay">
-
+        app:elevation="0dp"
+        android:elevation="0dp"
+        >
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/MeshifyTheme.PopupOverlay" />
+            android:layout_height="50dp"
+            app:titleTextColor="@android:color/white"
+            app:title="Meshify Analyzer"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+
+    <ListView
+        android:id="@+id/listViewDiscoveredDevice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/device_row"
+        android:text="" />
 
 
-        <ScrollView
-            android:id="@+id/scrollViewText"
-            android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:layout_weight=".5"
-            android:scrollbars="vertical">
-
-            <TextView
-                android:id="@+id/text_log"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:text=""
-                android:textIsSelectable="true" />
-        </ScrollView>
-
+            android:layout_weight="1"
+            android:text="@string/button_send"
+            android:visibility="visible" />
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:tintMode="@color/white"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/scrollViewText"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:fillViewport="true"
+        android:scrollbars="vertical">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <TextView
+            android:id="@+id/text_log"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text=""
+            android:textIsSelectable="true" />
+    </ScrollView>
+
+
+</LinearLayout>

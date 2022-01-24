@@ -31,11 +31,16 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.Timer;
@@ -47,6 +52,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "[Meshify][MainActivity]";
+
+    ArrayList<SelectedDevice> listOfDevices = new ArrayList<>();
+
+    private CustomAdapter dataAdapter;
 
 
     @Override
@@ -72,14 +81,55 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+
+
+        Button btnSend = findViewById(R.id.button_send);
+        btnSend.setVisibility(View.VISIBLE);
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
+                for (int i = 0; i < devices.size(); i++) {
+                    SelectedDevice device = devices.get(i);
+
+                    Log.e(TAG,  device.toString() + " isSelected: " + device.isSelected());
+
+                    if (device.isSelected()) {
+                        timerHello(Constants.HELLO_PACKET_INTERVAL, device.device, true);
+                    }
+                }
             }
         });
+
+    }
+
+    private void updateListView() {
+
+        // Create an ArrayAdaptar from the String Array
+        dataAdapter = new CustomAdapter(MainActivity.this, R.layout.device_row, listOfDevices);
+        ListView listView = findViewById(R.id.listViewDiscoveredDevice);
+        listView.setVisibility(View.VISIBLE);
+
+        // Assign adapter to ListView
+        listView.setAdapter(dataAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+            }
+        });
+
+
     }
 
 
@@ -153,7 +203,11 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceConnected(Device device, Session session) {
             Log.i(TAG, "Device Connected: " + device.getUserId() + " isClient: " + session.isClient());
             updateLog(Constants.NORMAL, "Device Connected: " + device.getUserId() + " | isClient: " + session.isClient()) ;
-            timerHello(Constants.HELLO_PACKET_INTERVAL, device, session.isClient());
+
+            listOfDevices.add(new SelectedDevice(device));
+
+            updateListView();
+
         }
 
         @Override
@@ -165,6 +219,11 @@ public class MainActivity extends AppCompatActivity {
         public void onDeviceLost(Device device) {
             Log.w(TAG, "Device lost: " + device.getUserId());
             updateLog(Constants.ERROR, "Device lost: " + device.getUserId()) ;
+
+            listOfDevices.remove(new SelectedDevice(device));
+
+            updateListView();
+
         }
 
         @Override
@@ -235,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateLog(int type, String msg) {
         TextView textView = findViewById(R.id.text_log);
-        ScrollView scrollView = findViewById(R.id.scrollViewText);
         SpannableString contentText = new SpannableString(textView.getText());
 
         String htmlText = Html.toHtml(contentText);
