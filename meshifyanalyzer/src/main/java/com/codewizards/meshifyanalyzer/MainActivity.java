@@ -14,6 +14,7 @@ import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.MeshifyLogger;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
+            return;
+        }
 
         // check that we have Location permissions
         if (ContextCompat.checkSelfPermission(getApplicationContext(),
@@ -98,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.clear_logs) {
+            MeshifyLogger.clearLogs();
+            Toast.makeText(getApplicationContext(), "Log File Cleared", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -112,6 +123,10 @@ public class MainActivity extends AppCompatActivity {
         Meshify.debug = BuildConfig.DEBUG;
 
         Meshify.initialize(getApplicationContext());
+
+
+        MeshifyLogger.init(this.getBaseContext(), true);
+        MeshifyLogger.startLogs();
 
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
@@ -142,6 +157,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onDeviceBlackListed(Device device) {
+
+        }
+
+        @Override
         public void onDeviceLost(Device device) {
             Log.w(TAG, "Device lost: " + device.getUserId());
             updateLog(Constants.ERROR, "Device lost: " + device.getUserId()) ;
@@ -150,13 +170,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStarted() {
-            super.onStarted();
             Log.i(TAG, "onStarted: Meshify started");
         }
 
         @Override
+        public void onDeviceDiscovered(Device device) {
+
+        }
+
+        @Override
         public void onStartError(String s, int i) {
-            super.onStartError(s, i);
             Log.e(TAG, "onStartError: " + s + " " + i);
         }
 
@@ -175,8 +198,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onBroadcastMessageReceived(Message message) {
+
+        }
+
+        @Override
         public void onMessageSent(String messageId) {
-            super.onMessageSent(messageId);
             Log.e(TAG, "Message Sent");
 
         }
