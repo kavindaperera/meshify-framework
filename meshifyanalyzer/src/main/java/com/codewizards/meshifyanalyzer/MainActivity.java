@@ -167,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
             updateLog(Constants.ERROR, "Device lost: " + device.getUserId()) ;
         }
 
+        @Override
+        public void onIndirectDeviceDiscovered(Device device) {
+
+        }
+
 
         @Override
         public void onStarted() {
