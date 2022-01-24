@@ -8,12 +8,15 @@ import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
+import com.codewizards.meshify.framework.entities.MeshifyForwardHandshake;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -23,8 +26,31 @@ public class ForwardController {
 
     private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>(); // DD Cache
     private ConcurrentNavigableMap<String, Boolean> reachedNavigableMap = new ConcurrentSkipListMap<String, Boolean>();
+    private ConcurrentHashMap<String, Date> alreadyForwardedHandshakes = new ConcurrentHashMap<>();
 
     ForwardController() {
+    }
+
+    public void updateAlreadyForwardedHandshakes(String meshifyEntityUUID, Date date) {
+        synchronized (alreadyForwardedHandshakes) {
+            alreadyForwardedHandshakes.put(meshifyEntityUUID, date);
+        }
+    }
+
+    public Boolean checkHandshakeAlreadyForwarded(String meshifyEntityUUID){
+        if ( this.alreadyForwardedHandshakes.containsKey(meshifyEntityUUID)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void removeExpiredHandshakes(String meshifyEntityUUID, Long expiration){
+        long period = new Date(System.currentTimeMillis()).getTime() - alreadyForwardedHandshakes.get(meshifyEntityUUID).getTime();
+        if (period > expiration) {
+            alreadyForwardedHandshakes.remove(meshifyEntityUUID);
+        }
     }
 
     void addForwardEntitiesToList(MeshifyForwardEntity forwardEntity, boolean z) {
@@ -146,6 +172,11 @@ public class ForwardController {
         new sendEntityToSession(z).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList.toArray(new Session[arrayList.size()]));
     }
 
+    @SuppressWarnings("deprecation")
+    void sendEntity(MeshifyEntity<MeshifyForwardHandshake> meshifyEntity) {
+        new sendHandshakeToSession().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, meshifyEntity);
+    }
+
     void forwardAgain(ArrayList<MeshifyForwardEntity> entityArrayList, Session session) {
         for (MeshifyForwardEntity forwardEntity : entityArrayList) {
             if (this.reachedNavigableMap.containsKey(forwardEntity.getId()) || this.meshNavigableMap.containsKey(forwardEntity)) {
@@ -201,6 +232,29 @@ public class ForwardController {
                             e.printStackTrace();
                         }
                     }
+                }
+            }
+            return null;
+        }
+    }
+
+
+    @SuppressWarnings("deprecation")
+    private class sendHandshakeToSession extends AsyncTask<MeshifyEntity<MeshifyForwardHandshake>, Void, Void> {
+
+        sendHandshakeToSession(){
+        }
+
+        @Override
+        protected Void doInBackground(MeshifyEntity<MeshifyForwardHandshake>... handshakes) {
+
+            ArrayList<Session> sessions = SessionManager.getSessions();
+            for (Session session : sessions) {
+                //Log.d(TAG, "Sending " + list.size() + " messages to: " + session.getDevice().getDeviceName());
+                try {
+                    MeshifyCore.sendEntity(session, handshakes[0]); // forwarding message
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             return null;

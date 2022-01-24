@@ -34,6 +34,7 @@ public class Device implements Parcelable {
         this.deviceName = in.readString();
         this.deviceAddress = in.readString();
         this.bluetoothDevice = (BluetoothDevice) in.readParcelable(BluetoothDevice.class.getClassLoader());
+        this.userId = in.readString();
         this.sessionId = in.readString();
         this.antennaType = (Config.Antenna) in.readValue(Config.Antenna.class.getClassLoader());
     }
@@ -78,6 +79,7 @@ public class Device implements Parcelable {
         dest.writeString(this.deviceName);
         dest.writeString(this.deviceAddress);
         dest.writeParcelable(this.bluetoothDevice, flags);
+        dest.writeString(this.userId);
         dest.writeString(this.sessionId);
         dest.writeValue(this.antennaType);
     }

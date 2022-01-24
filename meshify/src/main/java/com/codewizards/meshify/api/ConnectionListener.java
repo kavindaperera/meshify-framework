@@ -48,4 +48,6 @@ public interface ConnectionListener {
      */
     void onDeviceLost(Device device);
 
+    void onIndirectDeviceDiscovered(Device device);
+
 }
