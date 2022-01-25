@@ -135,7 +135,7 @@ Meshify.initialize(getApplicationContext());
 
 ### ConnectionListener
 
-You can either extend `ConnectionListener` abstract class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `ConnectionListener`.
+You can either implement `ConnectionListener` implement or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `ConnectionListener`.
 
 ```java
 // Anonymous Class
@@ -166,7 +166,7 @@ ConnectionListener connectionListener = new ConnectionListener() {...}
 
 ### MessageListener
 
-You can either extend `MessageListener` abstract class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `MessageListener`.
+You can either implement `MessageListener` implement class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `MessageListener`.
 
 ```java
 // Anonymous Class
