@@ -15,8 +15,6 @@ import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.MeshifyLogger;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,12 +31,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,17 +91,30 @@ public class MainActivity extends AppCompatActivity {
         Button btnSend = findViewById(R.id.button_send);
         btnSend.setVisibility(View.VISIBLE);
 
+        final EditText editTextSize = findViewById(R.id.editTextSize);
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (dataAdapter == null) {
+                    Toast.makeText(getApplicationContext(), "No Neighbors Found!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (editTextSize.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Enter a Message Size!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
                 for (int i = 0; i < devices.size(); i++) {
                     SelectedDevice device = devices.get(i);
 
                     Log.e(TAG,  device.toString() + " isSelected: " + device.isSelected());
 
-                    if (device.isSelected()) {
-                        timerHello(Constants.HELLO_PACKET_INTERVAL, device.device, true);
+                    if (device.isSelected() ) {
+                        timerHello(Constants.HELLO_PACKET_INTERVAL, device.device, true, Integer.parseInt(editTextSize.getText().toString()));
                     }
                 }
             }
@@ -130,6 +140,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    // function to generate a random string of length n
+    static String getAlphaNumericString(int n)
+    {
+
+        // chose a Character random from this String
+        String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                + "0123456789"
+                + "abcdefghijklmnopqrstuvxyz";
+
+        // create StringBuffer size of AlphaNumericString
+        StringBuilder sb = new StringBuilder(n);
+
+        for (int i = 0; i < n; i++) {
+
+            // generate a random number between
+            // 0 to AlphaNumericString variable length
+            int index
+                    = (int)(AlphaNumericString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(AlphaNumericString
+                    .charAt(index));
+        }
+
+        return sb.toString();
     }
 
 
@@ -274,18 +312,17 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-    private void timerHello(final int time, Device device, boolean b1) {
+    private void timerHello(final int time, Device device, boolean b1, Integer size) {
         Timer timerHelloPackets = new Timer();
+
         timerHelloPackets.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (b1) {
                     HashMap<String, Object> data = new HashMap<>();
-                    data.put("manufacturer ", Build.MANUFACTURER);
-                    data.put("model", Build.MODEL);
+                    data.put("text", getAlphaNumericString(size));
                     device.sendMessage(data);
-                    Log.d(TAG, "Hello message sent!");
-                    timerHello(time, device, b1);
+                    timerHello(time, device, b1, size);
                 }
             }
         }, time);
