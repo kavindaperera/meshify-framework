@@ -15,6 +15,8 @@ import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.MeshifyLogger;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
     private CustomAdapter dataAdapter;
 
+    Timer timerHelloPackets;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
+
 
         if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
             ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
@@ -78,46 +83,71 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
-
-        Button btnSend = findViewById(R.id.button_send);
-        btnSend.setVisibility(View.VISIBLE);
+        Button btnStartTest = findViewById(R.id.button_send);
+        Button btnStopTest = findViewById(R.id.button_stop);
+        Button btnStop = findViewById(R.id.button_stop_meshify);
+        Button btnStart = findViewById(R.id.button_start_meshify);
 
         final EditText editTextSize = findViewById(R.id.editTextSize);
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        btnStartTest.setOnClickListener(v -> {
+
+            if (dataAdapter == null) {
+                Toast.makeText(getApplicationContext(), "No Neighbors Found!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (editTextSize.getText().toString().isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Enter a Message Size!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
+            for (int i = 0; i < devices.size(); i++) {
+                SelectedDevice device = devices.get(i);
+
+                Log.e(TAG,  device.toString() + " isSelected: " + device.isSelected());
+
+                if (device.isSelected() ) {
+                        timerHello(Constants.HELLO_PACKET_INTERVAL, device.device, true, Integer.parseInt(editTextSize.getText().toString()));
+                        btnStartTest.setVisibility(View.GONE);
+                }
+            }
+
+        });
+
+        btnStopTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (dataAdapter == null) {
-                    Toast.makeText(getApplicationContext(), "No Neighbors Found!", Toast.LENGTH_SHORT).show();
-                    return;
+                if (timerHelloPackets == null){
+                    Snackbar.make(v, "No Testing Scheduled", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+                    timerHelloPackets.cancel();
+                    Snackbar.make(v, "All Scheduled Tests stopped", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    btnStartTest.setVisibility(View.VISIBLE);
                 }
 
-                if (editTextSize.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Enter a Message Size!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
-                for (int i = 0; i < devices.size(); i++) {
-                    SelectedDevice device = devices.get(i);
-
-                    Log.e(TAG,  device.toString() + " isSelected: " + device.isSelected());
-
-                    if (device.isSelected() ) {
-                        timerHello(Constants.HELLO_PACKET_INTERVAL, device.device, true, Integer.parseInt(editTextSize.getText().toString()));
-                    }
-                }
             }
+        });
+
+
+        btnStop.setOnClickListener(v -> {
+            Meshify.stop();
+            Snackbar.make(v, "Meshify Stopped", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+            btnStart.setVisibility(View.VISIBLE);
+        });
+
+        btnStart.setOnClickListener(v -> {
+            Snackbar.make(v, "Meshify Starting...", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+            initializeMeshify();
         });
 
     }
@@ -138,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
 
     }
 
@@ -211,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
         Meshify.debug = BuildConfig.DEBUG;
 
         Meshify.initialize(getApplicationContext());
-
 
         MeshifyLogger.init(this.getBaseContext(), true);
         MeshifyLogger.startLogs();
@@ -317,7 +345,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void timerHello(final int time, Device device, boolean b1, Integer size) {
-        Timer timerHelloPackets = new Timer();
+
+        timerHelloPackets = new Timer();
 
         timerHelloPackets.schedule(new TimerTask() {
             @Override

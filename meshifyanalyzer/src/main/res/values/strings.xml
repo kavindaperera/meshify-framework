@@ -13,4 +13,8 @@
     <string name="broadcast">Broadcast Test</string>
     <string name="button_send">Run Test</string>
     <string name="message_size">Message Size</string>
+    <string name="button_stop_meshify">Stop Meshify</string>
+    <string name="button_stop_test">Stop Test</string>
+    <string name="button_start_meshify">Start Meshify</string>
+    <string name="button_stop">Stop Test</string>
 </resources>
