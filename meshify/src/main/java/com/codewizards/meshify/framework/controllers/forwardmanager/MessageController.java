@@ -44,7 +44,7 @@ public class MessageController {
     public void messageReceived(Message message, Session session) {
         message.setMesh(false);
         this.messageNotifier.onMessageReceived(message);
-        MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.MessageEvent.DirectMessageReceived)); //logger
+        MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.Event.DirectMessageReceived)); //logger
     }
 
     public void incomingMeshMessageAction(Session session, MeshifyEntity meshifyEntity) {
@@ -156,7 +156,7 @@ public class MessageController {
         if (session != null) {
             try {
                 MeshifyCore.sendEntity(session, MeshifyEntity.message(message)); // send message
-                MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.MessageEvent.DirectMessageSent)); // logger
+                MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.Event.DirectMessageSent)); // logger
             } catch (MessageException e) {
                 e.printStackTrace();
             } catch (IOException ioException) {

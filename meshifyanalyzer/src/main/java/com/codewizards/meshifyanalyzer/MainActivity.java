@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
         builder.setAutoConnect(false);
-        builder.setConfigProfile(ConfigProfile.NoForwarding);
+        builder.setConfigProfile(ConfigProfile.Default);
 
         Meshify.start(messageListener, connectionListener, builder.build());
 
@@ -240,11 +240,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceConnected(Device device, Session session) {
             Log.i(TAG, "Device Connected: " + device.getUserId() + " isClient: " + session.isClient());
-            updateLog(Constants.NORMAL, "Device Connected: " + device.getUserId() + " | isClient: " + session.isClient()) ;
+            updateLog(Constants.NORMAL, "Device Connected: " + device.getDeviceName() + " - " + device.getUserId() + " | isClient: " + session.isClient()) ;
 
-            listOfDevices.add(new SelectedDevice(device));
+            if (listOfDevices.contains(new SelectedDevice(device))) {
 
-            updateListView();
+                // Do nothing
+
+            } else {
+
+                listOfDevices.add(new SelectedDevice(device));
+                updateListView();
+
+            }
+
 
         }
 
@@ -256,11 +264,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDeviceLost(Device device) {
             Log.w(TAG, "Device lost: " + device.getUserId());
-            updateLog(Constants.ERROR, "Device lost: " + device.getUserId()) ;
-
-            listOfDevices.remove(new SelectedDevice(device));
-
-            updateListView();
+            updateLog(Constants.ERROR, "Device lost: " + device.getDeviceName() + " - " + device.getUserId()) ;
 
         }
 

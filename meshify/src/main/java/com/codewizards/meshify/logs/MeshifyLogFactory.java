@@ -7,7 +7,7 @@ import com.codewizards.meshify.logs.logentities.MessageLog;
 
 public class MeshifyLogFactory {
 
-    public static LogEntity build(Message message, Session session, MessageLog.MessageEvent eventType) {
+    public static LogEntity build(Message message, Session session, MessageLog.Event eventType) {
         if (session != null && session.getUserId() != null) {
             return new MessageLog(session.getAntennaType(), message, eventType);
         }
