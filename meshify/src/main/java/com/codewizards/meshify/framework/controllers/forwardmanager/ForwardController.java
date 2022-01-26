@@ -119,13 +119,15 @@ public class ForwardController {
     }
 
     private void processReach(MeshifyForwardEntity meshifyForwardEntity, boolean bl) {
+
         if (meshifyForwardEntity!=null) {
             this.meshNavigableMap.remove(meshifyForwardEntity);
+
+            if (bl) {
+                this.reachedNavigableMap.put(meshifyForwardEntity.getId(), Boolean.TRUE);
+            }
         }
 
-        if (bl) {
-            this.reachedNavigableMap.put(meshifyForwardEntity.getId(), Boolean.TRUE);
-        }
     }
 
     private List<MeshifyForwardEntity> getMessageList() {

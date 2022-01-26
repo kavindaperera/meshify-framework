@@ -1,6 +1,7 @@
 package com.codewizards.meshify.logs.logentities;
 
 import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -10,12 +11,16 @@ public class MeshLog extends LogEntity{
 
     int hops;
 
-    public MeshLog(LogType logType, int eventId) {
-        super(logType, eventId);
+    public MeshLog(Event event, MeshifyForwardEntity forwardEntity) {
+        super(LogType.MESH, event.ordinal());
+        this.uuid = String.valueOf(forwardEntity.getId());
+        this.hops = forwardEntity.getHops();
     }
 
-    public MeshLog(LogType logType, int eventId, Config.Antenna connectionType) {
-        super(logType, eventId, connectionType);
+    public MeshLog(MeshifyForwardEntity forwardEntity) {
+        super(LogType.MESH, Event.MeshMessageSent.ordinal());
+        this.uuid = String.valueOf(forwardEntity.getId());
+        this.hops = forwardEntity.getHops();
     }
 
     @Override
@@ -32,8 +37,15 @@ public class MeshLog extends LogEntity{
         return (MeshLog) new Gson().fromJson(serializedData, MeshLog.class);
     }
 
+    public MeshLog(ErrorEvent errorEvent, MeshifyForwardEntity forwardEntity) {
+        super(LogEntity.LogType.MESH_ERROR, errorEvent.ordinal());
+        this.uuid = String.valueOf(forwardEntity.getId());
+        this.hops = forwardEntity.getHops();
+    }
+
     public enum ErrorEvent {
         MeshMessageDiscard,
+        InvalidSession
     }
 
     public enum Event {
