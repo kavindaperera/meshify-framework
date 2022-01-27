@@ -101,6 +101,26 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/LinearLayout04"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/button_disconnect_device"
+            android:backgroundTint="@color/verify_error"
+            android:layout_marginLeft="@dimen/activity_vertical_margin"
+            android:layout_marginRight="@dimen/activity_vertical_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_disconnect_device"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollViewText"
         android:layout_width="fill_parent"

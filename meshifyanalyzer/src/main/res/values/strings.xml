@@ -17,4 +17,5 @@
     <string name="button_stop_test">Stop Test</string>
     <string name="button_start_meshify">Start Meshify</string>
     <string name="button_stop">Stop Test</string>
+    <string name="button_disconnect_device">Disconnect Device</string>
 </resources>

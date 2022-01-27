@@ -2,6 +2,7 @@ package com.codewizards.meshifyanalyzer;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -88,13 +89,15 @@ public class MainActivity extends AppCompatActivity {
         Button btnStopTest = findViewById(R.id.button_stop);
         Button btnStop = findViewById(R.id.button_stop_meshify);
         Button btnStart = findViewById(R.id.button_start_meshify);
+        Button btnDisconnect = findViewById(R.id.button_disconnect_device);
 
         final EditText editTextSize = findViewById(R.id.editTextSize);
 
         btnStartTest.setOnClickListener(v -> {
 
             if (dataAdapter == null) {
-                Toast.makeText(getApplicationContext(), "No Neighbors Found!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(v, "No Neighbors Found!", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED)
+                        .setAction("Action", null).show();
                 return;
             }
 
@@ -117,34 +120,56 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        btnStopTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnDisconnect.setOnClickListener(v -> {
 
-                if (timerHelloPackets == null){
-                    Snackbar.make(v, "No Testing Scheduled", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                } else {
-                    timerHelloPackets.cancel();
-                    Snackbar.make(v, "All Scheduled Tests stopped", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    btnStartTest.setVisibility(View.VISIBLE);
-                }
-
+            if (dataAdapter == null) {
+                Snackbar.make(v, "No Neighbors Found!", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED)
+                        .setAction("Action", null).show();
+                return;
             }
+
+            ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
+            for (int i = 0; i < devices.size(); i++) {
+                SelectedDevice device = devices.get(i);
+
+                if (device.isSelected() ) {
+                    Device device1 = device.device;
+                    if (device1 != null) {
+                        Meshify.getInstance().getMeshifyCore().disconnectDevice(device1);
+
+                        Snackbar.make(v, "Disconnecting " + device1.getDeviceName() + "...", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED)
+                                .setAction("Action", null).show();
+                    }
+                }
+            }
+
+        });
+
+        btnStopTest.setOnClickListener(v -> {
+
+            if (timerHelloPackets == null){
+                Snackbar.make(v, "No Testing Schedule Found!", Snackbar.LENGTH_LONG).setBackgroundTint(Color.RED)
+                        .setAction("Action", null).show();
+            } else {
+                timerHelloPackets.cancel();
+                Snackbar.make(v, "Scheduled Test Stopped!", Snackbar.LENGTH_LONG).setBackgroundTint(Color.GREEN)
+                        .setAction("Action", null).show();
+                btnStartTest.setVisibility(View.VISIBLE);
+            }
+
         });
 
 
         btnStop.setOnClickListener(v -> {
             Meshify.stop();
-            Snackbar.make(v, "Meshify Stopped", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Stopping Meshify...", Snackbar.LENGTH_LONG).setBackgroundTint(Color.RED)
                     .setAction("Action", null).show();
 
             btnStart.setVisibility(View.VISIBLE);
         });
 
         btnStart.setOnClickListener(v -> {
-            Snackbar.make(v, "Meshify Starting...", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "Meshify Starting...", Snackbar.LENGTH_LONG).setBackgroundTint(Color.GREEN)
                     .setAction("Action", null).show();
 
             initializeMeshify();
