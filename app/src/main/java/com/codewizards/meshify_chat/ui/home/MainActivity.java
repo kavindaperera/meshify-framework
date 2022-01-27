@@ -35,6 +35,7 @@ import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.MeshifyLogger;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
@@ -49,8 +50,12 @@ import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
+import com.codewizards.meshify_chat.util.MeshifyUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.HashMap;
 
@@ -212,6 +217,21 @@ public class MainActivity extends AppCompatActivity {
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
         }
+
+        @Override
+        public void onIndirectDeviceDiscovered(Device device) {
+            Log.i(TAG, "onIndirectDeviceFound: " + device.getDeviceName());
+
+            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
+            neighbor.setNearby(false);
+            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+            neighbor.setDevice(device);
+            neighbor.setLastSeen(String.valueOf(System.currentTimeMillis()));
+
+            mainViewModel.insert(neighbor);
+            mainViewModel.updateNearby(device.getUserId(), false);
+            mainViewModel.updateLastSeen(device.getUserId(), String.valueOf(System.currentTimeMillis()));
+        }
     };
 
 
@@ -364,6 +384,11 @@ public class MainActivity extends AppCompatActivity {
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
                 return true;
             }
+            case R.id.action_clearlogs:{
+                MeshifyLogger.clearLogs();
+                Toast.makeText(getApplicationContext(), "Log File Cleared", Toast.LENGTH_SHORT).show();
+                break;
+            }
             case R.id.action_about: {
                 startActivity(new Intent(getBaseContext(), AboutActivity.class));
                 return true;
@@ -372,10 +397,20 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     /**
      * start meshify
      */
     private void startMeshify() {
+
+        if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
+            return;
+        }
+
+        MeshifyLogger.init(this.getBaseContext(), true);
+        MeshifyLogger.startLogs();
 
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
@@ -406,4 +441,5 @@ public class MainActivity extends AppCompatActivity {
     private void hideProgressBar(){
         mProgressBar.setVisibility(View.GONE);
     }
+
 }

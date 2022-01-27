@@ -161,6 +161,11 @@
     <string name="placeholder_broadcast_chat">Broadcast Chat</string>
     <string name="messages_paginator">LOAD OLDER MESSAGES</string>
     <string name="placeholder_filename">IMG_012391049104.jpg</string>
+    <string name="clearlogs">Clear Logs</string>
+    <string name="settings_category_other">OTHER</string>
+    <string name="settings_category_stats">STATISTICS</string>
+    <string name="settings_stats_logs_title">Logging</string>
+    <string name="settings_stats_logs_summary">Allow meshify collect usage statistics</string>
 
 
 </resources>

@@ -16,6 +16,11 @@ import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
 import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.Log;
+import com.codewizards.meshify.logs.MeshifyLogFactory;
+import com.codewizards.meshify.logs.MeshifyLogger;
+import com.codewizards.meshify.logs.logentities.MeshLog;
+import com.codewizards.meshify.logs.logentities.MessageLog;
+import com.j256.simplemagic.logger.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ public class MessageController {
     public void messageReceived(Message message, Session session) {
         message.setMesh(false);
         this.messageNotifier.onMessageReceived(message);
+        MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.Event.DirectMessageReceived)); //logger
     }
 
     public void incomingMeshMessageAction(Session session, MeshifyEntity meshifyEntity) {
@@ -55,6 +61,8 @@ public class MessageController {
                     if (forwardEntity.getReceiver() != null && forwardEntity.getReceiver().trim().equalsIgnoreCase(Meshify.getInstance().getMeshifyClient().getUserUuid().trim())){ // msg to me
 
                         Message message = this.getMessageFromForwardEntity(forwardEntity);
+
+                        MeshifyLogger.log(MeshifyLogFactory.build(session, forwardEntity, MeshLog.Event.MeshMessageReceivedToDestination));
 
                         if (message != null && message.getContent() == null) {
                             //Error Message
@@ -120,6 +128,7 @@ public class MessageController {
     }
 
     private void forward(MeshifyForwardEntity forwardEntity) {
+        MeshifyLogger.log(MeshifyLogFactory.build(forwardEntity));
         this.forwardController.addForwardEntitiesToList(forwardEntity, true); // add and send
     }
 
@@ -152,6 +161,7 @@ public class MessageController {
         if (session != null) {
             try {
                 MeshifyCore.sendEntity(session, MeshifyEntity.message(message)); // send message
+                MeshifyLogger.log(MeshifyLogFactory.build(message, session, MessageLog.Event.DirectMessageSent)); // logger
             } catch (MessageException e) {
                 e.printStackTrace();
             } catch (IOException ioException) {
