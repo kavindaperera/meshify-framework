@@ -175,6 +175,19 @@ public class MainActivity extends AppCompatActivity {
             initializeMeshify();
         });
 
+
+        // Save Contacts
+//        addTestDevicesForMiranda();
+
+    }
+
+    private void addTestDevicesForMiranda() {
+
+        Device device1 = new Device("Chamani\u0027s Redmi 9","50:3D:C6:AB:52:2F", "83934c5a-6827-43ee-9631-a9ca95438ec7");
+
+        listOfDevices.add(new SelectedDevice(device1));
+        updateListView();
+
     }
 
     private void updateListView() {
