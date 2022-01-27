@@ -9,13 +9,13 @@ public class MessageLog extends LogEntity {
 
     String uuid;
 
-    public MessageLog(Config.Antenna antenna, Message message, MessageEvent messageEvent) {
-        super(LogType.MESSAGE, messageEvent.ordinal(), antenna);
+    public MessageLog(Config.Antenna antenna, Message message, Event event) {
+        super(LogType.MESSAGE, event.ordinal(), antenna);
         this.uuid = message.getUuid();
     }
 
     public MessageLog(Message message, String errorMessage) {
-        super(LogEntity.LogType.MESSAGE_ERROR, MessageErrorEvent.DirectMessageNotSent.ordinal(), Config.Antenna.UNREACHABLE);
+        super(LogEntity.LogType.MESSAGE_ERROR, ErrorEvent.DirectMessageNotSent.ordinal(), Config.Antenna.UNREACHABLE);
         this.uuid = message.getUuid();
         this.errorMessage = errorMessage;
     }
@@ -34,12 +34,12 @@ public class MessageLog extends LogEntity {
         return this.message;
     }
 
-    public static enum MessageEvent {
+    public enum Event {
         DirectMessageSent,
         DirectMessageReceived
     }
 
-    public static enum MessageErrorEvent {
+    public enum ErrorEvent {
         DirectMessageNotSent;
     }
 }

@@ -117,7 +117,11 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
                                 case R.id.action_popup_connect:{
                                     Device device = neighbor.getDevice();
                                     if (device!=null) {
-                                        Meshify.getInstance().getMeshifyCore().connectDevice(device);
+                                        try {
+                                            Meshify.getInstance().getMeshifyCore().connectDevice(device);
+                                        } catch (Exception e) {
+
+                                        }
                                     }
                                     return true;
                                 }

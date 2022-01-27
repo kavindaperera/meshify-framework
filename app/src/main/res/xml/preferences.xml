@@ -31,6 +31,7 @@
 
     </PreferenceCategory>
 
+
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="@string/settings_category_mesh_forwarding">
@@ -43,6 +44,20 @@
             app:summary="@string/settings_profile_summary"
             app:title="@string/settings_profile_title"
             app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/settings_category_stats">
+        <SwitchPreference
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="settings_logs_enabled"
+            app:switchTextOff="true"
+            app:summary="@string/settings_stats_logs_summary"
+            app:title="@string/settings_stats_logs_title" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

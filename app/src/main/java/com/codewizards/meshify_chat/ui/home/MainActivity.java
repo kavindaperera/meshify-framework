@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         MeshifyLogger.init(this.getBaseContext(), true);
-        MeshifyLogger.startLogs(getLogFileName());
+        MeshifyLogger.startLogs();
 
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
@@ -442,9 +442,4 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
     }
 
-
-    private String getLogFileName() {
-        LocalDateTime localDateTime = new DateTime().toLocalDateTime();
-        return String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getYear())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getMonthOfYear())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getDayOfMonth())) + "-" + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getHourOfDay())) + String.format(MeshifyUtils.ZERO_LEADING_NUMBER_FORMAT, Integer.valueOf(localDateTime.getMinuteOfHour())) + " " + Build.MANUFACTURER + " " + this.sharedPreferences.getString("user_name", "") + ".txt";
-    }
 }

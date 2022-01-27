@@ -94,9 +94,8 @@ public class MeshifyLogger {
         }
     }
 
-    public static synchronized void startLogs(String filename) {
+    public static synchronized void startLogs() {
         MeshifyLogger.getInstance().isLogging = true;
-        MeshifyLogger.getInstance().filename = filename;
     }
 
     public boolean shouldWriteToTempFile() {

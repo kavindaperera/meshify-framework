@@ -33,6 +33,7 @@ public class Constants {
     public static final String PREFS_NOTIFICATION_ENABLED = "settings_notifications_enabled";
     public static final String PREFS_NOTIFICATION_SOUND = "notificationSound";
     public static final String PREFS_CONFIG_PROFILE = "settings_profile";
+    public static final String PREFS_LOGS_ENABLED= "settings_logs_enabled";
     public static final String DATABASE_PASSWORD = "database_password";
     public static final String OTHER_USER_NAME = "otherUserName";
     public static final String OTHER_USER_ID = "otherUserId";
