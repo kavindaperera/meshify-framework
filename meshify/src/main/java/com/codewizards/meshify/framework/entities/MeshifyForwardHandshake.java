@@ -27,15 +27,15 @@ public class MeshifyForwardHandshake implements Parcelable {
     @JsonProperty(value="hops")
     int hops;
 
-    @JsonProperty(value="neighborDetails")
-    private ArrayList<Device> neighborDetails;
+    @JsonProperty(value="neighbors")
+    private ArrayList<Device> neighbors;
 
     @JsonIgnore
     Date added;
 
-    public MeshifyForwardHandshake(String sender, ArrayList<Device> neighborDetails, ConfigProfile profile) {
+    public MeshifyForwardHandshake(String sender, ArrayList<Device> neighbors, ConfigProfile profile) {
         this.sender = sender;
-        this.neighborDetails = neighborDetails;
+        this.neighbors = neighbors;
         this.profile = profile.ordinal();
         this.hops = this.getHopLimitForConfigProfile();
         this.added = new Date(System.currentTimeMillis());
@@ -45,7 +45,7 @@ public class MeshifyForwardHandshake implements Parcelable {
         this.sender = in.readString();
         this.profile = in.readInt();
         this.hops = in.readInt();
-        this.neighborDetails = in.readArrayList(Device.class.getClassLoader());
+        this.neighbors = in.readArrayList(Device.class.getClassLoader());
         this.added = new Date(in.readLong());
     }
 
@@ -59,7 +59,7 @@ public class MeshifyForwardHandshake implements Parcelable {
         dest.writeString(this.sender);
         dest.writeInt(this.profile);
         dest.writeInt(this.hops);
-        dest.writeList(this.neighborDetails);
+        dest.writeList(this.neighbors);
         if (this.added == null) {
             this.added = new Date(System.currentTimeMillis());
         }
@@ -79,8 +79,8 @@ public class MeshifyForwardHandshake implements Parcelable {
     };
 
 
-    @JsonProperty(value="neighborDetails")
-    public ArrayList<Device> getNeighborDetails() { return neighborDetails; }
+    @JsonProperty(value="neighbors")
+    public ArrayList<Device> getNeighbors() { return neighbors; }
 
     @JsonProperty(value="sender")
     public String getSender() {

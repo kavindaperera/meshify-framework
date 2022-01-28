@@ -21,8 +21,8 @@ public class ResponseJson implements Parcelable {
     @JsonProperty(value="uuid")
     private String uuid;
 
-    @JsonProperty(value="neighborDetails")
-    private ArrayList<Device> neighborDetails;
+    @JsonProperty(value="neighbors")
+    private ArrayList<Device> neighbors;
 
     public ResponseJson() {
     }
@@ -31,7 +31,7 @@ public class ResponseJson implements Parcelable {
         type = in.readInt();
         uuid = in.readString();
         key = in.readString();
-        neighborDetails = in.readArrayList(Device.class.getClassLoader());
+        neighbors = in.readArrayList(Device.class.getClassLoader());
     }
 
     public static final Creator<ResponseJson> CREATOR = new Creator<ResponseJson>() {
@@ -53,11 +53,11 @@ public class ResponseJson implements Parcelable {
         return responseJson;
     }
 
-    public static ResponseJson ResponseTypeGeneral(String uuid, ArrayList<Device> neighborDetails) {
+    public static ResponseJson ResponseTypeGeneral(String uuid, ArrayList<Device> neighbors) {
         ResponseJson responseJson = new ResponseJson();
         responseJson.setUuid(uuid);
         responseJson.setType(0);
-        responseJson.setNeighborDetails(neighborDetails);
+        responseJson.setNeighbors(neighbors);
         return responseJson;
     }
 
@@ -102,13 +102,13 @@ public class ResponseJson implements Parcelable {
         this.key = key;
     }
 
-    @JsonProperty(value="neighborDetails")
-    public ArrayList<Device> getNeighborDetails() {
-        return this.neighborDetails;
+    @JsonProperty(value="neighbors")
+    public ArrayList<Device> getNeighbors() {
+        return this.neighbors;
     }
 
-    public void setNeighborDetails(ArrayList<Device> neighborDetails) {
-        this.neighborDetails = neighborDetails;
+    public void setNeighbors(ArrayList<Device> neighbors) {
+        this.neighbors = neighbors;
     }
 
     public String toString() {
@@ -125,6 +125,6 @@ public class ResponseJson implements Parcelable {
         dest.writeInt(this.type);
         dest.writeString(this.uuid);
         dest.writeString(this.key);
-        dest.writeList(this.neighborDetails);
+        dest.writeList(this.neighbors);
     }
 }

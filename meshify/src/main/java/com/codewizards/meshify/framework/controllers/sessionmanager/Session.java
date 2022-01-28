@@ -195,10 +195,10 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     DeviceManager.addDevice(this.getDevice());
 
 
-                    ArrayList<Device> neighborDetails = meshifyHandshake.getRp().getNeighborDetails();
-                    if (neighborDetails != null && neighborDetails.size() > 0) {
+                    ArrayList<Device> neighbors = meshifyHandshake.getRp().getNeighbors();
+                    if (neighbors != null && neighbors.size() > 0) {
                         Log.i(TAG, "processHandshake: response type 0 : neighbor details received ");
-                        for (Device indirectDevice : neighborDetails) {
+                        for (Device indirectDevice : neighbors) {
                             // check whether it is not our device and not a directly connected device
                             if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()) && DeviceManager.getDevice(indirectDevice.getDeviceAddress())==null) {
                                 Log.i(TAG, "processHandshake: neighbor details received: " + indirectDevice.getDeviceName());
@@ -283,17 +283,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                         if (meshifyHandshake.getRq() == 0) {
                             ArrayList<Session> sessions = SessionManager.getSessions();
                             if (sessions != null) {
-                                ArrayList<Device> neighborDetails = new ArrayList<>();
+                                ArrayList<Device> neighbors = new ArrayList<>();
                                 for (Session session : sessions) {
-                                    Log.i(TAG, "processEntity: session: " + session);
+                                    //Log.i(TAG, "processEntity: session: " + session);
                                     Device device = session.getDevice();
-                                    Log.i(TAG, "processEntity: device: " + device);
-                            /*if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
-                                neighborDetails.add(device);
-                            }*/
-                                    neighborDetails.add(device);
+                                    //Log.i(TAG, "processEntity: device: " + device);
+                                    device.setBluetoothDevice(null);
+                                    device.setSessionId(null);  // to reduce packet size
+                                    neighbors.add(device);
                                 }
-                                MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighborDetails, Meshify.getInstance().getConfig().getConfigProfile());
+                                MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighbors, Meshify.getInstance().getConfig().getConfigProfile());
                                 Meshify.getInstance().getMeshifyCore().getMessageController().forwardHandshake(MeshifyEntity.generateForwardHandShake(meshifyForwardHandshake));
                             }
                         }
@@ -427,14 +426,16 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                 if (Meshify.getInstance().getConfig().isNeighborDiscovery()) {
                     ArrayList<Session> sessions = SessionManager.getSessions();
                     if (sessions != null) {
-                        ArrayList<Device> neighborDetails = new ArrayList<>();
+                        ArrayList<Device> neighbors = new ArrayList<>();
                         for (Session session1 : sessions) {
                             Device device = session1.getDevice();
                             if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
-                                neighborDetails.add(device);
+                                device.setBluetoothDevice(null);
+                                device.setSessionId(null);  // to reduce packet size
+                                neighbors.add(device);
                             }
                         }
-                        MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake(neighborDetails);
+                        MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake(neighbors);
                         MeshifyCore.sendEntity(session, meshifyEntity); // send handshake first
                     }
                 } else {

@@ -123,9 +123,9 @@ public class MessageController {
             this.forwardController.updateAlreadyForwardedHandshakes(meshifyEntity.getId(), forwardHandshake.getAdded());
 
             // add received neighbor details to your device
-            ArrayList<Device> neighborDetails = forwardHandshake.getNeighborDetails();
-            if (neighborDetails != null && neighborDetails.size() > 0) {
-                for (Device indirectDevice : neighborDetails) {
+            ArrayList<Device> neighbors = forwardHandshake.getNeighbors();
+            if (neighbors != null && neighbors.size() > 0) {
+                for (Device indirectDevice : neighbors) {
                     // check whether it is not our device and not a directly connected device
                     if (!Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(indirectDevice.getUserId()) && DeviceManager.getDevice(indirectDevice.getDeviceAddress())==null) {
                         Log.i(TAG, "incomingForwardHandshakeAction: neighbor details received: " + indirectDevice.getDeviceName());
