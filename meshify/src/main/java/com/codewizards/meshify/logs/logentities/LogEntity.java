@@ -19,12 +19,14 @@ public abstract class LogEntity {
     public LogEntity(LogType logType, int eventId) {
         this.logType = logType.ordinal();
         this.eventId = eventId;
+        this.message = this.getMessage();
     }
 
     public LogEntity(LogType logType, int eventId, Config.Antenna connectionType) {
         this.logType = logType.ordinal();
         this.eventId = eventId;
         this.connectionType = connectionType.ordinal();
+        this.message = this.getMessage();
     }
 
     public abstract String serialize();
@@ -52,7 +54,9 @@ public abstract class LogEntity {
         MESSAGE,
         MESSAGE_ERROR,
         MESH,
-        MESH_ERROR
+        MESH_ERROR,
+        CONNECTION,
+        CONNECTION_ERROR,
     }
 
 }
