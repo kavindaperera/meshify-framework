@@ -285,11 +285,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                             if (sessions != null) {
                                 ArrayList<Device> neighbors = new ArrayList<>();
                                 for (Session session : sessions) {
-                                    //Log.i(TAG, "processEntity: session: " + session);
-                                    Device device = session.getDevice();
-                                    //Log.i(TAG, "processEntity: device: " + device);
-                                    device.setBluetoothDevice(null);
-                                    device.setSessionId(null);  // to reduce packet size
+                                    Device device = session.getDeviceForNeighborDetails();
                                     neighbors.add(device);
                                 }
                                 MeshifyForwardHandshake meshifyForwardHandshake = new MeshifyForwardHandshake(Meshify.getInstance().getMeshifyClient().getUserUuid(), neighbors, Meshify.getInstance().getConfig().getConfigProfile());
@@ -417,6 +413,18 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         this.sessionId = sessionId;
     }
 
+    public Device getDeviceForNeighborDetails() {
+        Device device = this.getDevice();
+        Device deviceCopy = new Device();
+
+        deviceCopy.setUserId(device.getUserId());
+        deviceCopy.setDeviceName(device.getDeviceName());
+        deviceCopy.setDeviceAddress(device.getDeviceAddress());
+        deviceCopy.setAntennaType(device.getAntennaType());
+
+        return deviceCopy;
+    }
+
     private void requestHandShake(Session session) {
         Log.e(TAG, "isClient?: " + session.isClient() + " requestHandShake: " + session.getSessionId());
         if (session.isClient()) {
@@ -428,10 +436,8 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     if (sessions != null) {
                         ArrayList<Device> neighbors = new ArrayList<>();
                         for (Session session1 : sessions) {
-                            Device device = session1.getDevice();
+                            Device device = session1.getDeviceForNeighborDetails();
                             if (!(this.getDevice().getDeviceAddress().equals(device.getDeviceAddress()))) {
-                                device.setBluetoothDevice(null);
-                                device.setSessionId(null);  // to reduce packet size
                                 neighbors.add(device);
                             }
                         }
