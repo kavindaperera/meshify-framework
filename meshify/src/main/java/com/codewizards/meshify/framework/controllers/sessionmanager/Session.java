@@ -95,24 +95,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
             @Override
             public void onNext(@NonNull byte[] bytes) {
                 try {
-
-//                    Session.this.getArrayList().add(MeshifyUtils.getByteArray(bytes));
-//                    int b = MeshifyUtils.getInt(bytes);
-//                    if (b != 2) {
-//                        Log.e(TAG, "onNext: something went wrong : " + b);
-//                        return;
-//                    }
-//                    MeshifyEntity meshifyEntity = MeshifyUtils.chunkToEntity(Session.this.getArrayList(), true);
-//                    Log.d(TAG, "onReceived: " + meshifyEntity);
-//                    try {
-//                        Session.this.processEntity(meshifyEntity);
-//                    } catch (Exception exception){
-//                        Log.e(TAG, "onReceived: warning reading entity failed " + exception.getMessage(), exception);
-//                    } finally {
-//                        Session.this.setArrayList((ArrayList<byte[]>) new ArrayList());
-//                    }
-
-
                     Parcel parcel = MeshifyUtils.unmarshall(bytes);
                     MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
                     Log.d(TAG, "Received: " + meshifyEntity);
@@ -328,16 +310,6 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
     public void flush(MeshifyEntity meshifyEntity) throws IOException, MessageException, InterruptedException {
         try {
             Log.d(TAG, "Flushed:" + meshifyEntity);
-
-//            Iterator<byte[]> it = MeshifyUtils.chunkAndCompress(meshifyEntity, 1000000).iterator();
-//
-//            while (it.hasNext()) {
-//                byte[] next = it.next();
-//                Log.e(TAG, "length: " + next.length + " | write: " + next);
-//                this.getDataOutputStream().writeInt(next.length);
-//                this.getDataOutputStream().write(next);
-//                this.getDataOutputStream().flush();
-//            }
 
             byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
             Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
