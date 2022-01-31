@@ -1,8 +1,10 @@
 package com.codewizards.meshify.logs;
 
+import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
+import com.codewizards.meshify.logs.logentities.ConnectionLog;
 import com.codewizards.meshify.logs.logentities.LogEntity;
 import com.codewizards.meshify.logs.logentities.MeshLog;
 import com.codewizards.meshify.logs.logentities.MessageLog;
@@ -27,6 +29,14 @@ public class MeshifyLogFactory {
         return new MeshLog(forwardEntity);
     }
 
+    // TODO - Add Connection log builders
 
+    public static LogEntity build(Device device, ConnectionLog.Event connectionEvent) {
+        ConnectionLog connectionLog = new ConnectionLog(device.getAntennaType(), device.getDeviceAddress(), connectionEvent);
+        if (connectionLog.equals(ConnectionLog.Event.NeighborDetected)) {
+            connectionLog.setMessage(connectionLog.getMessage() + "| " + device.getDeviceAddress());
+        }
+        return connectionLog;
+    }
 
 }
