@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3f3fd5</color>
+    <color name="colorPrimaryDark">#3f3fe5</color>
+    <color name="colorAccent">#E6E6E6</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_500">#9E9E9E</color>
+    <color name="grey_700">#616161</color>
+
+    <color name="verify_error">#dd2c00</color>
+    <color name="neighbor_row">#FFFFFFFF</color>
+    <color name="more_menu">#1C1C1E</color>
+
+    <color name="fui_transparent">#00000000</color>
+    <color name="fui_bgGoogle">#ffffff</color>
+    <color name="fui_bgFacebook">#3B5998</color>
+    <color name="fui_bgTwitter">#FF5BAAF4</color>
+    <color name="fui_bgGitHub">#24292E</color>
+    <color name="fui_bgEmail">#D0021B</color>
+    <color name="fui_bgPhone">#43C5A5</color>
+    <color name="fui_bgAnonymous">#f4b400</color>
+    <color name="fui_bgMicrosoft">#2F2F2F</color>
+    <color name="fui_bgYahoo">#720E9E</color>
+    <color name="fui_bgApple">#000000</color>
+
+</resources>

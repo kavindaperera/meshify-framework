@@ -10,16 +10,16 @@ import android.content.Context;
 import android.os.Build;
 import android.os.ParcelUuid;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.profile.DeviceProfile;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.framework.controllers.BluetoothUtils;
-import com.codewizards.meshify.framework.controllers.ConnectionManager;
-import com.codewizards.meshify.framework.controllers.DeviceManager;
-import com.codewizards.meshify.framework.controllers.Discovery;
-import com.codewizards.meshify.framework.controllers.Session;
-import com.codewizards.meshify.framework.controllers.SessionManager;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.profile.DeviceProfile;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
+import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.Discovery;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.Collection;

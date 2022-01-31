@@ -23,8 +23,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.ConfigProfile;
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.ConfigProfile;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.ChatMessageAdapter;
 import com.codewizards.meshify_chat.models.Message;
@@ -172,9 +172,9 @@ public class ChatActivity extends AppCompatActivity {
             content.put(Constants.PAYLOAD_TEXT, messageString);
 
 
-            com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
+            com.codewizards.meshify.api.Message.Builder builder = new com.codewizards.meshify.api.Message.Builder();
             builder.setContent(content).setReceiverId(deviceId);
-            com.codewizards.meshify.client.Message message2 = builder.build();
+            com.codewizards.meshify.api.Message message2 = builder.build();
 
             Meshify.sendMessage(message2, ConfigProfile.valueOf(this.sharedPreferences.getString(Constants.PREFS_CONFIG_PROFILE, "Default")));
 
@@ -221,8 +221,8 @@ public class ChatActivity extends AppCompatActivity {
                 HashMap<String, Object> content = new HashMap<>();
                 content.put("file", file.getName());
 
-                com.codewizards.meshify.client.Message.Builder builder = new com.codewizards.meshify.client.Message.Builder();
-                com.codewizards.meshify.client.Message message = builder.setReceiverId(deviceId).setContent(content).setData(fileContent).build();
+                com.codewizards.meshify.api.Message.Builder builder = new com.codewizards.meshify.api.Message.Builder();
+                com.codewizards.meshify.api.Message message = builder.setReceiverId(deviceId).setContent(content).setData(fileContent).build();
                 message.setUuid(Meshify.sendMessage(message));
 
                 //TODO - Add message to adapter
@@ -256,7 +256,7 @@ public class ChatActivity extends AppCompatActivity {
                 Bundle extras = intent.getExtras();
                 String string = extras.getString(Constants.OTHER_USER_ID, "");
                 if (ChatActivity.this.deviceId != null && ChatActivity.this.deviceId.equals(string)) {
-                    com.codewizards.meshify.client.Message message = com.codewizards.meshify.client.Message.create(extras.getString(Constants.MESSAGE));
+                    com.codewizards.meshify.api.Message message = com.codewizards.meshify.api.Message.create(extras.getString(Constants.MESSAGE));
 
                     if (message.getContent().get("file") != null){
 

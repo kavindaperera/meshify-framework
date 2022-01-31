@@ -33,16 +33,14 @@
 -->
 
 
-[![forthebadge](https://forthebadge.com/images/badges/built-for-android.svg)]()
-[![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)]()
+[![forthebadge](https://forthebadge.com/images/badges/built-for-android.svg)](https://github.com/kavindaperera/meshify-framework)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)](https://github.com/kavindaperera/meshify-framework)
 
-[![img.shields.io](https://img.shields.io/badge/powered%20by-codewizards-brightgreen?style=for-the-badge&logo=CodeIgniter)]()
-
-[![Status](https://badgen.net/badge/status/development/red)]()
-[![Build Status](https://badgen.net/badge/build/pending/orange)]()
-[![LoC](https://badgen.net/badge/lines/8.54k/green)]()
+[![Status](https://badgen.net/badge/status/development/green)](https://github.com/kavindaperera/meshify-framework)
+[![Build Status](https://badgen.net/badge/build/pending/orange)](https://github.com/kavindaperera/meshify-framework)
+[![LoC](https://badgen.net/badge/lines/10.27k/green)](https://github.com/kavindaperera/meshify-framework)
 [![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/meshify-framework)
-[![License](https://badgen.net//badge/license/MIT/blue)]()
+[![License](https://badgen.net//badge/license/MIT/blue)](https://github.com/kavindaperera/meshify-framework/blob/development/LICENSE)
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -137,7 +135,7 @@ Meshify.initialize(getApplicationContext());
 
 ### ConnectionListener
 
-You can either extend `ConnectionListener` abstract class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `ConnectionListener`.
+You can either implement `ConnectionListener` implement or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `ConnectionListener`.
 
 ```java
 // Anonymous Class
@@ -168,7 +166,7 @@ ConnectionListener connectionListener = new ConnectionListener() {...}
 
 ### MessageListener
 
-You can either extend `MessageListener` abstract class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `MessageListener`.
+You can either implement `MessageListener` implement class or create an [`Anonymous Class`](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) of `MessageListener`.
 
 ```java
 // Anonymous Class

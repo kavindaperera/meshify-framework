@@ -27,3 +27,5 @@ meshify/.classpath
 meshify/.project
 meshify/.settings/org.eclipse.buildship.core.prefs
 .idea/jarRepositories.xml
+.idea/
+stats/

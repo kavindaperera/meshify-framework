@@ -1,7 +1,7 @@
 <resources>
     <!-- Profile Preference -->
     <string-array name="profile_entries">
-        <item>Use Bluetooth for Forwarding</item>
+        <item>Use Mesh Forwarding</item>
         <item>Do not Forward</item>
     </string-array>
 

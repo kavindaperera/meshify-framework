@@ -1,9 +1,7 @@
 package com.codewizards.meshify_chat.ui.home;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Canvas;
@@ -29,14 +27,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.Config;
-import com.codewizards.meshify.client.ConnectionListener;
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
-import com.codewizards.meshify.client.Message;
-import com.codewizards.meshify.client.MessageListener;
-import com.codewizards.meshify.client.Session;
+import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.ConnectionListener;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
+import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.api.MessageListener;
+import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.MeshifyLogger;
 import com.codewizards.meshify_chat.BuildConfig;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.adapters.NeighborAdapter;
@@ -46,17 +45,17 @@ import com.codewizards.meshify_chat.permissions.RationaleDialog;
 import com.codewizards.meshify_chat.service.MeshifyNotifications;
 import com.codewizards.meshify_chat.service.MeshifyService;
 import com.codewizards.meshify_chat.ui.about.AboutActivity;
-import com.codewizards.meshify_chat.ui.avatar.ChooseAvatarActivity;
 import com.codewizards.meshify_chat.ui.broadcast.BroadcastActivity;
 import com.codewizards.meshify_chat.ui.chat.ChatActivity;
 import com.codewizards.meshify_chat.ui.settings.SettingsActivity;
 import com.codewizards.meshify_chat.ui.splash.SplashActivity;
 import com.codewizards.meshify_chat.util.Constants;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 import java.util.HashMap;
 
@@ -89,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
     MessageListener messageListener = new MessageListener() {
         @Override
         public void onMessageReceived(Message message) {
-            super.onMessageReceived(message);
 
             if (message.getContent().get(PAYLOAD_DEVICE_NAME) != null) {
                 String senderId = message.getSenderId();
@@ -122,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBroadcastMessageReceived(Message message) {
-            super.onBroadcastMessageReceived(message);
             String Msg = (String) message.getContent().get(PAYLOAD_TEXT);
             String deviceName  = (String) message.getContent().get(PAYLOAD_DEVICE_NAME);
             Log.i(TAG, "Incoming broadcast message: " + Msg + " from " + deviceName);
@@ -136,13 +133,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onMessageSent(String messageId) {
-            super.onMessageSent(messageId);
             Log.i(TAG, "onMessageSent: " + messageId);
         }
 
         @Override
         public void onMessageFailed(Message message, MessageException exception) {
-            super.onMessageFailed(message, exception);
             Log.e(TAG, "onMessageFailed:" + exception.getMessage());
             Toast.makeText(getApplicationContext(), exception.getMessage() , Toast.LENGTH_SHORT).show();
         }
@@ -152,26 +147,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onStarted() {
-            super.onStarted();
             Log.d(TAG, "onStarted:");
         }
 
 
         @Override
         public void onDeviceDiscovered(Device device) {
-            super.onDeviceDiscovered(device);
             Toast.makeText(getApplicationContext(), "Device Discovered " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Device Discovered " +  device.toString());
         }
 
         @Override
         public void onStartError(String message, int errorCode) {
-            super.onStartError(message, errorCode);
             hideProgressBar();
-            if (errorCode == com.codewizards.meshify.client.Constants.INSUFFICIENT_PERMISSIONS) {
+            if (errorCode == com.codewizards.meshify.api.Constants.INSUFFICIENT_PERMISSIONS) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
-            if (errorCode == com.codewizards.meshify.client.Constants.LOCATION_SERVICES_DISABLED) {
+            if (errorCode == com.codewizards.meshify.api.Constants.LOCATION_SERVICES_DISABLED) {
 
                 RationaleDialog.createFor(MainActivity.this, "Meshify needs you to turn on location services in order to connect with friends", R.drawable.ic_location_outline_32)
                         .setNegativeButton(R.string.Permissions_not_now, (dialog, whichButton) -> finish())
@@ -190,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceConnected(Device device, Session session) {
-            super.onDeviceConnected(device, session);
             Log.e(TAG, "Device Connected " +  device.toString());
             Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
             neighbor.setNearby(true);
@@ -217,16 +208,29 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onDeviceBlackListed(Device device) {
-            super.onDeviceBlackListed(device);
             Toast.makeText(getApplicationContext(), "Blacklisted " + device.getDeviceName() , Toast.LENGTH_SHORT).show();
 
         }
 
         @Override
         public void onDeviceLost(Device device) {
-            super.onDeviceLost(device);
             mainViewModel.updateNearby(device.getUserId(), false);
             Toast.makeText(getApplicationContext(), "Lost " + device.getDeviceName(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onIndirectDeviceDiscovered(Device device) {
+            Log.i(TAG, "onIndirectDeviceFound: " + device.getDeviceName());
+
+            Neighbor neighbor = new Neighbor(device.getUserId(), device.getDeviceName());
+            neighbor.setNearby(false);
+            neighbor.setDeviceType(Neighbor.DeviceType.ANDROID);
+            neighbor.setDevice(device);
+            neighbor.setLastSeen(String.valueOf(System.currentTimeMillis()));
+
+            mainViewModel.insert(neighbor);
+            mainViewModel.updateNearby(device.getUserId(), false);
+            mainViewModel.updateLastSeen(device.getUserId(), String.valueOf(System.currentTimeMillis()));
         }
     };
 
@@ -380,6 +384,11 @@ public class MainActivity extends AppCompatActivity {
                         .putExtra(Constants.INTENT_EXTRA_UUID, BROADCAST_CHAT));
                 return true;
             }
+            case R.id.action_clearlogs:{
+                MeshifyLogger.clearLogs();
+                Toast.makeText(getApplicationContext(), "Log File Cleared", Toast.LENGTH_SHORT).show();
+                break;
+            }
             case R.id.action_about: {
                 startActivity(new Intent(getBaseContext(), AboutActivity.class));
                 return true;
@@ -388,15 +397,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     /**
      * start meshify
      */
     private void startMeshify() {
 
+        if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
+            ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
+            return;
+        }
+
+        MeshifyLogger.init(this.getBaseContext(), true);
+        MeshifyLogger.startLogs();
+
         Config.Builder builder = new Config.Builder();
         builder.setAntennaType(Config.Antenna.BLUETOOTH);
         builder.setVerified(MeshifySession.isVerified());
-        builder.setAutoConnect(false);
+        builder.setNeighborDiscovery(false);
+        builder.setAutoConnect(true);
 
         Meshify.start(messageListener, connectionListener, builder.build());
 
@@ -421,4 +441,5 @@ public class MainActivity extends AppCompatActivity {
     private void hideProgressBar(){
         mProgressBar.setVisibility(View.GONE);
     }
+
 }

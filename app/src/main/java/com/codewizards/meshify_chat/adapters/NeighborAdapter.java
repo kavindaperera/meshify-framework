@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.codewizards.meshify.client.Device;
-import com.codewizards.meshify.client.Meshify;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.models.Neighbor;
 import com.codewizards.meshify_chat.util.MeshifyUtils;
@@ -117,7 +117,11 @@ public class NeighborAdapter extends ListAdapter<Neighbor, NeighborAdapter.Neigh
                                 case R.id.action_popup_connect:{
                                     Device device = neighbor.getDevice();
                                     if (device!=null) {
-                                        Meshify.getInstance().getMeshifyCore().connectDevice(device);
+                                        try {
+                                            Meshify.getInstance().getMeshifyCore().connectDevice(device);
+                                        } catch (Exception e) {
+
+                                        }
                                     }
                                     return true;
                                 }

@@ -2,7 +2,7 @@ package com.codewizards.meshify_chat.database.typeconveters;
 
 import androidx.room.TypeConverter;
 
-import com.codewizards.meshify.client.Device;
+import com.codewizards.meshify.api.Device;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

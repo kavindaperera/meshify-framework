@@ -15,7 +15,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.codewizards.meshify.client.Message;
+import com.codewizards.meshify.api.Message;
 import com.codewizards.meshify_chat.R;
 import com.codewizards.meshify_chat.main.MeshifyApp;
 import com.codewizards.meshify_chat.main.MeshifyConstants;

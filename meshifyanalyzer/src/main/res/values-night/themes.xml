@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Meshifychat" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorSecondaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/colorPrimary</item>
+        <!-- Edit Text Hint color. -->
+        <item name="android:textColorHint">@color/grey_500</item>
+
+
+    </style>
+    <style name="MeshifyTheme.AppBarOverlay" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="MeshifyTheme.PopupOverlay" parent="@style/ThemeOverlay.AppCompat.DayNight" />
+</resources>
