@@ -16,7 +16,7 @@ public class ServerFactory {
     private static BluetoothLeServer bluetoothLeServer;
 
 
-    static ThreadServer getServerInstance(Config.Antenna antenna, boolean isNew) {
+    public static ThreadServer getServerInstance(Config.Antenna antenna, boolean isNew) {
 
         switch (antenna) {
             case BLUETOOTH: {

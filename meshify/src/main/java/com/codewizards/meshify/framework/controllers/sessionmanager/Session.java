@@ -124,7 +124,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         this.createTime = System.currentTimeMillis();
     }
 
-    void removeSession() {
+    public void removeSession() {
         switch (this.getAntennaType()) {
             case BLUETOOTH: {
                 try {
