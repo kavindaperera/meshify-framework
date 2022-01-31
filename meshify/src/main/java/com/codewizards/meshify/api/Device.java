@@ -25,7 +25,7 @@ public class Device implements Parcelable {
 
     private String sessionId;
 
-    private String rssi;
+    private int rssi;
 
     public Device() {
     }
@@ -121,6 +121,11 @@ public class Device implements Parcelable {
         return this.userId;
     }
 
+    public int getRssi() {
+        return this.rssi;
+    }
+
+
     /*setters*/
 
     public void setAntennaType(Config.Antenna antennaType) {
@@ -146,6 +151,10 @@ public class Device implements Parcelable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setRssi(int rssi) {
+        this.rssi = rssi;
     }
 
     public String toString() {
