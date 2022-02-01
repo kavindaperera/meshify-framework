@@ -3,7 +3,6 @@ package com.codewizards.meshifyanalyzer;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.codewizards.meshify.api.Config;
@@ -16,7 +15,6 @@ import com.codewizards.meshify.api.MessageListener;
 import com.codewizards.meshify.api.Session;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.logs.MeshifyLogger;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
 
     Timer timerHelloPackets;
 
+    Timer timerRTTPackets;
+
+    EditText editTextSize;
+
+    Boolean isRTStarter = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
-
 
         if (ContextCompat.checkSelfPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
             ActivityCompat.requestPermissions(this, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, 0);
@@ -85,13 +88,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        Button btnStartTest = findViewById(R.id.button_send);
+        Button btnStartTest = findViewById(R.id.button_start_test);
         Button btnStopTest = findViewById(R.id.button_stop);
         Button btnStop = findViewById(R.id.button_stop_meshify);
         Button btnStart = findViewById(R.id.button_start_meshify);
         Button btnDisconnect = findViewById(R.id.button_disconnect_device);
+        Button btnStartRTTest = findViewById(R.id.button_start_rt_test);
+        Button btnStopRTTest = findViewById(R.id.button_stop_rt_test);
 
-        final EditText editTextSize = findViewById(R.id.editTextSize);
+        editTextSize = findViewById(R.id.editTextSize);
+
+        editTextSize.setText("10");
 
         btnStartTest.setOnClickListener(v -> {
 
@@ -159,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
         btnStop.setOnClickListener(v -> {
             Meshify.stop();
             Snackbar.make(v, "Stopping Meshify...", Snackbar.LENGTH_LONG).setBackgroundTint(Color.RED)
@@ -176,18 +182,76 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        btnStartRTTest.setOnClickListener(v -> {
+
+            if (dataAdapter == null) {
+                Snackbar.make(v, "No Neighbors Found!", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED)
+                        .setAction("Action", null).show();
+                return;
+            }
+
+            if (editTextSize.getText().toString().isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Enter a Message Size!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ArrayList<SelectedDevice> devices = dataAdapter.getDeviceList();
+            for (int i = 0; i < devices.size(); i++) {
+                SelectedDevice device = devices.get(i);
+
+                Log.e(TAG,  device.toString() + " isSelected: " + device.isSelected());
+
+                if (device.isSelected() ) {
+                    isRTStarter = true;
+                    timerRTT(Constants.RTT_PACKET_INTERVAL, device.device, Integer.parseInt(editTextSize.getText().toString()));
+                    btnStartRTTest.setVisibility(View.GONE);
+                }
+            }
+
+        });
+
+        btnStopRTTest.setOnClickListener(v -> {
+            if (timerRTTPackets == null){
+                Snackbar.make(v, "No RTT Schedule Found!", Snackbar.LENGTH_LONG).setBackgroundTint(Color.RED)
+                        .setAction("Action", null).show();
+            } else {
+                timerRTTPackets.cancel();
+                isRTStarter = false;
+                Snackbar.make(v, "Scheduled RTT Stopped!", Snackbar.LENGTH_LONG).setBackgroundTint(Color.GREEN)
+                        .setAction("Action", null).show();
+                btnStartRTTest.setVisibility(View.VISIBLE);
+            }
+        });
+
+
         // Save Contacts
+
 //        addTestDevicesForMiranda();
 
     }
 
     private void addTestDevicesForMiranda() {
 
-        Device device1 = new Device("Chamani\u0027s Redmi 9","50:3D:C6:AB:52:2F", "83934c5a-6827-43ee-9631-a9ca95438ec7");
+        Device device1 = new Device("Elsa's Note 9","50:3D:C6:AB:52:2F", "83934c5a-6827-43ee-9631-a9ca95438ec7");
 
         listOfDevices.add(new SelectedDevice(device1));
         updateListView();
 
+    }
+
+    private void timerRTT(final int time, Device device, Integer size) {
+
+        timerRTTPackets = new Timer();
+
+        timerRTTPackets.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                    HashMap<String, Object> data = new HashMap<>();
+                    data.put(Constants.RT_TEST_KEY, getAlphaNumericString(size));
+                    device.sendMessage(data);
+                    timerRTT(time, device, size);
+            }
+        }, time);
     }
 
     private void updateListView() {
@@ -361,7 +425,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessageReceived(Message message) {
             Log.e(TAG, "Message Received");
-            updateLog(Constants.NORMAL, "Message Received: " + message.getSenderId() + ", content: " + message.getContent()) ;
+
+            if (message.getContent().containsKey(Constants.RT_TEST_KEY) && !isRTStarter){
+                Device device = new Device(message.getSenderId());
+                HashMap<String, Object> data = new HashMap<>();
+                data.put(Constants.RT_TEST_REP_KEY, getAlphaNumericString(Integer.parseInt(MainActivity.this.editTextSize.getText().toString())));
+                device.sendMessage(data);
+            }
+
+            updateLog(Constants.NORMAL, "Message Received: " + message.getSenderId() + ", content: " + message.getContent());
         }
 
         @Override
