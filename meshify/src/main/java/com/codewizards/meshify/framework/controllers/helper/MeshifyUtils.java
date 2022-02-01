@@ -1,22 +1,19 @@
 package com.codewizards.meshify.framework.controllers.helper;
 
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.codewizards.meshify.api.Meshify;
-import com.codewizards.meshify.framework.controllers.MeshifyCore;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
-import com.codewizards.meshify.framework.entities.MeshifyForwardEntity;
-import com.codewizards.meshify.framework.entities.MeshifyForwardTransaction;
 import com.codewizards.meshify.framework.expections.MessageException;
 import com.codewizards.meshify.framework.utils.Utils;
 import com.codewizards.meshify.logs.Log;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
+import com.j256.simplemagic.ContentInfo;
+import com.j256.simplemagic.ContentInfoUtil;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +27,7 @@ import java.util.zip.GZIPOutputStream;
 public class MeshifyUtils {
 
     private static final String TAG = "[Meshify][MeshifyUtils]";
-    private static final String TAGX = "[Meshify][SessionUtils]";
+    private static final String TAG_SESSION = "[Meshify][SessionUtils]";
 
     private static final Integer DEFAULT_GZIP_BUFFER_SIZE = 512;
 
@@ -63,30 +60,54 @@ public class MeshifyUtils {
     }
 
     public static ArrayList<byte[]> chunkAndCompress(MeshifyEntity meshifyEntity, int maxLength) throws IOException {
-        byte[] byteArr;
+
+        byte[] byteArr2;
         int entityType = meshifyEntity.getEntity();
-        Log.e(TAGX, "entityType: " + entityType);
+
+        ContentInfo contentInfo;
+        ContentInfoUtil contentInfoUtil;
+
+        Log.e(TAG_SESSION, "entityType: " + entityType);
         if (entityType == 0) {
-            byteArr = null;
+            byteArr2 = null;
         } else if (entityType == 1) {
-            byteArr = null;
+            byteArr2 = null;
+
+            ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
+
+            if (meshifyEntity.getData() != null && meshifyEntity.getData().length > 0) {
+                contentInfoUtil = new ContentInfoUtil();
+                contentInfo = contentInfoUtil.findMatch(meshifyEntity.getData());
+                Log.i(TAG_SESSION, "chunkAndCompress: match data " + contentInfo.getMimeType());
+                Log.i(TAG_SESSION, "chunkAndCompress: match data mime " + contentInfo.getContentType().getMimeType());
+                Log.i(TAG_SESSION, "chunkAndCompress: match data simple " + contentInfo.getContentType().getSimpleName());
+
+                if (!(contentInfo == null || contentInfo.getContentType().getMimeType().equals("image/jpeg") || contentInfo.getContentType().getMimeType().equals("image/png") || contentInfo.getContentType().getMimeType().equals("image/gif") )) {
+                    arrayList.add((byte[])MeshifyUtils.compress(meshifyEntity.getData()));
+                } else {
+                    arrayList.add(meshifyEntity.getData());
+                }
+                byteArr2 = Utils.encodeBinaryBuffer(arrayList);
+            }
+
         } else if (entityType == 2) {
-            byteArr = null;
+            byteArr2 = null;
         }else {
             throw new IllegalArgumentException("Entity type not supported");
         }
-        return getByteArrayList(compress(Utils.fromEntityToMsgPack(meshifyEntity)), byteArr, maxLength);
+        return getByteArrayList(compress(Utils.fromEntityToMsgPack(meshifyEntity)), byteArr2, maxLength);
     }
 
-    private static ArrayList<byte[]> getByteArrayList(byte[] byteArr, byte[] byteArr2, int i) throws IOException {
+    private static ArrayList<byte[]> getByteArrayList(byte[] byteArr, byte[] byteArr2, int maxSize) throws IOException {
         int length1 = byteArr.length + 2;
         int length2 = byteArr2 != null ? byteArr2.length : 0;
         if (length2 > 0) {
             length1 += length2 + 1;
         }
-        Log.e(TAGX, "length1: " + length1 + " | length2: " + length2);
+        Log.e(TAG_SESSION, "length1: " + length1 + " | length2: " + length2);
         ArrayList<byte[]> arrayList = new ArrayList<>();
-        if (length1 < i) {
+
+        if (length1 < maxSize) { // check for max size
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             if (length2 > 0) {
                 byteArrayOutputStream.write(1);
@@ -99,10 +120,17 @@ public class MeshifyUtils {
             byteArrayOutputStream.flush();
             byteArrayOutputStream.close();
             if (length2 > 0) {
-                // TODO
+                ByteArrayOutputStream byteArrayOutputStream2 = new ByteArrayOutputStream();
+                byteArrayOutputStream2.write(2);
+                byteArrayOutputStream2.write(4);
+                byteArrayOutputStream2.write(byteArr2);
+                arrayList.add(byteArrayOutputStream2.toByteArray());
+                byteArrayOutputStream2.flush();
+                byteArrayOutputStream2.close();
             }
         } else {
-            // TODO - chunk the entity
+
+
         }
         return arrayList;
     }
@@ -135,9 +163,22 @@ public class MeshifyUtils {
         byte[] byteArr2 = new byte[available]; // create empty byte array
         byteArrayInputStream.read(byteArr2, 0, available); // add all available data to the array
 
-        // TODO - check read
+        Log.e(TAG_SESSION, "getByteArray(): " + read);
 
-        return byteArr2;
+        if (read != 3 && read != 4) {
+            return byteArr2;
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            byteArrayOutputStream.write(read);
+            byteArrayOutputStream.write(byteArr2);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return byteArrayOutputStream.toByteArray();
     }
 
     public static int getInt(byte[] byteArr) {
@@ -162,14 +203,15 @@ public class MeshifyUtils {
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(it.next());
                 int read = byteArrayInputStream.read();
                 int available = byteArrayInputStream.available();
-                byte[] bArr = new byte[available];
-                byteArrayInputStream.read(bArr, 0, available);
+                byte[] arrby = new byte[available];
+                byteArrayInputStream.read(arrby, 0, available);
+
                 if (read == 4) {
-                    byteArrayOutputStream2.write(bArr);
+                    byteArrayOutputStream2.write(arrby);
                 } else if (read == 3) {
-                    byteArrayOutputStream.write(bArr);
+                    byteArrayOutputStream.write(arrby);
                 } else {
-                    Log.e(TAG, "chunkToEntity: UNDEFINE " + read);
+                    Log.e(TAG_SESSION, "chunkToEntity: UNDEFINE " + read);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -177,16 +219,59 @@ public class MeshifyUtils {
         }
         try {
             byte[] decompress = decompress(byteArrayOutputStream.toByteArray());
+
+            byte[] arrby4 = byteArrayOutputStream2.toByteArray();
             if (z) {
                 fromJson = Utils.fromMsgPackToEntity(decompress, MeshifyEntity.class);
             } else {
                 fromJson = new Gson().fromJson(new String(decompress), MeshifyEntity.class);
             }
             meshifyEntity = (MeshifyEntity) fromJson;
+
+            Log.i(TAG_SESSION, "chunkToEntity: arrby4 " + arrby4.length);
+
+            if (meshifyEntity.getEntity() == 1) {
+
+                if (arrby4 != null && arrby4.length > 0) {
+
+                    ArrayList<byte[]> arrayList1 = Utils.decodeBinaryBuffer(arrby4);
+
+                    MeshifyContent meshifyContent = (MeshifyContent) meshifyEntity.getContent();
+
+                    meshifyEntity.setContent(new MeshifyContent(Utils.fromMsgPackToEntity(decompress(arrayList1.get(0)), HashMap.class), meshifyContent.getId()));
+
+                    if (arrayList1.size() > 0){
+                        ContentInfoUtil contentInfoUtil = new ContentInfoUtil();
+                        ContentInfo contentInfo = contentInfoUtil.findMatch(arrayList1.get(0));
+                        Log.i(TAG_SESSION, "chunkToEntity: match data " + contentInfo.getMimeType());
+                        Log.i(TAG_SESSION, "chunkToEntity: match data mime " + contentInfo.getContentType().getMimeType());
+                        Log.i(TAG_SESSION, "chunkToEntity: match data simple " + contentInfo.getContentType().getSimpleName());
+                        if (!(contentInfo == null || contentInfo.getContentType().getMimeType().equals("image/jpeg") || contentInfo.getContentType().getMimeType().equals("image/png") || contentInfo.getContentType().getMimeType().equals("image/gif"))) {
+                            (meshifyEntity).setData(MeshifyUtils.decompress(arrayList1.get(0)));
+                        } else {
+                            (meshifyEntity).setData(arrayList1.get(0));
+                        }
+                    }
+                }
+            } else {
+                (meshifyEntity).setBinaryContent(arrby4);
+            }
+
+            byteArrayOutputStream.flush();
+            byteArrayOutputStream2.flush();
+
         } catch (Exception e) {
             e.printStackTrace();
             meshifyEntity = null;
+            try {
+                byteArrayOutputStream.flush();
+                byteArrayOutputStream2.flush();
+            }
+            catch (IOException iOException) {
+                iOException.printStackTrace();
+            }
         }
         return meshifyEntity;
     }
+
 }

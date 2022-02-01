@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 
-public class MeshifyHandshake implements Parcelable {
+public class MeshifyHandshake{
 
     @JsonProperty(value="rq")
     private Integer rq;  //Request
@@ -22,23 +22,6 @@ public class MeshifyHandshake implements Parcelable {
         this.rq = rq;
         this.rp = rp;
     }
-
-    protected MeshifyHandshake(Parcel in) {
-        this.rq = in.readInt();
-        this.rp = in.readParcelable(ResponseJson.class.getClassLoader());
-    }
-
-    public static final Creator<MeshifyHandshake> CREATOR = new Creator<MeshifyHandshake>() {
-        @Override
-        public MeshifyHandshake createFromParcel(Parcel in) {
-            return new MeshifyHandshake(in);
-        }
-
-        @Override
-        public MeshifyHandshake[] newArray(int size) {
-            return new MeshifyHandshake[size];
-        }
-    };
 
     @JsonProperty(value="rq")
     public Integer getRq() {
@@ -62,14 +45,4 @@ public class MeshifyHandshake implements Parcelable {
         return new Gson().toJson((Object)this);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.rq);
-        dest.writeParcelable((Parcelable)((ResponseJson)this.rp), flags);
-    }
 }

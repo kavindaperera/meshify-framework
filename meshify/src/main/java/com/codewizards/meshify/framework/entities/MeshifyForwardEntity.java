@@ -50,6 +50,10 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
     @JsonIgnore
     Date added;
 
+
+    public MeshifyForwardEntity() {
+    }
+
     public MeshifyForwardEntity(Message message, int mesh_type, ConfigProfile profile) {
         this.id = message.getUuid() == null ? UUID.randomUUID().toString() : message.getUuid();
         this.payload = message.getContent();

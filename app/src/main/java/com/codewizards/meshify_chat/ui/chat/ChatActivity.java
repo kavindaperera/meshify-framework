@@ -191,8 +191,8 @@ public class ChatActivity extends AppCompatActivity {
                 .withRequestCode(Constants.FILE_PICKER_REQUEST_CODE)
                 // Entry point path (user will start from it)
                 .withPath(Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera")
-                // Want to choose only jpg images
-                .withFilter(Pattern.compile(".*\\.(jpg|jpeg)$"))
+                // Want to choose only jpg and png images
+                .withFilter(Pattern.compile(".*\\.(jpg|jpeg|png)$"))
                 .withHiddenFiles(true) // Show hidden files and folders
                 .start();
 
