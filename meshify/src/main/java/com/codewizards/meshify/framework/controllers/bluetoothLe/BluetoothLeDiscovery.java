@@ -142,7 +142,7 @@ public class BluetoothLeDiscovery extends Discovery {
     private void onScanResultAction(ScanResult scanResult, FlowableEmitter<Device> flowableEmitter) {
         String string = this.processScanResult(scanResult);
         if (string != null && this.bluetoothAdapter != null && this.bluetoothAdapter.isEnabled()) {
-            Device device = this.processPresenceResult(string, scanResult.getDevice());
+            Device device = this.processPresenceResult(string, scanResult.getDevice(), scanResult.getRssi());
             if (device != null && SessionManager.getSession(device.getDeviceAddress()) == null && Meshify.getInstance().getConfig().isAutoConnect()) {
                 flowableEmitter.onNext(device);
             } else if (device != null) {
@@ -152,7 +152,7 @@ public class BluetoothLeDiscovery extends Discovery {
     }
 
     @SuppressLint("MissingPermission")
-    synchronized Device processPresenceResult(String string, BluetoothDevice bluetoothDevice) {
+    synchronized Device processPresenceResult(String string, BluetoothDevice bluetoothDevice, int rssi) {
         if (this.bluetoothAdapter.isEnabled() && bluetoothDevice != null) {
             if (ConnectionManager.checkConnection(bluetoothDevice.getAddress())) {
                 Log.e(TAG, "Device is blacklisted");
@@ -181,6 +181,7 @@ public class BluetoothLeDiscovery extends Discovery {
                     device.setAntennaType(Config.Antenna.BLUETOOTH_LE);
                     device.setDeviceName(string);
                     device.setUserId(string);
+                    device.setRssi(rssi);
                 }
                 return device;
             }
@@ -192,6 +193,8 @@ public class BluetoothLeDiscovery extends Discovery {
 
     private String processScanResult(ScanResult scanResult) {
         String string;
+        int rssi;
+
         blockX:
         {
             BluetoothDevice bluetoothDevice;
@@ -201,10 +204,10 @@ public class BluetoothLeDiscovery extends Discovery {
                 List list = scanResult.getScanRecord().getServiceUuids();
                 map = scanResult.getScanRecord().getServiceData();
                 bluetoothDevice = scanResult.getDevice();
-                Log.i(TAG, "scanResult: " + map.toString());
+                rssi = scanResult.getRssi();
+                Log.i(TAG, "scanResult: " + map.toString() + " | Rssi: " + rssi);
                 string = null;
                 if (list == null || list.isEmpty()) break blockY;
-
 
                 break blockX;
             }

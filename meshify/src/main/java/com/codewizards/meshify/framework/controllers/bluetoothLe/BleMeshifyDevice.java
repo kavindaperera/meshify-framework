@@ -14,6 +14,8 @@ import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.profile.DeviceProfile;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.BatteryService;
+import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
@@ -23,6 +25,8 @@ import com.codewizards.meshify.framework.controllers.sessionmanager.AbstractSess
 import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BluetoothLeGatt;
 import com.codewizards.meshify.logs.Log;
+
+import java.lang.reflect.Method;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -42,8 +46,8 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
     @Override
     public Completable create() {
-
         return Completable.create(CompletableEmitter -> {
+
             this.completableEmitter = completableEmitter;
 
             BluetoothDevice bluetoothDevice = this.getDevice().getBluetoothDevice();
@@ -64,22 +68,16 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 if (session == null) {
 //                    session = new Session(bluetoothDevice, true, this.completableEmitter);
                 }
-
             }
         });
-
-
     }
-
-
 
     private void sendInitialHandShake(Device device){
-
         Log.e(TAG, "sendInitialHandShake: " + device.getDeviceAddress());
+        BatteryService batteryService = new BatteryService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), BluetoothUtils.batteryServiceUuid, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        BluetoothController.getGattManager().addGattOperation(batteryService);
 
     }
-
-
 
     /**
      * The main interface that the app has to implement in order to receive callbacks for most BluetoothGatt-related operations
@@ -108,7 +106,6 @@ public class BleMeshifyDevice extends MeshifyDevice {
             Log.e(BleMeshifyDevice.this.TAG,"onConnectionStateChange()" + " | newState: " + newState + " | status: " + status);
 
             Object temp;
-
             if (status == BluetoothGatt.GATT_SUCCESS){
 
                 // check bluetooth profile states
@@ -118,7 +115,6 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
                     // check and create a session
                     temp = SessionManager.getSession(gatt.getDevice().getAddress());
-
                     if (temp == null) {
                         Log.i(BleMeshifyDevice.this.TAG, "onConnectionStateChange(): create new session");
                         temp = new Session(gatt);
@@ -140,9 +136,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
                     SessionManager.queueSession((Session)temp); // Queue the session before handshake
                     DeviceManager.addDevice(device);
-
-                    BluetoothController.getGattManager(); // TODO
-
+                    BluetoothController.getGattManager().getBluetoothGattMap().put(gatt.getDevice().getAddress(), gatt);
                     if (Build.VERSION.SDK_INT >= 21) {
                         gatt.requestMtu(DeviceProfile.getMaxMtuSize()); // Requesting for a larger ATT MTU
                     } else {
@@ -159,7 +153,13 @@ public class BleMeshifyDevice extends MeshifyDevice {
                     }
                 }
             } else if (status == 133){
-                Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error. " + gatt.getDevice().getAddress());
+                Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error!!" + gatt.getDevice().getAddress());
+
+                if (gatt.getDevice() != null && gatt.getDevice().getAddress() != null) {
+
+                }
+                this.clearFailedConnection(gatt);
+
             } else {
                 if (newState == BluetoothProfile.STATE_DISCONNECTED){
                     Log.e(BleMeshifyDevice.this.TAG, "BluetoothProfile.STATE_DISCONNECTED: " + gatt.getDevice().getAddress());
@@ -192,14 +192,11 @@ public class BleMeshifyDevice extends MeshifyDevice {
             super.onServicesDiscovered(gatt, status);
             Log.e(BleMeshifyDevice.this.TAG,"onServicesDiscovered()" + " | status: " + status + " | size: " + gatt.getServices().size());
 
-
-
             for (BluetoothGattService service : gatt.getServices()) {
                 Log.i(BleMeshifyDevice.this.TAG,"service discovered " + service.getUuid().toString());
             }
 
             if (status == 0) {
-
                 // DOUBLE_RATE
                 if (!DeviceProfile.isLeDoubleRateSupported(Meshify.getInstance().getMeshifyCore().getContext())) return;
                 gatt.setPreferredPhy(2, 2, 0);
@@ -207,17 +204,14 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 // TODO - create a config to set DOUBLE_RATE or EXTENDED_RANGE
 
                 BluetoothGattCharacteristic bluetoothGattCharacteristic = gatt.getService(BluetoothUtils.getBluetoothUuid()).getCharacteristic(BluetoothUtils.getCharacteristicUuid());
-
                 if (gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)){
                     BleMeshifyDevice.this.sendInitialHandShake(BleMeshifyDevice.this.getDevice());
+                    //TODO - current position
                     return;
                 }
-
-
             } else {
-                // TODO
+                this.clearFailedConnection(gatt);
             }
-
         }
 
         @Override
@@ -269,8 +263,34 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
         }
 
+        private void clearFailedConnection(BluetoothGatt bluetoothGatt) {
+            BluetoothController.getGattManager().removeGattOperation(bluetoothGatt.getDevice());
+            BluetoothController.getGattManager().getBluetoothGattMap().remove(bluetoothGatt.getDevice().getAddress());
+            if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
+                //
+            }
+            bluetoothGatt.disconnect();
+            bluetoothGatt.close();
+            this.refreshDeviceCache(bluetoothGatt);
+            Device device = DeviceManager.getDevice(bluetoothGatt.getDevice().getAddress());
+            Log.e(TAG, "clearFailedConnection(): address " + bluetoothGatt.getDevice().getAddress());
+            Log.e(TAG, "clearFailedConnection(): queued device " + device);
+            ConnectionManager.retry(device);
+            SessionManager.removeSession(bluetoothGatt.getDevice().getAddress());
+        }
 
-
+        void refreshDeviceCache(BluetoothGatt bluetoothGatt) {
+            try {
+                Method localMethod  = bluetoothGatt.getClass().getMethod("refresh", new Class[0]);
+                if (localMethod  != null) {
+                    boolean bl = (Boolean)localMethod .invoke((Object)bluetoothGatt, new Object[0]);
+                    Log.w(TAG, "refreshDeviceCache:" + bl);
+                }
+            }
+            catch (Exception exception) {
+                Log.e(TAG, "exception occurred while refreshing", exception);
+            }
+        }
     }
 
 }
