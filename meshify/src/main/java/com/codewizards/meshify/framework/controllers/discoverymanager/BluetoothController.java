@@ -52,12 +52,14 @@ public class BluetoothController {
     public BluetoothController(Context context, Config config) throws MeshifyException {
         this.context = context;
         this.config = config;
-        switch (this.getConfig().getAntennaType()){
-            case BLUETOOTH_LE: {
-                this.hardwareCheck();
-            }
-            case BLUETOOTH: {
-                this.requestDiscoverable();
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            switch (antenna) {
+                case BLUETOOTH_LE: {
+                    this.hardwareCheck();
+                }
+                case BLUETOOTH: {
+                    this.requestDiscoverable();
+                }
             }
         }
     }
@@ -65,14 +67,16 @@ public class BluetoothController {
     private void hardwareCheck() throws MeshifyException {
         if (!getContext().getPackageManager().hasSystemFeature("android.hardware.bluetooth_le")) {
             this.isBLE = false;
-            switch (this.getConfig().getAntennaType()){
-                case BLUETOOTH_LE: {
-                    Log.e(TAG, "Bluetooth Low Energy not supported.");
-                    getConfig().setAntennaType(Config.Antenna.UNREACHABLE);
-                    throw new MeshifyException(0, "Bluetooth Low Energy not supported.");
-                }
-                case BLUETOOTH: {
-                    getConfig().setAntennaType(Config.Antenna.BLUETOOTH);
+            for (Config.Antenna antenna : this.config.getAntennaTypes()){
+                switch (antenna) {
+                    case BLUETOOTH_LE: {
+                        Log.e(TAG, "Bluetooth Low Energy not supported.");
+                        getConfig().setAntennaTypes(new Config.Antenna[]{Config.Antenna.UNREACHABLE});
+                        throw new MeshifyException(0, "Bluetooth Low Energy not supported.");
+                    }
+                    case BLUETOOTH: {
+                        this.requestDiscoverable();
+                    }
                 }
             }
         } else {
@@ -85,7 +89,7 @@ public class BluetoothController {
     private void requestDiscoverable() {
         BluetoothAdapter bluetoothAdapter = MeshifyUtils.getBluetoothAdapter(getContext());
         this.bluetoothAdapter = bluetoothAdapter;
-        if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE && Meshify.getInstance().getConfig().getAntennaType() == Config.Antenna.BLUETOOTH) {
+        if (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE && Meshify.getInstance().getConfig().checkAntennaType(Config.Antenna.BLUETOOTH)) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
@@ -138,15 +142,15 @@ public class BluetoothController {
 
 
     private void disconnectDevices() {
-        switch (this.getConfig().getAntennaType()) {
-            case BLUETOOTH: {
-                //TODO - remove BT sessions
-                break;
-            }
-            case BLUETOOTH_LE: {
-                //TODO - remove BLE sessions
-            }
-        }
+//        switch (this.getConfig().getAntennaType()) {
+//            case BLUETOOTH: {
+//                //TODO - remove BT sessions
+//                break;
+//            }
+//            case BLUETOOTH_LE: {
+//                //TODO - remove BLE sessions
+//            }
+//        }
     }
 
     private void stateChangeAction(Intent intent, Context context) {
@@ -194,13 +198,15 @@ public class BluetoothController {
 
 
     public void startDiscovery(Context context) {
-        switch (this.getConfig().getAntennaType()) {
-            case BLUETOOTH: {
-                this.startBluetoothDiscovery(context);
-                break;
-            }
-            case BLUETOOTH_LE: {
-                this.startBluetoothLeDiscovery(context);
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            switch (antenna) {
+                case BLUETOOTH: {
+                    this.startBluetoothDiscovery(context);
+                    break;
+                }
+                case BLUETOOTH_LE: {
+                    this.startBluetoothLeDiscovery(context);
+                }
             }
         }
     }
@@ -241,14 +247,17 @@ public class BluetoothController {
     }
 
     public void startServer(Context context) throws ConnectionException {
-        Log.d(TAG, "startServer: " + this.getConfig().getAntennaType());
-        switch (this.getConfig().getAntennaType()) {
-            case BLUETOOTH: {
-                startBluetoothServer(context);
-                break;
-            }
-            case BLUETOOTH_LE: {
-                startBluetoothLeServer(context);
+
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            Log.d(TAG, "startServer: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH: {
+                    startBluetoothServer(context);
+                    break;
+                }
+                case BLUETOOTH_LE: {
+                    startBluetoothLeServer(context);
+                }
             }
         }
     }
@@ -296,14 +305,16 @@ public class BluetoothController {
     }
 
     public void stopServer() throws ConnectionException {
-        Log.i(TAG, "stopServer: ");
-        switch (this.getConfig().getAntennaType()) {
-            case BLUETOOTH: {
-                this.stopBluetoothServer();
-                break;
-            }
-            case BLUETOOTH_LE: {
-                //TODO - stop BLE server
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            Log.d(TAG, "stopServer: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH: {
+                    this.stopBluetoothServer();
+                    break;
+                }
+                case BLUETOOTH_LE: {
+                    //TODO - stop BLE server
+                }
             }
         }
     }

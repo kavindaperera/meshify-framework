@@ -95,17 +95,17 @@ public class MeshifyCore {
     public void initializeServices() {
         Log.d(TAG, "initializeServices:");
         this.meshifyReceiver.registerReceiver(this.context);
-        this.meshifyReceiver.startServer(this.config.getAntennaType());
-        this.meshifyReceiver.startDiscovery(this.config.getAntennaType());
+        this.meshifyReceiver.startServer(this.config.getAntennaTypes());
+        this.meshifyReceiver.startDiscovery(this.config.getAntennaTypes());
     }
 
 
     public void shutdownServices() {
         Log.d(TAG, "shutdownServices:");
         this.meshifyReceiver.unregisterReceiver(this.context);
-        this.meshifyReceiver.removeAllSessions(this.config.getAntennaType());
-        this.meshifyReceiver.stopDiscovery(this.config.getAntennaType());
-        this.meshifyReceiver.stopServer(this.config.getAntennaType());
+        this.meshifyReceiver.removeAllSessions(this.config.getAntennaTypes());
+        this.meshifyReceiver.stopDiscovery(this.config.getAntennaTypes());
+        this.meshifyReceiver.stopServer(this.config.getAntennaTypes());
         ConnectionManager.reset();
 
         Disposable disposable = this.completable.retryWhen(new RetryWhenLambda(3, 500)).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.newThread()).subscribe(()->{

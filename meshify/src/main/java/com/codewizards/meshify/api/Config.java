@@ -1,5 +1,7 @@
 package com.codewizards.meshify.api;
 
+import java.util.Arrays;
+
 public class Config {
 
     private boolean isEncryption;
@@ -8,7 +10,7 @@ public class Config {
 
     private boolean neighborDiscovery;
 
-    private Antenna antennaType;
+    private Antenna[] antennaTypes;
 
     private ConfigProfile configProfile;
 
@@ -21,7 +23,7 @@ public class Config {
         this.isVerified = builder.isVerified;
         this.neighborDiscovery = builder.neighborDiscovery;
         this.configProfile = builder.configProfile;
-        this.antennaType = builder.antennaType;
+        this.antennaTypes = builder.antennaTypes;
         this.maxConnectionRetries = builder.maxConnectionRetries;
         this.isAutoConnect = builder.isAutoConnect;
     }
@@ -38,12 +40,16 @@ public class Config {
         return this.configProfile;
     }
 
-    public Antenna getAntennaType() {
-        return this.antennaType;
+    public Antenna[] getAntennaTypes() {
+        return this.antennaTypes;
     }
 
-    public void setAntennaType(Antenna antennaType) {
-        this.antennaType = antennaType;
+    public boolean checkAntennaType(Antenna antenna) {
+        return Arrays.asList(antennaTypes).contains(antenna);
+    }
+
+    public void setAntennaTypes(Antenna[] antennaTypes) {
+        this.antennaTypes = antennaTypes;
     }
 
     public int getMaxConnectionRetries() {
@@ -74,7 +80,7 @@ public class Config {
 
         private ConfigProfile configProfile = ConfigProfile.Default;
 
-        private Antenna antennaType = Antenna.BLUETOOTH_LE;
+        private Antenna[] antennaTypes = {Antenna.BLUETOOTH};
 
         private int maxConnectionRetries = 10;
 
@@ -104,8 +110,8 @@ public class Config {
             return this;
         }
 
-        public Builder setAntennaType(Antenna antennaType) {
-            this.antennaType = antennaType;
+        public Builder setAntennaTypes(Antenna[] antennaTypes) {
+            this.antennaTypes = antennaTypes;
             return this;
         }
 

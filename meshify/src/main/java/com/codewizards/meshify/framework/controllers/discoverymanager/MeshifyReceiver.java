@@ -42,10 +42,12 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     private void onReceiveAction(Context context, Intent intent) {
-        switch (this.config.getAntennaType()) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.bluetoothController.onReceiveAction(intent, context);
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.bluetoothController.onReceiveAction(intent, context);
+                }
             }
         }
     }
@@ -57,16 +59,17 @@ public class MeshifyReceiver extends BroadcastReceiver {
             this.addSmsActions(intentFilter);
         }
 
-        switch (this.config.getAntennaType()) {
-            case BLUETOOTH: {
-                this.addBluetoothActions(intentFilter);
-                this.addBleAction(intentFilter);
-            }
-            case BLUETOOTH_LE: {
-                this.addBleAction(intentFilter);
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            switch (antenna) {
+                case BLUETOOTH: {
+                    this.addBluetoothActions(intentFilter);
+                    this.addBleAction(intentFilter);
+                }
+                case BLUETOOTH_LE: {
+                    this.addBleAction(intentFilter);
+                }
             }
         }
-
         return intentFilter;
     }
 
@@ -109,21 +112,24 @@ public class MeshifyReceiver extends BroadcastReceiver {
     }
 
     private void createBluetoothController(Context context, Config config) throws MeshifyException {
-        switch (this.config.getAntennaType()) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.bluetoothController = new BluetoothController(context, config);
+        for (Config.Antenna antenna : this.config.getAntennaTypes()){
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.bluetoothController = new BluetoothController(context, config);
+                }
             }
         }
-
     }
 
-    public void startServer(Config.Antenna antenna) {
-        Log.d(TAG, "startServer: " + antenna);
-        switch (antenna) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.startServer();
+    public void startServer(Config.Antenna[] antennas) {
+        for (Config.Antenna antenna : antennas){
+            Log.d(TAG, "startServer: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.startServer();
+                }
             }
         }
     }
@@ -140,41 +146,53 @@ public class MeshifyReceiver extends BroadcastReceiver {
         }
     }
 
-    public void stopServer(Config.Antenna antenna) {
-        switch (antenna) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.onBluetoothServerStop();
+    public void stopServer(Config.Antenna[] antennas) {
+        for (Config.Antenna antenna : antennas){
+            Log.d(TAG, "stopServer: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.onBluetoothServerStop();
+                }
             }
         }
     }
 
-    public void removeAllSessions(Config.Antenna antenna) {
-        switch (antenna) {
-            case BLUETOOTH: {
-                SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH);
-                break;
-            }
-            case BLUETOOTH_LE: {
-                SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH_LE);
-            }
-        }
-    }
-
-    public void startDiscovery(Config.Antenna antenna) {
-        switch (antenna) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.bluetoothController.startDiscovery(this.context);
+    public void removeAllSessions(Config.Antenna[] antennas) {
+        for (Config.Antenna antenna : antennas){
+            Log.d(TAG, "removeAllSessions: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH: {
+                    SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH);
+                    break;
+                }
+                case BLUETOOTH_LE: {
+                    SessionManager.removeAllSessions(Config.Antenna.BLUETOOTH_LE);
+                }
             }
         }
     }
 
-    public void stopDiscovery(Config.Antenna antenna) {
-        switch (antenna) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                this.bluetoothController.stopDiscovery(this.context);
+    public void startDiscovery(Config.Antenna[] antennas) {
+        for (Config.Antenna antenna : antennas){
+            Log.d(TAG, "startDiscovery: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.bluetoothController.startDiscovery(this.context);
+                }
+            }
+        }
+    }
+
+    public void stopDiscovery(Config.Antenna[] antennas) {
+        for (Config.Antenna antenna : antennas){
+            Log.d(TAG, "stopDiscovery: " + antenna);
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    this.bluetoothController.stopDiscovery(this.context);
+                }
             }
         }
     }

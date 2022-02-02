@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
         MeshifyLogger.startLogs();
 
         Config.Builder builder = new Config.Builder();
-        builder.setAntennaType(Config.Antenna.BLUETOOTH);
+        builder.setAntennaTypes(new Config.Antenna[]{Config.Antenna.BLUETOOTH, Config.Antenna.BLUETOOTH_LE});
         builder.setAutoConnect(false);
         builder.setConfigProfile(ConfigProfile.Default);
 

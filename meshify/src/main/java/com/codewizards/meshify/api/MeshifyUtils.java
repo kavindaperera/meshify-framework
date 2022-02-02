@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Build;
 
 import com.codewizards.meshify.api.exceptions.MeshifyException;
+import com.codewizards.meshify.logs.Log;
 
 public class MeshifyUtils {
 
@@ -42,12 +43,14 @@ public class MeshifyUtils {
     }
 
     static void initialize(Context context, Config config) {
-        switch (config.getAntennaType()) {
-            case BLUETOOTH:
-            case BLUETOOTH_LE: {
-                MeshifyUtils.checkPermissions(context);
-                if (config.getAntennaType() == Config.Antenna.BLUETOOTH_LE && !MeshifyUtils.checkHardware(context)) {
-                    throw new MeshifyException(Constants.BLE_NOT_SUPPORTED, Constants.BLE_NOT_SUPPORTED_STRING);
+        for (Config.Antenna antenna : config.getAntennaTypes()) {
+            switch (antenna) {
+                case BLUETOOTH:
+                case BLUETOOTH_LE: {
+                    MeshifyUtils.checkPermissions(context);
+                    if (config.checkAntennaType(Config.Antenna.BLUETOOTH_LE) && !MeshifyUtils.checkHardware(context)) {
+                        throw new MeshifyException(Constants.BLE_NOT_SUPPORTED, Constants.BLE_NOT_SUPPORTED_STRING);
+                    }
                 }
             }
         }
