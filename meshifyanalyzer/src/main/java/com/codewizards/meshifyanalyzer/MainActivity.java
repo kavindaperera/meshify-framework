@@ -43,8 +43,11 @@ import java.util.HashMap;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
+
+import static com.codewizards.meshifyanalyzer.Constants.RTT_PACKET_INTERVAL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -203,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (device.isSelected() ) {
                     isRTStarter = true;
-                    timerRTT(Constants.RTT_PACKET_INTERVAL, device.device, Integer.parseInt(editTextSize.getText().toString()));
+                    timerRTT(RTT_PACKET_INTERVAL, device.device, Integer.parseInt(editTextSize.getText().toString()));
                     btnStartRTTest.setVisibility(View.GONE);
                 }
             }
@@ -452,7 +455,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
-
 
     private void timerHello(final int time, Device device, boolean b1, Integer size) {
 
