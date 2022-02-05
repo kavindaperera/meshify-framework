@@ -53,7 +53,7 @@ public class MeshifyApp extends Application {
     private void createNotificationChannel() {
         String channelName = getString(MeshifyConstants.string.channel_name);
         String channelDescription = getString(MeshifyConstants.string.channel_description);
-        NotificationChannel notificationChannel = new NotificationChannel(Constants.NOTIFICATION_CHANNEL, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel notificationChannel = new NotificationChannel(Constants.NOTIFICATION_CHANNEL, channelName, NotificationManager.IMPORTANCE_HIGH);
         notificationChannel.setDescription(channelDescription);
         notificationChannel.enableLights(true);
         ((NotificationManager) getSystemService(NotificationManager.class)).createNotificationChannel(notificationChannel);

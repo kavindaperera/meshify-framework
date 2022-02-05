@@ -236,8 +236,10 @@ public class MainActivity extends AppCompatActivity {
     private void addTestDevicesForMiranda() {
 
         Device device1 = new Device("Elsa's Note 9","50:3D:C6:AB:52:2F", "83934c5a-6827-43ee-9631-a9ca95438ec7");
+        Device device2 = new Device("Galaxy On7 Pro","30:6A:85:75:C5:49", "dc069d2c-0e98-4b8c-a601-a4abf8530e19");
 
         listOfDevices.add(new SelectedDevice(device1));
+        listOfDevices.add(new SelectedDevice(device2));
         updateListView();
 
     }
