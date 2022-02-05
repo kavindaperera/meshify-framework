@@ -35,8 +35,8 @@ public class MessageLog extends LogEntity {
     }
 
     public enum Event {
-        DirectMessageSent,
-        DirectMessageReceived
+        DirectMessageSent, //0
+        DirectMessageReceived //1
     }
 
     public enum ErrorEvent {

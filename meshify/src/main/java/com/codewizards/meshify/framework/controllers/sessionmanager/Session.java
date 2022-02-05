@@ -102,6 +102,8 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
                     MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
                     Log.d(TAG, "Received: " + meshifyEntity);
                     Session.this.processEntity(meshifyEntity);
+
+
                 } catch (Exception exception) {
                     Log.e(TAG, "Received: reading entity failed " + exception.getMessage(), exception);
                 }
@@ -125,7 +127,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         this.createTime = System.currentTimeMillis();
     }
 
-    void removeSession() {
+    public void removeSession() {
         switch (this.getAntennaType()) {
             case BLUETOOTH: {
                 try {
@@ -357,7 +359,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
             Log.d(TAG, "Flushed:" + meshifyEntity);
 
             byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
-
+            Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
             this.getDataOutputStream().writeInt(arrby.length);
             this.getDataOutputStream().write(arrby);
             this.getDataOutputStream().flush();

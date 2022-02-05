@@ -51,9 +51,9 @@ public abstract class LogEntity {
     }
 
     public static enum LogType {
-        MESSAGE,
-        MESSAGE_ERROR,
-        MESH,
+        MESSAGE, //0
+        MESSAGE_ERROR, // 1
+        MESH, // 2
         MESH_ERROR,
         CONNECTION,
         CONNECTION_ERROR,

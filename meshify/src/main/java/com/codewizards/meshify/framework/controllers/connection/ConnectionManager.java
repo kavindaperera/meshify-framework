@@ -88,7 +88,7 @@ public class ConnectionManager {
         return connection != null && !connection.isConnected();
     }
 
-    static void retry(Device device) {
+    public static void retry(Device device) {
         Connection connection = connections.get(device.getDeviceAddress());
         if (connection != null) {
             connection.setConnectionRetries(connection.getConnectionRetries() + 1);

@@ -11,11 +11,12 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="clear_logs">Clear Logs</string>
     <string name="broadcast">Broadcast Test</string>
-    <string name="button_send">Run Test</string>
+    <string name="button_start_test">Start Test</string>
     <string name="message_size">Message Size</string>
     <string name="button_stop_meshify">Stop Meshify</string>
     <string name="button_stop_test">Stop Test</string>
     <string name="button_start_meshify">Start Meshify</string>
-    <string name="button_stop">Stop Test</string>
     <string name="button_disconnect_device">Disconnect Device</string>
+    <string name="button_start_rt_test">START RT TEST</string>
+    <string name="button_stop_rt_test">STOP RT TEST</string>
 </resources>

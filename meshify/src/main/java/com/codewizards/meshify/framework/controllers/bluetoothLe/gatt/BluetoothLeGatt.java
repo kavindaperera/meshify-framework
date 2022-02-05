@@ -26,12 +26,8 @@ public class BluetoothLeGatt {
         }
 
         // TODO
-
         return this.connectGatt(callback, bluetoothDevice, true);
-
     }
-
-
 
     private BluetoothGatt connectGatt(BluetoothGattCallback bluetoothGattCallback, BluetoothDevice bluetoothDevice, boolean autoConnect) {
         if (Build.VERSION.SDK_INT >= 23) {
