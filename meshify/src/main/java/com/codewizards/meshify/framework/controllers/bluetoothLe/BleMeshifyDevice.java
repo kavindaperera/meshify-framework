@@ -14,16 +14,18 @@ import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.profile.DeviceProfile;
-import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.BatteryService;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattBatteryService;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.controllers.sessionmanager.AbstractSession;
 import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BluetoothLeGatt;
+import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.logs.Log;
 
 import java.lang.reflect.Method;
@@ -65,6 +67,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 Log.e(this.TAG, "connect as client device address: " + this.getDevice().getDeviceAddress());
 
                 Session session = SessionManager.getSession(this.getDevice().getDeviceAddress());
+
                 if (session == null) {
 //                    session = new Session(bluetoothDevice, true, this.completableEmitter);
                 }
@@ -74,8 +77,14 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
     private void sendInitialHandShake(Device device){
         Log.e(TAG, "sendInitialHandShake: " + device.getDeviceAddress());
-        BatteryService batteryService = new BatteryService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), BluetoothUtils.batteryServiceUuid, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-        BluetoothController.getGattManager().addGattOperation(batteryService);
+        GattBatteryService gattBatteryService = new GattBatteryService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), BluetoothUtils.batteryServiceUuid, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+        BluetoothController.getGattManager().addGattOperation(gattBatteryService);
+
+        MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
+
+        byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
+        Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
+
 
     }
 
@@ -266,7 +275,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
         private void clearFailedConnection(BluetoothGatt bluetoothGatt) {
             BluetoothController.getGattManager().removeGattOperation(bluetoothGatt.getDevice());
             BluetoothController.getGattManager().getBluetoothGattMap().remove(bluetoothGatt.getDevice().getAddress());
-            if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
+            if (BluetoothController.getGattManager().getGatt() != null && BluetoothController.getGattManager().getGatt().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
                 //
             }
             bluetoothGatt.disconnect();

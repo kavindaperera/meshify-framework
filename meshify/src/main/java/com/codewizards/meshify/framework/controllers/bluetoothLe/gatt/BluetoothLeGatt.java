@@ -16,7 +16,7 @@ public class BluetoothLeGatt {
         this.context = context;
     }
 
-    public BluetoothGatt connectGatt(BluetoothDevice bluetoothDevice, boolean autoConnect, BluetoothGattCallback callback) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public BluetoothGatt connectGatt(BluetoothDevice bluetoothDevice, boolean autoConnect, BluetoothGattCallback callback) {
         if (bluetoothDevice == null) {
             return null;
         }

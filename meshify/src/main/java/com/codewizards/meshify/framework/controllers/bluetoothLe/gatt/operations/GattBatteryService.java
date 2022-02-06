@@ -10,14 +10,14 @@ import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattOperat
 
 import java.util.UUID;
 
-public class BatteryService extends GattOperation {
+public class GattBatteryService extends GattOperation {
 
     private final UUID serviceUuid;
     private final UUID characteristicUuid;
     private final UUID descriptorUuid;
     private byte[] descriptorValue;
 
-    public BatteryService(BluetoothDevice bluetoothDevice, UUID serviceUuid, UUID characteristicUuid, UUID descriptorUuid, byte[] descriptorValue) {
+    public GattBatteryService(BluetoothDevice bluetoothDevice, UUID serviceUuid, UUID characteristicUuid, UUID descriptorUuid, byte[] descriptorValue) {
         super(bluetoothDevice);
         this.serviceUuid = serviceUuid;
         this.characteristicUuid = characteristicUuid;
@@ -34,6 +34,11 @@ public class BatteryService extends GattOperation {
             bluetoothGattDescriptor.setValue(this.descriptorValue);
             bluetoothGatt.writeDescriptor(bluetoothGattDescriptor);
         }
+    }
+
+    @Override
+    public boolean isGatt() {
+        return true;
     }
 
 }

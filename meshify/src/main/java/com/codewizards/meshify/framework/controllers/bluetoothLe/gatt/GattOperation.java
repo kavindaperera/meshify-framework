@@ -57,6 +57,8 @@ public abstract class GattOperation {
         return 20000;
     }
 
-    public abstract void writeDescriptor(BluetoothGatt var1);
+    public abstract void writeDescriptor(BluetoothGatt bluetoothGatt);
+
+    public abstract boolean isGatt();
 
 }

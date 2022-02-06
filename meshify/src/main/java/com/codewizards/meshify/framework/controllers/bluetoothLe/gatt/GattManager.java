@@ -16,7 +16,7 @@ public class GattManager {
 
     private ConcurrentHashMap<String, BluetoothGatt> bluetoothGattMap = new ConcurrentHashMap();
 
-    private GattOperation gattOperation = null;
+    private GattOperation gatt = null;
 
     public GattManager() {
     }
@@ -29,23 +29,45 @@ public class GattManager {
 
 
     synchronized void start(){
-        if (this.gattOperation == null && this.gattOperations.size() > 0) {
-            GattOperation gattOperation1 = this.gattOperations.poll();
+        if (this.gatt == null && this.gattOperations.size() > 0) {
+            GattOperation poll = this.gattOperations.poll();
+            this.start(poll);
+            BluetoothDevice a = poll.getBluetoothDevice();
+            if (this.bluetoothGattMap.containsKey(a.getAddress())) {
+                writeDescriptor(this.bluetoothGattMap.get(a.getAddress()), poll);
+            }
+        }
+    }
+
+    public synchronized void start(GattOperation gattOperation) {
+        this.gatt = gattOperation;
+        if (gattOperation == null) {
+            this.start();
+        }
+    }
+
+    public void writeDescriptor(BluetoothGatt bluetoothGatt, GattOperation gatt) {
+        if (gatt == this.gatt) {
+            gatt.writeDescriptor(bluetoothGatt);
+            if (!gatt.isGatt()) {
+                this.start((GattOperation) null);
+                this.start();
+            }
         }
     }
 
     public void removeGattOperation(BluetoothDevice bluetoothDevice) {
         for (GattOperation gattOperation2 : this.gattOperations) {
-            if (!gattOperation.getBluetoothDevice().equals((Object)bluetoothDevice)) continue;
-            if (this.getGattOperation() != null && this.getGattOperation().equals(gattOperation2)) {
+            if (!gatt.getBluetoothDevice().equals((Object)bluetoothDevice)) continue;
+            if (this.getGatt() != null && this.getGatt().equals(gattOperation2)) {
                 //
             }
             this.gattOperations.remove(gattOperation2);
         }
     }
 
-    public GattOperation getGattOperation() {
-        return this.gattOperation;
+    public GattOperation getGatt() {
+        return this.gatt;
     }
 
     public ConcurrentHashMap<String, BluetoothGatt> getBluetoothGattMap() {
