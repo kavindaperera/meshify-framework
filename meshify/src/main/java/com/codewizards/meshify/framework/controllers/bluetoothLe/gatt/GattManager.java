@@ -28,7 +28,7 @@ public class GattManager {
     }
 
 
-    synchronized void start(){
+    public synchronized void start(){
         if (this.gatt == null && this.gattOperations.size() > 0) {
             GattOperation poll = this.gattOperations.poll();
             this.start(poll);

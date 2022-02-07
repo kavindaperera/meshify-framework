@@ -86,6 +86,8 @@ public class BleMeshifyDevice extends MeshifyDevice {
         Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
 
 
+
+
     }
 
     /**
@@ -254,8 +256,9 @@ public class BleMeshifyDevice extends MeshifyDevice {
         @Override
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorWrite()" + " | descriptor: " + descriptor + " | status: " + status);
-
+            Log.e(BleMeshifyDevice.this.TAG,"onDescriptorWrite()" + " | descriptor: " + descriptor.getValue() + " | status: " + status);
+            BluetoothController.getGattManager().start(null);
+            BluetoothController.getGattManager().start();
         }
 
         @Override

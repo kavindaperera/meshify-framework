@@ -94,7 +94,8 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
-        Log.e(TAG,"onDescriptorWriteRequest()" + " | device: " + device + " | requestId: " + requestId + " | descriptor: " + descriptor);
+        Log.e(TAG,"onDescriptorWriteRequest()" + " | device: " + device + " | requestId: " + requestId + " | descriptor: " + descriptor.getValue());
+        (this.getBluetoothLeServer().getServerSocket()).sendResponse(device, requestId, 0, offset, value);
     }
 
     @Override
@@ -130,5 +131,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     private BluetoothLeServer getBluetoothLeServer() {
         return (BluetoothLeServer)ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, true);
     }
+
+
 
 }
