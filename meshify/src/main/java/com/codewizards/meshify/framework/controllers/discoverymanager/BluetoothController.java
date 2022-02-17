@@ -236,7 +236,9 @@ public class BluetoothController {
             this.bluetoothDiscovery.stopDiscovery(context);
         }
 
-        //TODO - stop ble discovery
+        if (this.bluetoothLeDiscovery != null ){
+            this.bluetoothLeDiscovery.stopDiscovery(context);
+        }
 
     }
 
@@ -303,18 +305,50 @@ public class BluetoothController {
                 break;
             }
             case BLUETOOTH_LE: {
-                //TODO - stop BLE server
+                this.stopBluetoothLeServer();
             }
         }
     }
 
     private void stopBluetoothServer() throws ConnectionException {
-        ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, false);
+        ThreadServer threadServer = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH, false);
         this.threadServer = threadServer;
         if (threadServer != null) {
             threadServer.stopServer();
             this.threadServer = null;
             ServerFactory.setBluetoothServer((BluetoothServer) null);
+        }
+    }
+
+    private void stopBluetoothLeServer() {
+        this.threadServerBle = ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, false);
+        if (this.threadServerBle != null) {
+            try {
+                this.threadServerBle.stopServer();
+            }
+            catch (ConnectionException connectionException) {
+                connectionException.printStackTrace();
+            }
+            this.threadServerBle = null;
+            ServerFactory.setBluetoothLeServer(null);
+        }
+        this.stopAdvertising();
+    }
+
+    @SuppressLint("MissingPermission")
+    protected void stopAdvertising() {
+        state = 0;
+        try {
+            if (this.bluetoothAdapter != null && this.bluetoothAdapter.getBluetoothLeAdvertiser() != null) {
+                BluetoothLeAdvertiser bluetoothLeAdvertiser = this.bluetoothAdapter.getBluetoothLeAdvertiser();
+                if (this.advertiseCallback != null && bluetoothLeAdvertiser != null) {
+                    Log.i(TAG, "stopAdvertising: ");
+                    bluetoothLeAdvertiser.stopAdvertising(this.advertiseCallback);
+                }
+            }
+        }
+        catch (NullPointerException nullPointerException) {
+            Log.e(TAG, "stopAdvertising: exception " + nullPointerException.getMessage());
         }
     }
 

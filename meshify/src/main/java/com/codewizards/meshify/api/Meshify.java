@@ -142,6 +142,10 @@ public class Meshify {
             Log.e(TAG, "stop: Meshify must be started before calling stop()");
             return false;
         }
+        catch (IllegalStateException stateException) {
+            Log.e(TAG, stateException.getMessage());
+            return false;
+        }
 
     }
 

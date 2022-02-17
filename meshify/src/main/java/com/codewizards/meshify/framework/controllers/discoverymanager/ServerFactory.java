@@ -50,4 +50,8 @@ public class ServerFactory {
         ServerFactory.bluetoothServer = bluetoothServer;
     }
 
+    static void setBluetoothLeServer(BluetoothLeServer bluetoothLeServer) {
+        ServerFactory.bluetoothLeServer = bluetoothLeServer;
+    }
+
 }
