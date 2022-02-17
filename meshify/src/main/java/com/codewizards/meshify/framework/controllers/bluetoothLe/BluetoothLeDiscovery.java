@@ -130,10 +130,15 @@ public class BluetoothLeDiscovery extends Discovery {
     public void stopDiscovery(Context context) {
         super.stopDiscovery(context);
         this.disposable.clear();
-        if (this.bluetoothAdapter != null && this.scanCallback != null && this.bluetoothAdapter.isEnabled() && this.bluetoothAdapter.getBluetoothLeScanner() != null){
+        if (this.bluetoothAdapter != null && this.scanCallback != null && this.bluetoothAdapter.isEnabled() && this.bluetoothAdapter.getBluetoothLeScanner() != null) {
             Log.i(TAG, "stopDiscovery: stopping scan");
+            try {
+                this.bluetoothAdapter.getBluetoothLeScanner().stopScan(this.scanCallback);
+            } catch (IllegalStateException illegalStateException) {
+                Log.w(TAG, "stopDiscovery: tried to stop discovery but Bluetooth was already off");
+            }
         } else {
-            // TODO
+            Log.w(TAG, "BluetoothAdapter or scanCallback were null!");
         }
         this.setDiscoveryRunning(false);
     }
