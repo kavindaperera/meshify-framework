@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 
+import java.util.ArrayList;
+
 public class Transaction implements Comparable {
 
     private TransactionManager transactionManager;
@@ -18,6 +20,8 @@ public class Transaction implements Comparable {
     private String start;
 
     private BluetoothDevice bluetoothDevice;
+
+    private ArrayList<byte[]> byteArr;
 
     Transaction(Session session, MeshifyEntity meshifyEntity, TransactionManager transactionManager) {
         this.session = session;
@@ -63,11 +67,19 @@ public class Transaction implements Comparable {
     }
 
 
-    TransactionManager getTransactionManager() {
+    public TransactionManager getTransactionManager() {
         return this.transactionManager;
     }
 
     public MeshifyEntity getMeshifyEntity() {
         return this.meshifyEntity;
     }
+
+    public ArrayList<byte[]> getByteArr() {
+        if (this.byteArr == null) {
+            //
+        }
+        return this.byteArr;
+    }
+
 }

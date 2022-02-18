@@ -26,6 +26,8 @@ public class BluetoothUtils {
 
     private static String TAG = "[Meshify][BluetoothUtils]";
 
+    public static UUID BASE_UUID =  UUID.fromString("00000000-0000-1000-8000-00805f9b34fb");
+
     public static UUID batteryServiceUuid  = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private static UUID bluetoothUuid;
@@ -106,7 +108,7 @@ public class BluetoothUtils {
 
     public static UUID getHashedBluetoothLeUuid(boolean bl) {
         UUID uUID = UUID.fromString(Meshify.getInstance().getMeshifyClient().getApiKey());
-        UUID uUID2 = UUID.fromString("00000000-0000-1000-8000-00805f9b34fb");
+        UUID uUID2 = BASE_UUID;
         byte[] arrby = BluetoothUtils.getSignificantBits(uUID2.toString());
         byte[] arrby2 = Arrays.copyOfRange(BluetoothUtils.getSHA(uUID.toString()), 0, 16);
         arrby[2] = arrby2[arrby2.length - 2];
@@ -120,7 +122,7 @@ public class BluetoothUtils {
 
     public static String getHashedBluetoothLeUuid(String string) {
         UUID uUID = UUID.fromString(string);
-        UUID uUID2 = UUID.fromString("00000000-0000-1000-8000-00805f9b34fb");
+        UUID uUID2 = BASE_UUID;
         byte[] arrby = BluetoothUtils.getSignificantBits(uUID2.toString());
         byte[] arrby2 = Arrays.copyOfRange(BluetoothUtils.getSHA(uUID.toString()), 0, 16);
         arrby[2] = arrby2[arrby2.length - 2];

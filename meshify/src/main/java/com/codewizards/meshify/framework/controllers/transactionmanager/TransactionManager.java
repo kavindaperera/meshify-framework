@@ -127,4 +127,11 @@ public class TransactionManager {
         return arrayList;
     }
 
+    public void onTransactionFinished(Transaction transaction) {
+        Session session = transaction.getSession();
+        Log.e(TAG, "onTransactionFinished: \n" + session.getDevice().getDeviceName() + "\n id " + session.getUserId() + "\n central: " + session.getUserId());
+        this.notifySent(transaction);
+        // TODO
+    }
+
 }

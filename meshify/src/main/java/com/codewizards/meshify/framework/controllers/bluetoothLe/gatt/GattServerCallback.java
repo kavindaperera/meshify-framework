@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.os.Parcel;
 
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
@@ -16,8 +17,10 @@ import com.codewizards.meshify.framework.controllers.bluetoothLe.BluetoothLeServ
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.ServerFactory;
+import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
+import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.logs.Log;
 
 public class GattServerCallback extends BluetoothGattServerCallback {
@@ -83,6 +86,15 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
         Log.e(TAG,"onCharacteristicWriteRequest()" + " | device: " + device + " | requestId: " + requestId + " | offset: "  + offset + " | characteristic: " + characteristic);
+        (this.getBluetoothLeServer().getServerSocket()).sendResponse(device, requestId, 0, offset, value);
+        BluetoothDevice bluetoothDevice = device;
+        Session session = SessionManager.getSession(device.getAddress());
+        if (session != null && session.getBluetoothDevice() != null && session.getBluetoothDevice().equals(bluetoothDevice)) {
+            Parcel parcel = MeshifyUtils.unmarshall(value);
+            MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
+            Log.e(TAG, "Received: " + meshifyEntity);
+            session.processEntity(meshifyEntity);
+        }
     }
 
     @Override

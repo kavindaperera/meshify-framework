@@ -29,17 +29,20 @@ public class GattManager {
 
 
     public synchronized void start(){
+        Log.e(TAG, "start(): gatt_operations | size: " + this.gattOperations.size());
         if (this.gatt == null && this.gattOperations.size() > 0) {
             GattOperation poll = this.gattOperations.poll();
             this.start(poll);
-            BluetoothDevice a = poll.getBluetoothDevice();
-            if (this.bluetoothGattMap.containsKey(a.getAddress())) {
-                writeDescriptor(this.bluetoothGattMap.get(a.getAddress()), poll);
+            BluetoothDevice bluetoothDevice = poll.getBluetoothDevice();
+            if (this.bluetoothGattMap.containsKey(bluetoothDevice.getAddress())) {
+                Log.e(TAG, "writeDescriptor(): ");
+                writeDescriptor(this.bluetoothGattMap.get(bluetoothDevice.getAddress()), poll);
             }
         }
     }
 
     public synchronized void start(GattOperation gattOperation) {
+        Log.e(TAG, "start(): " + gattOperation);
         this.gatt = gattOperation;
         if (gattOperation == null) {
             this.start();

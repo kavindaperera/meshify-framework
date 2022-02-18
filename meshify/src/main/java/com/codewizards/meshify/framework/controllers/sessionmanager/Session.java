@@ -250,7 +250,7 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         Session.getEditor().putString(MeshifyCore.PREFS_KEY_PAIRS, string).commit();
     }
 
-    void processEntity(MeshifyEntity meshifyEntity) {
+    public void processEntity(MeshifyEntity meshifyEntity) {
         if (meshifyEntity != null) {
             switch (meshifyEntity.getEntity()) {
                 case 0:{

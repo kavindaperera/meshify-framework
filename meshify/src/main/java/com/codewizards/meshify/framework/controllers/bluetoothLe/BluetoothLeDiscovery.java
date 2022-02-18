@@ -222,7 +222,7 @@ public class BluetoothLeDiscovery extends Discovery {
                 UUID uuid = ((ParcelUuid) entry.getKey()).getUuid();
                 string = this.discoveredDevices.get(bluetoothDevice.getAddress());
                 if (string != null) continue;
-                Log.w(TAG, "\nAPPKEY: " + Meshify.getInstance().getMeshifyClient().getApiKey() +
+                Log.e(TAG, "\nAPPKEY: " + Meshify.getInstance().getMeshifyClient().getApiKey() +
                         "\nDeviceData: " + string3 +
                         "\nService UUID: " + uuid.toString() +
                         "\nCustom UUID: " + this.bleUuid2 +

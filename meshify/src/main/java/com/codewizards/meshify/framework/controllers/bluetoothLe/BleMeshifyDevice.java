@@ -15,6 +15,7 @@ import com.codewizards.meshify.api.Device;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.profile.DeviceProfile;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattBatteryService;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattDataService;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
@@ -69,8 +70,15 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 Session session = SessionManager.getSession(this.getDevice().getDeviceAddress());
 
                 if (session == null) {
-//                    session = new Session(bluetoothDevice, true, this.completableEmitter);
+                    session = new Session(bluetoothDevice, true, this.completableEmitter);
                 }
+
+                session.setSessionId(this.getDevice().getDeviceAddress());
+                this.getDevice().setSessionId(session.getSessionId());
+                session.setDevice(this.getDevice());
+                SessionManager.queueSession(session);
+                DeviceManager.addDevice(session.getDevice());
+
             }
         });
     }
@@ -83,10 +91,11 @@ public class BleMeshifyDevice extends MeshifyDevice {
         MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
 
         byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
-        Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
+        Log.e(TAG, "length: " + arrby.length + " | write: " + arrby);
 
+        GattDataService dataService = new GattDataService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), arrby);
 
-
+        BluetoothController.getGattManager().addGattOperation(dataService);
 
     }
 
@@ -236,7 +245,8 @@ public class BleMeshifyDevice extends MeshifyDevice {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
             Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicWrite()" + " | characteristic: " + characteristic + " | status: " + status);
-
+            BluetoothController.getGattManager().start(null);
+            BluetoothController.getGattManager().start();
         }
 
         @Override
