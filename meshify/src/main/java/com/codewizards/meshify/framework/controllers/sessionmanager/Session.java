@@ -1,5 +1,6 @@
 package com.codewizards.meshify.framework.controllers.sessionmanager;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Timer;
 
+import io.reactivex.CompletableEmitter;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -56,6 +58,13 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
     }
 
     public Session() {
+    }
+
+    public Session(BluetoothDevice bluetoothDevice, boolean ble, CompletableEmitter emitter) {
+        super(bluetoothDevice, ble, emitter);
+        if (ble) {
+            this.setConnected(true);
+        }
     }
 
     public Session(BluetoothGatt bluetoothGatt) {
