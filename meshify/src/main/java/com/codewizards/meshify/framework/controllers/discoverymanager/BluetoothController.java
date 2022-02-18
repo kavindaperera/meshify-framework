@@ -22,7 +22,7 @@ import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 import com.codewizards.meshify.logs.Log;
 
-public class BluetoothController {
+public class BluetoothController extends AbstractController {
 
     private static String TAG = "[Meshify][BluetoothController]";
 
@@ -193,6 +193,7 @@ public class BluetoothController {
     }
 
 
+    @Override
     public void startDiscovery(Context context) {
         switch (this.getConfig().getAntennaType()) {
             case BLUETOOTH: {
@@ -231,6 +232,7 @@ public class BluetoothController {
         }
     }
 
+    @Override
     public void stopDiscovery(Context context) {
         if (this.bluetoothDiscovery != null) {
             this.bluetoothDiscovery.stopDiscovery(context);
@@ -240,6 +242,7 @@ public class BluetoothController {
 
     }
 
+    @Override
     public void startServer(Context context) throws ConnectionException {
         Log.d(TAG, "startServer: " + this.getConfig().getAntennaType());
         switch (this.getConfig().getAntennaType()) {
@@ -295,6 +298,7 @@ public class BluetoothController {
         }
     }
 
+    @Override
     public void stopServer() throws ConnectionException {
         Log.i(TAG, "stopServer: ");
         switch (this.getConfig().getAntennaType()) {
