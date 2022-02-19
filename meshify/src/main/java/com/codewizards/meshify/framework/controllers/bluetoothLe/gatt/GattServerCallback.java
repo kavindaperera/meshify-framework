@@ -11,11 +11,8 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Parcel;
 
 import com.codewizards.meshify.api.Config;
-import com.codewizards.meshify.api.Device;
-import com.codewizards.meshify.framework.controllers.bluetoothLe.BleMeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.BluetoothLeServer;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
-import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.ServerFactory;
 import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
@@ -47,27 +44,27 @@ public class GattServerCallback extends BluetoothGattServerCallback {
         }
 
         switch (newState) {
+            case BluetoothProfile.STATE_CONNECTED: {
+                Log.e(TAG, "Client connecting to Server : STATE_CONNECTED " + device.getAddress());
+                if (SessionManager.sessionMap.get(device.getAddress()) != null && this.getBluetoothLeServer() == null && this.getBluetoothLeServer().getServerSocket() == null && !this.getBluetoothLeServer().alive()) {
+                    Log.e(TAG, "Server Callback device " + device + " new state STATE_CONNECTED status " + status);
+                    break;
+                }
+                Log.i(TAG, "Server Connection with " + device.getAddress());
+                this.getBluetoothLeServer().getServerSocket().connect(device, false);
+                this.getBluetoothLeServer().createSession(device);
+                break;
+            }
             case BluetoothProfile.STATE_DISCONNECTED: {
-
                 Session session = SessionManager.getSession(device.getAddress());
-
                 if (session == null || session.getState() == 1 || ConnectionManager.getMeshifyDevice() != null && ConnectionManager.getMeshifyDevice().getDevice().getDeviceAddress().equals(device.getAddress())) break;
-
                 Log.e(TAG, "STATE_DISCONNECTED " + device.getAddress());
-
                 if (this.getBluetoothLeServer() != null && this.getBluetoothLeServer().getServerSocket() != null) {
                     ((BluetoothGattServer)this.getBluetoothLeServer().getServerSocket()).cancelConnection(device);
                 }
                 session.removeSession();
             }
-            case BluetoothProfile.STATE_CONNECTED: {
-                Log.e(TAG, "Client connecting to Server : STATE_CONNECTED " + device.getAddress());
-                if (SessionManager.sessionMap.get(device.getAddress()) == null && this.getBluetoothLeServer() != null && this.getBluetoothLeServer().getServerSocket() != null && this.getBluetoothLeServer().isAlive()) {
-                    Log.e(TAG, "Server Connection with " + device.getAddress());
-                }
-            }
         }
-
     }
 
     @Override
@@ -85,11 +82,10 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-        Log.e(TAG,"onCharacteristicWriteRequest()" + " | device: " + device + " | requestId: " + requestId + " | offset: "  + offset + " | characteristic: " + characteristic);
+        Log.e(TAG,"onCharacteristicWriteRequest()" + " | device: " + device + " | requestId: " + requestId + " | offset: "  + offset + " | characteristic: " + characteristic.getUuid());
         (this.getBluetoothLeServer().getServerSocket()).sendResponse(device, requestId, 0, offset, value);
-        BluetoothDevice bluetoothDevice = device;
         Session session = SessionManager.getSession(device.getAddress());
-        if (session != null && session.getBluetoothDevice() != null && session.getBluetoothDevice().equals(bluetoothDevice)) {
+        if (session != null && session.getBluetoothDevice() != null && session.getBluetoothDevice().equals(device)) {
             Parcel parcel = MeshifyUtils.unmarshall(value);
             MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
             Log.e(TAG, "Received: " + meshifyEntity);

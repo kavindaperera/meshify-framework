@@ -10,9 +10,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.codewizards.meshify.api.Config;
+import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.framework.controllers.discoverymanager.ServerFactory;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.discoverymanager.ThreadServer;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattServerCallback;
+import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.entities.MeshifyHandshake;
 import com.codewizards.meshify.framework.expections.ConnectionException;
 
@@ -125,4 +129,16 @@ public class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothG
             this.acceptConnection(this.bluetoothManager.openGattServer(context, new GattServerCallback()));
         }
     }
+
+    public void createSession(BluetoothDevice bluetoothDevice) {
+        Session session = new Session(bluetoothDevice, true, null);
+        session.setSessionId(bluetoothDevice.getAddress());
+        Device device = new Device(bluetoothDevice, true);
+        device.setSessionId(session.getSessionId());
+        session.setDevice(device);
+        BluetoothGattServer bluetoothGattServer = (BluetoothGattServer) ServerFactory.getServerInstance(Config.Antenna.BLUETOOTH_LE, true).getServerSocket();
+        session.setGattServer(bluetoothGattServer);
+        SessionManager.queueSession(session);
+    }
+
 }
