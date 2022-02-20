@@ -75,10 +75,10 @@ public class BleMeshifyDevice extends MeshifyDevice {
         Log.e(TAG, "sendInitialHandShake: " + device.getDeviceAddress());
         GattBatteryService gattBatteryService = new GattBatteryService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), BluetoothUtils.batteryServiceUuid, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
         BluetoothController.getGattManager().addGattOperation(gattBatteryService);
-        Log.e(this.TAG, "Handshake request type 0 |  session: " + device.getSessionId());
+        Log.i(this.TAG, "1. Handshake request type 0 |  session: " + device.getSessionId());
         MeshifyEntity meshifyEntity = MeshifyEntity.generateHandShake();
         byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
-        Log.e(TAG, "length: " + arrby.length + " | write: " + arrby);
+        Log.i(TAG, "length: " + arrby.length + " | write: " + arrby);
         GattDataService dataService = new GattDataService(device.getBluetoothDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid(), arrby);
         BluetoothController.getGattManager().addGattOperation(dataService);
     }
@@ -182,7 +182,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error!!" + gatt.getDevice().getAddress());
 
                 if (gatt.getDevice() != null && gatt.getDevice().getAddress() != null) {
-                    Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error with" + gatt.getDevice().getAddress());
+                    Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error with " + gatt.getDevice().getAddress());
                 }
                 this.clearFailedConnection(gatt);
 

@@ -117,10 +117,6 @@ public class BluetoothLeServer  extends ThreadServer<BluetoothDevice, BluetoothG
             if (this.addCharacteristic()) {
                 ((BluetoothGattServer) this.getServerSocket()).addService(this.bluetoothGattService);
             }
-            Log.e(TAG, "\nservice: " + bluetoothGattService.getUuid() +
-                    "\nincluded-services: " + bluetoothGattService.getIncludedServices()+
-                    "\ncharacteristics: " + bluetoothGattService.getCharacteristics().get(0).getUuid());
-
         }
     }
 

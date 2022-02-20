@@ -47,7 +47,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
             case BluetoothProfile.STATE_CONNECTED: {
                 Log.e(TAG, "Client connecting to Server : STATE_CONNECTED " + device.getAddress());
                 if (SessionManager.sessionMap.get(device.getAddress()) != null && this.getBluetoothLeServer() == null && this.getBluetoothLeServer().getServerSocket() == null && !this.getBluetoothLeServer().alive()) {
-                    Log.e(TAG, "Server Callback device " + device + " new state STATE_CONNECTED status " + status);
+                    Log.i(TAG, "Server Callback device " + device + " new state STATE_CONNECTED status " + status);
                     break;
                 }
                 Log.i(TAG, "Server Connection with " + device.getAddress());
@@ -58,7 +58,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
             case BluetoothProfile.STATE_DISCONNECTED: {
                 Session session = SessionManager.getSession(device.getAddress());
                 if (session == null || session.getState() == 1 || ConnectionManager.getMeshifyDevice() != null && ConnectionManager.getMeshifyDevice().getDevice().getDeviceAddress().equals(device.getAddress())) break;
-                Log.e(TAG, "STATE_DISCONNECTED " + device.getAddress());
+                Log.i(TAG, "STATE_DISCONNECTED " + device.getAddress());
                 if (this.getBluetoothLeServer() != null && this.getBluetoothLeServer().getServerSocket() != null) {
                     ((BluetoothGattServer)this.getBluetoothLeServer().getServerSocket()).cancelConnection(device);
                 }
@@ -88,7 +88,7 @@ public class GattServerCallback extends BluetoothGattServerCallback {
         if (session != null && session.getBluetoothDevice() != null && session.getBluetoothDevice().equals(device)) {
             Parcel parcel = MeshifyUtils.unmarshall(value);
             MeshifyEntity meshifyEntity = MeshifyEntity.CREATOR.createFromParcel(parcel);
-            Log.e(TAG, "Received: " + meshifyEntity);
+            Log.i(TAG, "Received: " + meshifyEntity);
             session.processEntity(meshifyEntity);
         }
     }
