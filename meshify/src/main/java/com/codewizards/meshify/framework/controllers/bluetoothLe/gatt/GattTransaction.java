@@ -10,11 +10,11 @@ public class GattTransaction {
 
     Transaction transaction;
 
-    GattTransaction(Transaction transaction1) {
+    public GattTransaction(Transaction transaction1) {
         this.transaction = transaction1;
     }
 
-    void addGattOperation(GattOperation gattOperation) {
+    public void addGattOperation(GattOperation gattOperation) {
         this.gattOperations.add(gattOperation);
 
     }

@@ -67,6 +67,11 @@ public class Session extends AbstractSession implements com.codewizards.meshify.
         }
     }
 
+    public boolean checkGatt() {
+        return this.getGattServer() != null && this.getBluetoothDevice() != null && this.getBluetoothGatt() == null;
+    }
+
+
     public Session(BluetoothGatt bluetoothGatt) {
         this.setBluetoothGatt(bluetoothGatt);
         this.setAntennaType(Config.Antenna.BLUETOOTH_LE);

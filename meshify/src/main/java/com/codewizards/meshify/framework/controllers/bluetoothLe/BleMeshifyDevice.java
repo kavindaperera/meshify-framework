@@ -24,7 +24,6 @@ import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceMana
 import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
-import com.codewizards.meshify.framework.controllers.sessionmanager.AbstractSession;
 import com.codewizards.meshify.framework.controllers.discoverymanager.MeshifyDevice;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BluetoothLeGatt;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -167,7 +166,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
 
                         BluetoothController.getGattManager().getBluetoothGattMap().remove(address);
 
-                        if (BluetoothController.getGattManager().getGatt() != null && BluetoothController.getGattManager().getGatt().getBluetoothDevice().getAddress().equals(gatt.getDevice().getAddress())){
+                        if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(gatt.getDevice().getAddress())){
                             BluetoothController.getGattManager().start((GattOperation) null);
                         }
 
@@ -200,7 +199,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                             //
                         }
                         BluetoothController.getGattManager().getBluetoothGattMap().remove(address);
-                        if (BluetoothController.getGattManager().getGatt() != null && BluetoothController.getGattManager().getGatt().getBluetoothDevice().getAddress().equals(gatt.getDevice().getAddress())){
+                        if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(gatt.getDevice().getAddress())){
                             BluetoothController.getGattManager().start((GattOperation) null);
                         }
                         if (session2 != null) {
@@ -249,7 +248,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 BluetoothGattCharacteristic bluetoothGattCharacteristic = gatt.getService(BluetoothUtils.getBluetoothUuid()).getCharacteristic(BluetoothUtils.getCharacteristicUuid());
                 if (gatt.setCharacteristicNotification(bluetoothGattCharacteristic, true)){
                     BleMeshifyDevice.this.sendInitialHandShake(BleMeshifyDevice.this.getDevice());
-                    BluetoothController.getGattManager().writeDescriptor(gatt, BluetoothController.getGattManager().getGatt());
+                    BluetoothController.getGattManager().execute(gatt, BluetoothController.getGattManager().getGattOperation());
                     return;
                 }
                 this.clearFailedConnection(gatt);
@@ -315,7 +314,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
         private void clearFailedConnection(BluetoothGatt bluetoothGatt) {
             BluetoothController.getGattManager().removeGattOperation(bluetoothGatt.getDevice());
             BluetoothController.getGattManager().getBluetoothGattMap().remove(bluetoothGatt.getDevice().getAddress());
-            if (BluetoothController.getGattManager().getGatt() != null && BluetoothController.getGattManager().getGatt().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
+            if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
                 //
             }
             bluetoothGatt.disconnect();

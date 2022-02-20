@@ -36,7 +36,7 @@ public class GattManager {
             BluetoothDevice bluetoothDevice = poll.getBluetoothDevice();
             if (this.bluetoothGattMap.containsKey(bluetoothDevice.getAddress())) {
                 Log.e(TAG, "writeDescriptor(): ");
-                writeDescriptor(this.bluetoothGattMap.get(bluetoothDevice.getAddress()), poll);
+                execute(this.bluetoothGattMap.get(bluetoothDevice.getAddress()), poll);
             }
         }
     }
@@ -49,7 +49,7 @@ public class GattManager {
         }
     }
 
-    public void writeDescriptor(BluetoothGatt bluetoothGatt, GattOperation gatt) {
+    public void execute(BluetoothGatt bluetoothGatt, GattOperation gatt) {
         if (gatt == this.gatt) {
             gatt.writeDescriptor(bluetoothGatt);
             if (!gatt.isGatt()) {
@@ -62,19 +62,26 @@ public class GattManager {
     public void removeGattOperation(BluetoothDevice bluetoothDevice) {
         for (GattOperation gattOperation2 : this.gattOperations) {
             if (!gatt.getBluetoothDevice().equals((Object)bluetoothDevice)) continue;
-            if (this.getGatt() != null && this.getGatt().equals(gattOperation2)) {
+            if (this.getGattOperation() != null && this.getGattOperation().equals(gattOperation2)) {
                 //
             }
             this.gattOperations.remove(gattOperation2);
         }
     }
 
-    public GattOperation getGatt() {
+    public GattOperation getGattOperation() {
         return this.gatt;
     }
 
     public ConcurrentHashMap<String, BluetoothGatt> getBluetoothGattMap() {
         return this.bluetoothGattMap;
+    }
+
+    public void addAndStart(GattTransaction gattTransaction) {
+        for (GattOperation gattOperation : gattTransaction.getGattOperations()) {
+            this.gattOperations.add(gattOperation);
+        }
+        this.start();
     }
 
 }

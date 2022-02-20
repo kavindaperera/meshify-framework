@@ -6,6 +6,10 @@ import android.os.Looper;
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.api.Message;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattTransaction;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattDataService;
+import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -23,7 +27,8 @@ public class TransactionManager {
     private static String TAG = "[Meshify][TransactionManager]";
 
     private static TransactionManager transactionManager = new TransactionManager();
-
+    private static ConcurrentSkipListMap<Session, ConcurrentNavigableMap<Transaction, Boolean>> bleTransactionsQueue = new ConcurrentSkipListMap();
+    private static ConcurrentNavigableMap<Transaction, Boolean> bleTransactions = new ConcurrentSkipListMap<Transaction, Boolean>();
     private static ConcurrentNavigableMap<Transaction, Boolean> transactions = new ConcurrentSkipListMap<Transaction, Boolean>();
 
     private TransactionManager() {
@@ -36,6 +41,16 @@ public class TransactionManager {
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
                 transactions.put(transaction, Boolean.TRUE);
                 transactionManager.startInBackground();
+            } else if (session2.checkGatt()) {
+                if (transactionManager.getTransactionQueue(session).containsKey(transaction)){
+                    Log.e(TAG, "sendEntity: transaction was queued");
+                } else {
+                    transactionManager.getTransactionQueue(session).put(transaction, Boolean.TRUE);
+                }
+                // TODO - Execute Send
+            } else {
+                bleTransactions.put(transaction, Boolean.TRUE);
+                transactionManager.start();
             }
 
         }
@@ -132,6 +147,30 @@ public class TransactionManager {
         Log.e(TAG, "onTransactionFinished: \n" + session.getDevice().getDeviceName() + "\n id " + session.getUserId() + "\n central: " + session.getUserId());
         this.notifySent(transaction);
         // TODO
+    }
+
+    private static void start() { // for BLE
+        Transaction transaction2 = bleTransactions.pollFirstEntry().getKey();
+        Session session = transaction2.getSession();
+        GattTransaction gattTransaction = new GattTransaction(transaction2);
+        for (int idx = 0; idx < transaction2.getByteArr().size(); ++idx) {
+            GattDataService gattData = new GattDataService(session.getBluetoothGatt().getDevice(),
+                    BluetoothUtils.getBluetoothUuid(),
+                    BluetoothUtils.getCharacteristicUuid(),
+                    transaction2.getByteArr().get(idx));
+            gattData.setTransaction(transaction2);
+            gattTransaction.addGattOperation(gattData);
+        }
+        BluetoothController.getGattManager().addAndStart(gattTransaction);
+    }
+
+    private static ConcurrentNavigableMap getTransactionQueue(Session session) {
+        ConcurrentNavigableMap<Transaction, Boolean> concurrentNavigableMap = bleTransactionsQueue.get(session);
+        if (concurrentNavigableMap == null) {
+            concurrentNavigableMap = new ConcurrentSkipListMap<Transaction, Boolean>();
+            bleTransactionsQueue.put(session, concurrentNavigableMap);
+        }
+        return concurrentNavigableMap;
     }
 
 }

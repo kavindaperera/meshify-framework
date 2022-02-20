@@ -54,7 +54,7 @@ public class GattDataService extends GattOperation {
         return false;
     }
 
-    void setTransaction(Transaction transaction) {
+    public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
     }
 

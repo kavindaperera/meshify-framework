@@ -4,9 +4,12 @@ import android.bluetooth.BluetoothDevice;
 
 import androidx.annotation.Nullable;
 
+import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
+import com.codewizards.meshify.framework.expections.MessageException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Transaction implements Comparable {
@@ -22,6 +25,8 @@ public class Transaction implements Comparable {
     private BluetoothDevice bluetoothDevice;
 
     private ArrayList<byte[]> byteArr;
+
+    private int byteSize = 0;
 
     Transaction(Session session, MeshifyEntity meshifyEntity, TransactionManager transactionManager) {
         this.session = session;
@@ -77,9 +82,21 @@ public class Transaction implements Comparable {
 
     public ArrayList<byte[]> getByteArr() {
         if (this.byteArr == null) {
-            //
+            this.byteArr = this.setByteArr();
         }
         return this.byteArr;
+    }
+
+    private ArrayList<byte[]> setByteArr() {
+        ArrayList<byte[]> arrayList = new ArrayList<byte[]>();
+        byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
+        arrayList.add(arrby);
+        this.byteSize = arrayList.size();
+        return arrayList;
+    }
+
+    public int getByteSize() {
+        return this.byteSize;
     }
 
 }
