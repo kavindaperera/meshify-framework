@@ -17,6 +17,7 @@ import com.codewizards.meshify.api.profile.DeviceProfile;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.GattOperation;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattBatteryService;
 import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattDataService;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations.GattReadCharService;
 import com.codewizards.meshify.framework.controllers.connection.ConnectionManager;
 import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
@@ -29,6 +30,7 @@ import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.BluetoothL
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.logs.Log;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Method;
 
 import io.reactivex.Completable;
@@ -260,8 +262,14 @@ public class BleMeshifyDevice extends MeshifyDevice {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicRead()" + " | characteristic: " + characteristic + " | status: " + status);
-            //TODO
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicRead()" + " | characteristic: " + characteristic.getUuid() + " | status: " + status);
+
+            if (BluetoothController.getGattManager().getGattOperation() instanceof GattReadCharService){
+                ((GattReadCharService)BluetoothController.getGattManager().getGattOperation()).onRead(characteristic, gatt);
+            } else {
+                Log.e(TAG, "onCharacteristicRead(): error -> " + BluetoothController.getGattManager().getGattOperation().getClass());
+            }
+
             BluetoothController.getGattManager().start(null);
             BluetoothController.getGattManager().start();
         }
@@ -269,7 +277,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicWrite()" + " | characteristic: " + characteristic + " | status: " + status);
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicWrite()" + " | characteristic: " + characteristic.getUuid() + " | status: " + status);
             BluetoothController.getGattManager().start(null);
             BluetoothController.getGattManager().start();
         }
@@ -277,8 +285,27 @@ public class BleMeshifyDevice extends MeshifyDevice {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
-            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicChanged()" + " | characteristic: " + characteristic );
+            Log.e(BleMeshifyDevice.this.TAG,"onCharacteristicChanged()" + " | characteristic: " + characteristic.getUuid() +  "| device: " + gatt.getDevice().getAddress());
+            int status;
+            try {
+                status = characteristic.getValue()[0];
+            } catch (Exception e) {
+                status = -1;
+            }
 
+            Log.e(TAG, "onCharacteristicChanged() | status: " + status);
+
+            switch (status){
+                case 1:{
+                    BluetoothController.getGattManager().addGattOperation(new GattReadCharService(gatt.getDevice(), BluetoothUtils.getBluetoothUuid(), BluetoothUtils.getCharacteristicUuid()));
+                    break;
+                }
+                case 2:{
+                    Session session = SessionManager.getSession(gatt.getDevice().getAddress());
+                    gatt.disconnect();
+                    session.removeSession();
+                }
+            }
         }
 
         @Override

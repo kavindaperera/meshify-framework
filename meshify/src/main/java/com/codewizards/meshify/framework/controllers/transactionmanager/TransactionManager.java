@@ -1,5 +1,7 @@
 package com.codewizards.meshify.framework.controllers.transactionmanager;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -11,6 +13,7 @@ import com.codewizards.meshify.framework.controllers.bluetoothLe.gatt.operations
 import com.codewizards.meshify.framework.controllers.discoverymanager.BluetoothController;
 import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
+import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.entities.MeshifyContent;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
@@ -18,6 +21,7 @@ import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -35,22 +39,23 @@ public class TransactionManager {
     }
 
     public static void sendEntity(Session session, MeshifyEntity meshifyEntity) {
-        Session session2 = session;
-        synchronized (session2) {
+        synchronized (session) {
             Transaction transaction = new Transaction(session, meshifyEntity, transactionManager);
             if (session.getAntennaType() != Config.Antenna.BLUETOOTH_LE) {
                 transactions.put(transaction, Boolean.TRUE);
-                transactionManager.startInBackground();
-            } else if (session2.checkGatt()) {
-                if (transactionManager.getTransactionQueue(session).containsKey(transaction)){
-                    Log.e(TAG, "sendEntity: transaction was queued");
+                startInBackground();
+            } else if (session.checkGatt()) {
+                Log.i(TAG, "sendEntity:");
+                if (getTransactionQueue(session).containsKey(transaction)){
+                    Log.i(TAG, "sendEntity: transaction already queued");
                 } else {
-                    transactionManager.getTransactionQueue(session).put(transaction, Boolean.TRUE);
+                    Log.i(TAG, "sendEntity: transaction was queued");
+                    getTransactionQueue(session).put(transaction, Boolean.TRUE);
                 }
-                // TODO - Execute Send
+                executeWithCharacteristicChange(session);
             } else {
                 bleTransactions.put(transaction, Boolean.TRUE);
-                transactionManager.start();
+                start();
             }
 
         }
@@ -171,6 +176,39 @@ public class TransactionManager {
             bleTransactionsQueue.put(session, concurrentNavigableMap);
         }
         return concurrentNavigableMap;
+    }
+
+    private static synchronized void executeWithCharacteristicChange(Session session) {
+        if (session.checkGatt() && bleTransactionsQueue.get(session).size() > 0) {
+            TransactionManager.changeCharacteristic(session);
+        } else {
+            for (Session session2 : bleTransactionsQueue.keySet()) {
+                if (session2.equals(session) || bleTransactionsQueue.get(session2).size() <= 0) continue;
+                TransactionManager.changeCharacteristic(session2);
+                return;
+            }
+        }
+    }
+
+    private static void changeCharacteristic(Session session) {
+        try {
+            BluetoothGattCharacteristic characteristic = session.getGattServer().getService(BluetoothUtils.getBluetoothUuid()).getCharacteristic(BluetoothUtils.getCharacteristicUuid());
+            characteristic.setValue(new byte[]{1});
+            session.getGattServer().notifyCharacteristicChanged(session.getBluetoothDevice(), characteristic, false);
+        } catch (NullPointerException e) {
+            SessionManager.disconnectLeDevice(session.getSessionId());
+        }
+    }
+
+    public static Transaction getTransactionFromDevice(BluetoothDevice bluetoothDevice) {
+        for (ConcurrentNavigableMap<Transaction, Boolean> keySet : bleTransactionsQueue.values()) {
+
+            for (Transaction transaction2 : keySet.keySet()) {
+                if (!transaction2.getBluetoothDevice().equals((Object)bluetoothDevice)) continue;
+                return transaction2;
+            }
+        }
+        return null;
     }
 
 }

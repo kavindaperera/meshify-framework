@@ -8,11 +8,14 @@ import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.framework.expections.MessageException;
+import com.codewizards.meshify.logs.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Transaction implements Comparable {
+
+    private static String TAG = "[Meshify][Transaction]";
 
     private TransactionManager transactionManager;
 
@@ -81,6 +84,7 @@ public class Transaction implements Comparable {
     }
 
     public ArrayList<byte[]> getByteArr() {
+        Log.i(TAG, "getByteArr(): " + this.byteArr);
         if (this.byteArr == null) {
             this.byteArr = this.setByteArr();
         }
@@ -92,6 +96,7 @@ public class Transaction implements Comparable {
         byte[] arrby = MeshifyUtils.marshall(meshifyEntity);
         arrayList.add(arrby);
         this.byteSize = arrayList.size();
+        Log.i(TAG, "setByteArr() | byteSize: " + this.byteSize);
         return arrayList;
     }
 

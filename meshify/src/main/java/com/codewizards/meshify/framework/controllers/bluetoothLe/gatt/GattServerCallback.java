@@ -17,6 +17,8 @@ import com.codewizards.meshify.framework.controllers.discoverymanager.ServerFact
 import com.codewizards.meshify.framework.controllers.helper.MeshifyUtils;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
+import com.codewizards.meshify.framework.controllers.transactionmanager.Transaction;
+import com.codewizards.meshify.framework.controllers.transactionmanager.TransactionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
 import com.codewizards.meshify.logs.Log;
 
@@ -76,7 +78,23 @@ public class GattServerCallback extends BluetoothGattServerCallback {
     @Override
     public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
         super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-        Log.e(TAG,"onCharacteristicReadRequest()" + " | device: " + device + " | requestId: " + requestId + " | offset: "  + offset + " | characteristic: " + characteristic);
+        Log.e(TAG,"onCharacteristicReadRequest()" + " | device: " + device + " | requestId: " + requestId + " | offset: "  + offset + " | characteristic: " + characteristic.getUuid());
+        Transaction transaction = TransactionManager.getTransactionFromDevice(device);
+        if (transaction != null && transaction.getByteArr().size() > 0) {
+            byte[] arrby = transaction.getByteArr().get(0);
+            if (arrby != null) {
+                (this.getBluetoothLeServer().getServerSocket()).sendResponse(device, requestId, 0, offset, arrby);
+                transaction.getByteArr().remove(0);
+            }
+            if (transaction.getByteArr().isEmpty()){
+                // TODO
+                transaction.getTransactionManager().onTransactionFinished(transaction);
+            }
+        } else {
+            Log.e(TAG, "no info!");
+            (this.getBluetoothLeServer().getServerSocket()).sendResponse(device, requestId, 0, offset, null);
+        }
+
     }
 
     @Override

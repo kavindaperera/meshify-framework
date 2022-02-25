@@ -22,27 +22,27 @@ public class GattManager {
     }
 
     public synchronized void addGattOperation(GattOperation gattOperation1) {
-        Log.e(TAG, "addGattOperation(): " + gattOperation1);
+        Log.i(TAG, "addGattOperation(): " + gattOperation1);
         this.gattOperations.add(gattOperation1);
         this.start();
     }
 
 
     public synchronized void start(){
-        Log.e(TAG, "start(): gatt_operations | size: " + this.gattOperations.size());
+        Log.i(TAG, "start(): gatt_operations | size: " + this.gattOperations.size());
         if (this.gatt == null && this.gattOperations.size() > 0) {
             GattOperation poll = this.gattOperations.poll();
             this.start(poll);
             BluetoothDevice bluetoothDevice = poll.getBluetoothDevice();
             if (this.bluetoothGattMap.containsKey(bluetoothDevice.getAddress())) {
-                Log.e(TAG, "writeDescriptor(): ");
+                Log.i(TAG, "writeDescriptor(): ");
                 execute(this.bluetoothGattMap.get(bluetoothDevice.getAddress()), poll);
             }
         }
     }
 
     public synchronized void start(GattOperation gattOperation) {
-        Log.e(TAG, "start(): " + gattOperation);
+        Log.i(TAG, "start(): " + gattOperation);
         this.gatt = gattOperation;
         if (gattOperation == null) {
             this.start();

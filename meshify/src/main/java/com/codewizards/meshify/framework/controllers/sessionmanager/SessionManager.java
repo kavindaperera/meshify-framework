@@ -1,8 +1,14 @@
 package com.codewizards.meshify.framework.controllers.sessionmanager;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattServer;
+
 import com.codewizards.meshify.api.Config;
 import com.codewizards.meshify.api.Device;
+import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.framework.controllers.discoverymanager.DeviceManager;
+import com.codewizards.meshify.framework.controllers.discoverymanager.ServerFactory;
+import com.codewizards.meshify.framework.controllers.helper.BluetoothUtils;
 import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
@@ -75,6 +81,39 @@ public class SessionManager {
             if (antenna != session.getAntennaType()) continue;
             session.removeSession();
         }
+    }
+
+    public static synchronized void disconnectLeDevice(String id) {
+        synchronized (SessionManager.class) {
+            Session session = sessionMap.get(id);
+            if (session != null) {
+                Config.Antenna antennaType = session.getAntennaType();
+                Config.Antenna antenna = Config.Antenna.BLUETOOTH_LE;
+                if (antennaType == antenna) {
+                    if (session.getBluetoothGatt() != null) {
+                        session.getBluetoothGatt().disconnect();
+                        session.getBluetoothGatt().close();
+                    }
+                    try {
+                        BluetoothGattServer bluetoothGattServer = (BluetoothGattServer) ServerFactory.getServerInstance(antenna, true).getServerSocket();
+                        if (!(session.getBluetoothDevice() == null || bluetoothGattServer == null)) {
+                            BluetoothGattCharacteristic characteristic = bluetoothGattServer.getService(BluetoothUtils.getBluetoothUuid()).getCharacteristic(BluetoothUtils.getCharacteristicUuid());
+                            characteristic.setValue(new byte[]{2});
+                            try {
+                                bluetoothGattServer.notifyCharacteristicChanged(session.getBluetoothDevice(), characteristic, false);
+                            } catch (NullPointerException e) {
+                                Log.e(TAG, "exception closing session" + e.getLocalizedMessage());
+                            }
+                            bluetoothGattServer.cancelConnection(session.getBluetoothDevice());
+                        }
+                    } catch (NullPointerException e2) {
+                        Log.e(TAG, "disconnectLeDevices: " + e2.getLocalizedMessage());
+                    }
+                }
+                session.removeSession();
+            }
+        }
+        return;
     }
 
 }

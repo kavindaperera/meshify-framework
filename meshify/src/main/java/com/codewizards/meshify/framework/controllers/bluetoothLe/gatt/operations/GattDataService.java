@@ -51,7 +51,7 @@ public class GattDataService extends GattOperation {
 
     @Override
     public boolean isGatt() {
-        return false;
+        return true;
     }
 
     public void setTransaction(Transaction transaction) {
