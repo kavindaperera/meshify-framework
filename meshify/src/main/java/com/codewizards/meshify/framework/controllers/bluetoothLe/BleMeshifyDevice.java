@@ -130,7 +130,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                         session = new Session(gatt);
                     }else {
                         session.setBluetoothGatt(gatt);
-                        Log.i(BleMeshifyDevice.this.TAG, "onConnectionStateChange(): reusing previous empty session" + session.getSessionId());
+                        Log.i(BleMeshifyDevice.this.TAG, "onConnectionStateChange(): reusing previous empty session " + session.getSessionId());
                     }
 
                     // check and create a device
@@ -180,7 +180,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                     BluetoothController.getGattManager().start();
                 }
             } else if (status == 133){
-                Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error!!" + gatt.getDevice().getAddress());
+                Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error " + gatt.getDevice());
 
                 if (gatt.getDevice() != null && gatt.getDevice().getAddress() != null) {
                     Log.e(BleMeshifyDevice.this.TAG,  "GATT 133 Error with " + gatt.getDevice().getAddress());
@@ -342,7 +342,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
             BluetoothController.getGattManager().removeGattOperation(bluetoothGatt.getDevice());
             BluetoothController.getGattManager().getBluetoothGattMap().remove(bluetoothGatt.getDevice().getAddress());
             if (BluetoothController.getGattManager().getGattOperation() != null && BluetoothController.getGattManager().getGattOperation().getBluetoothDevice().getAddress().equals(bluetoothGatt.getDevice().getAddress())) {
-                //
+                BluetoothController.getGattManager().start(null);
             }
             bluetoothGatt.disconnect();
             bluetoothGatt.close();
@@ -359,7 +359,7 @@ public class BleMeshifyDevice extends MeshifyDevice {
                 Method localMethod  = bluetoothGatt.getClass().getMethod("refresh", new Class[0]);
                 if (localMethod  != null) {
                     boolean bl = (Boolean)localMethod .invoke((Object)bluetoothGatt, new Object[0]);
-                    Log.w(TAG, "refreshDeviceCache:" + bl);
+                    Log.w(TAG, "refreshDeviceCache: " + bl);
                 }
             }
             catch (Exception exception) {

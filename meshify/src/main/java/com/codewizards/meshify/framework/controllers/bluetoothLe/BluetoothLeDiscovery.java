@@ -177,7 +177,7 @@ public class BluetoothLeDiscovery extends Discovery {
                     bl = true;
                     break;
                 }
-                count++;
+                ++count;
             }
             if ((count < DeviceProfile.getMaxConnectionsForDevice()) || !Meshify.getInstance().getConfig().isAutoConnect()) { //TODO - check maximum connections
                 Device device = DeviceManager.getDevice(bluetoothDevice.getAddress());
