@@ -130,6 +130,16 @@ You can either implement `ConnectionListener` interface or create an [`Anonymous
 ConnectionListener connectionListener = new ConnectionListener() {
 
       @override
+      public void onStarted() {
+
+      }
+      
+      @override
+      public void onStartError(String message, int errorCode); {
+
+      }
+
+      @override
       public void onDeviceDiscovered(Device device) {
 
       }
@@ -166,6 +176,16 @@ MessageListener MessageListener = new MessageListener() {
 
       @override
       public void onBroadcastMessageReceived(Message message) {
+
+      }
+      
+      @override
+      public void onMessageFailed(Message message, MessageException exception) {
+
+      }
+      
+      @override
+      public void onMessageSent(Message message) {
 
       }
 
