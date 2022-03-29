@@ -7,18 +7,18 @@
 
 [![Status](https://badgen.net/badge/status/development/green)](https://github.com/kavindaperera/meshify-framework)
 [![Build Status](https://badgen.net/badge/build/v1.0.0-alpha/green)](https://github.com/kavindaperera/meshify-framework)
-[![LoC](https://badgen.net/badge/lines/10.27k/green)](https://github.com/kavindaperera/meshify-framework)
+[![LoC](https://badgen.net/badge/lines/10.98k/green)](https://github.com/kavindaperera/meshify-framework)
 [![Repo](https://badgen.net/badge/icon/github?icon=github&label)](https://github.com/kavindaperera/meshify-framework)
 [![License](https://badgen.net//badge/license/MIT/blue)](https://github.com/kavindaperera/meshify-framework/blob/development/LICENSE)
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <!-- <a href="https://github.com/kavindaperera/meshify-framework">
+  <a href="https://github.com/kavindaperera/meshify-framework">
     <img src="https://firebasestorage.googleapis.com/v0/b/meshify-f206b.appspot.com/o/logos%2Fmeshify_text_logo_green.svg?alt=media&token=09cfa2c3-f8f1-4309-9bbc-87ab5cdc2b87" alt="Logo" width="500" height="100">
-  </a> -->
+  </a>
 
-  <h3 align="center">Meshify - Android Framework</h3>
+<!--   <h3 align="center">Meshify - Android Framework</h3> -->
 
   <p align="center">
     Adaptive Communication Framework for Android Devices using Bluetooth and Bluetooth Low Energy
@@ -97,10 +97,18 @@ If you only planning to use BLE, you can optionally declare that your app uses B
 
 ## Usage
 
-Add the dependency:
+Multiple methods can be used to integrate the Meshify framework in an Android project.
+
+- First method is to [download](https://github.com/kavindaperera/meshify-framework/releases) the source code from the git repository and include it directly as a project-level dependency using [Gradle](https://docs.gradle.org/current/userguide/what_is_gradle.html). Here, the developer can modify the source code if that is required.
 
 ```javascript
 implementation project(path: ':meshify')
+```
+
+- Another option is to [download](https://github.com/kavindaperera/meshify-framework/releases) the Android Archive (AAR) of the framework and integrate it into the project using Gradle.
+
+```javascript
+implementation files("libs/meshify.aar")
 ```
 
 ## Initialization
