@@ -19,11 +19,11 @@ public class Meshify {
 
     public static boolean debug = false;
 
-    private MeshifyClient meshifyClient;
+    private MeshifyClient meshifyClient;    // [Layer] [API]
 
     static Meshify meshifyInstance;
 
-    private MeshifyCore meshifyCore;
+    private MeshifyCore meshifyCore;    // [Layer] [Discovery Manager]
 
     private Context context;
 
