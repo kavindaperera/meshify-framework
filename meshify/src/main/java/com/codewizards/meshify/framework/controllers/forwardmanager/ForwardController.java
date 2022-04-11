@@ -298,6 +298,11 @@ public class ForwardController {
         return false;
     }
 
-
+    public int getHopBackCount(String uuid){
+        if (spdNavigableMap.containsKey(uuid)){
+            return spdNavigableMap.get(uuid).getHopCount();
+        }
+        return -1;
+    }
 
 }
