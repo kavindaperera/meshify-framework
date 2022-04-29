@@ -20,7 +20,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 
-public class ConnectionSubscriber extends DisposableSubscriber<Device> {
+public class ConnectionSubscriber extends DisposableSubscriber<Device> { // [Layer] [Discovery Manager]
 
     private static final String TAG = "[Meshify][ConnectionSubscriber]";
 

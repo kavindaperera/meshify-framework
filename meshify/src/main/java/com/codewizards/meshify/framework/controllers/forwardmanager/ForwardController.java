@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.codewizards.meshify.api.Meshify;
 import com.codewizards.meshify.framework.controllers.MeshifyCore;
+import com.codewizards.meshify.framework.controllers.bluetoothLe.BluetoothLeDiscovery;
 import com.codewizards.meshify.framework.controllers.sessionmanager.Session;
 import com.codewizards.meshify.framework.controllers.sessionmanager.SessionManager;
 import com.codewizards.meshify.framework.entities.MeshifyEntity;
@@ -14,8 +15,10 @@ import com.codewizards.meshify.logs.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -24,9 +27,13 @@ public class ForwardController {
 
     public final String TAG = "[Meshify][ForwardController]";
 
-    private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>(); // DD Cache
+    private ConcurrentNavigableMap<MeshifyForwardEntity, Boolean> meshNavigableMap = new ConcurrentSkipListMap<MeshifyForwardEntity, Boolean>();    // DD Cache
     private ConcurrentNavigableMap<String, Boolean> reachedNavigableMap = new ConcurrentSkipListMap<String, Boolean>();
     private ConcurrentHashMap<String, Date> alreadyForwardedHandshakes = new ConcurrentHashMap<>();
+
+    private ConcurrentHashMap<String, SpdEntry> spdNavigableMap = new ConcurrentHashMap<>();                            // SPD Cache
+
+    private static int[] spdCacheSize = new int[]{60, 0, 80, 40};                                                       // SPD Cache Size
 
     ForwardController() {
     }
@@ -61,8 +68,13 @@ public class ForwardController {
 
         synchronized (meshNavigableMap) {
 
-            if (this.checkAvailability(forwardEntity) != null) {
+            if (this.checkAvailability(forwardEntity) != null) {             // DD RULE
                 Log.e(TAG, "Forward Entity already in the mesh map");
+                return;
+            }
+
+            if (isSubOptimal(forwardEntity)) {                              // SPD RULE
+                Log.e(TAG, "Forward Entity dropped by SPD Rule");
                 return;
             }
 
@@ -87,6 +99,7 @@ public class ForwardController {
                     forwardEntity1 = forwardEntity;
                 }
             }
+
             if (forwardEntity1 != null) {
                 this.meshNavigableMap.put(forwardEntity1, true);
             } else {
@@ -264,6 +277,83 @@ public class ForwardController {
             }
             return null;
         }
+
+    class SpdEntry {
+
+        private int hopCount;
+        private Date added;
+        private int[] spdDelTime = new int[]{50, 0, 75, 25};  // SPD Cache Del time in sec
+
+        public SpdEntry(Integer hopCount) {
+            this.hopCount = hopCount;
+            this.added =  new Date(System.currentTimeMillis());
+        }
+
+        public int getHopCount() {
+            return hopCount;
+        }
+
+        public Date getAdded() {
+            return added;
+        }
+
+        @Override
+        public String toString() {
+            return "SpdEntry{" +
+                    "hopCount=" + hopCount +
+                    ", added=" + added.getTime() +
+                    '}';
+        }
+
+        int getSpdDelTimeForConfigProfile() {
+            return spdDelTime[Meshify.getInstance().getConfig().getConfigProfile().ordinal()] * 1000;
+        }
+
+        public boolean expired() {
+            long period = new Date(System.currentTimeMillis()).getTime() - this.added.getTime();
+            if (period > (long) this.getSpdDelTimeForConfigProfile()) {
+                Log.e(TAG + "[SPD]", "spd entry expired because: Delete time: " + period + " > " + this.getSpdDelTimeForConfigProfile());
+                return true;
+            }
+            return false;
+        }
+    }
+
+
+    private boolean isSubOptimal(MeshifyForwardEntity forwardEntity){
+
+        Iterator it = ForwardController.this.spdNavigableMap.entrySet().iterator(); // Clear Old Cache
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            SpdEntry spdEntry = (SpdEntry) entry.getValue();
+            if (spdEntry.expired()){
+                it.remove();
+            }
+        }
+
+        int Hc = forwardEntity.getHopLimitForConfigProfile() - forwardEntity.getHops();
+        int Hb = forwardEntity.getHopLimitForConfigProfile();
+
+        if (!spdNavigableMap.containsKey(forwardEntity.getSender())){
+            spdNavigableMap.put(forwardEntity.getSender(), new SpdEntry(Hc));
+            Log.e(TAG + "[SPD]", "New Entry for Sender: " + forwardEntity.getSender() + " " + spdNavigableMap.get(forwardEntity.getSender()));
+        }
+
+        if (spdNavigableMap.containsKey(forwardEntity.getReceiver())){
+            if ( Hb + 1 < Hc + spdNavigableMap.get(forwardEntity.getReceiver()).getHopCount()) {
+                Log.e(TAG + "[SPD]", "Sub Optimal Path: Hb=" + Hb + " + slack = 1" + " < Hc=" + Hc + " + Hnk= " + spdNavigableMap.get(forwardEntity.getReceiver()).getHopCount());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int getHopBackCount(String uuid){
+        if (spdNavigableMap.containsKey(uuid)){
+            return spdNavigableMap.get(uuid).getHopCount();
+        }
+        return -1;
     }
 
 }

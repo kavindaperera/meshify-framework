@@ -20,6 +20,7 @@ import javax.crypto.Cipher;
  * Can be used to generate Public-Private key pairs for RSA,
  * to encrypt data using Public key and decrypt data using Private key
  */
+@Deprecated
 class MeshifyRSA {
 
     /**

@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
  * @author Kavinda Perera
  * @version 1.0
  */
-public class ConnectionManager {
+public class ConnectionManager { // [Layer] [Discovery Manager]
 
     private static final String TAG = "[Meshify][ConnectionManager]";
 

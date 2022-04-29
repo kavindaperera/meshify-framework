@@ -36,9 +36,9 @@ public class MessageController {
 
     private Config config;
 
-    private MessageNotifier messageNotifier;
+    private MessageNotifier messageNotifier;    // [Layer] [Forward Manager]
 
-    private ForwardController forwardController;
+    private ForwardController forwardController;    // [Layer] [Forward Manager]
 
     public MessageController(Context context, Config config) {
         this.config = config;
@@ -78,7 +78,7 @@ public class MessageController {
 
                     Log.d(TAG, "incomingMeshMessageAction: remaining hops " + forwardEntity.getHops() );
 
-                    if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {
+                    if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {   // LHC RULE
                         entityArrayList.add(forwardEntity);
                         continue;
                     }

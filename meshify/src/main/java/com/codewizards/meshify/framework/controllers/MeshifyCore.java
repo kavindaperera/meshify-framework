@@ -29,7 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MeshifyCore {
+public class MeshifyCore { // [Layer] [Discovery Manager]
 
     /*Shared Preference Keys*/
     public static final String PREFS_NAME = "com.codewizards.meshify.client";
@@ -49,13 +49,13 @@ public class MeshifyCore {
 
     private Config config;
 
-    private MessageListener messageListener;
+    private MessageListener messageListener;    // [Layer] [API] [Callback Interface]
 
-    private MessageController messageController;
+    private MessageController messageController;    // [Layer] [Forward Manager]
 
-    private MeshifyReceiver meshifyReceiver;
+    private MeshifyReceiver meshifyReceiver;    // [Layer] [Discovery Manager]
 
-    private ConnectionListener connectionListener;
+    private ConnectionListener connectionListener;  // [Layer] [API] [Callback Interface]
 
     private Completable completable = Completable.create(completableEmitter -> {
 

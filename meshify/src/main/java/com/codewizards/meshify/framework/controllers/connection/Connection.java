@@ -1,6 +1,6 @@
 package com.codewizards.meshify.framework.controllers.connection;
 
-public class Connection {
+public class Connection { // [Layer] [Discovery Manager]
 
     private boolean isConnected;
 
