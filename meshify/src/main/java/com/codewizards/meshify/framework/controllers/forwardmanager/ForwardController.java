@@ -231,7 +231,7 @@ public class ForwardController {
 
         private int hopCount;
         private Date added;
-        private int[] spdDelTime = new int[]{50, 0, 75, 25};                                                         // SPD Cache Del time in sec
+        private int[] spdDelTime = new int[]{50, 0, 75, 25};  // SPD Cache Del time in sec
 
         public SpdEntry(Integer hopCount) {
             this.hopCount = hopCount;
@@ -281,6 +281,7 @@ public class ForwardController {
         }
 
         int Hc = forwardEntity.getHopLimitForConfigProfile() - forwardEntity.getHops();
+        int Hb = forwardEntity.getHopLimitForConfigProfile();
 
         if (!spdNavigableMap.containsKey(forwardEntity.getSender())){
             spdNavigableMap.put(forwardEntity.getSender(), new SpdEntry(Hc));
@@ -288,11 +289,10 @@ public class ForwardController {
         }
 
         if (spdNavigableMap.containsKey(forwardEntity.getReceiver())){
-
-            Log.e(TAG + "[SPD]", "Sub Optimal Path: Hb=" + "slack = 1" + " < Hc=" + Hc + " + Hnk= " + spdNavigableMap.get(forwardEntity.getReceiver()).getHopCount()); // TODO
-
-//            return true;
-
+            if ( Hb + 1 < Hc + spdNavigableMap.get(forwardEntity.getReceiver()).getHopCount()) {
+                Log.e(TAG + "[SPD]", "Sub Optimal Path: Hb=" + Hb + " + slack = 1" + " < Hc=" + Hc + " + Hnk= " + spdNavigableMap.get(forwardEntity.getReceiver()).getHopCount());
+                return true;
+            }
         }
 
         return false;

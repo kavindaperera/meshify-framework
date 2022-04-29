@@ -22,7 +22,7 @@ public class MeshifyForwardEntity implements Parcelable, Comparable {
 
     private static  int[] hopLimits = new int[]{10, 1, 20, 5};
 
-    private static int[] sharingTime = new int[]{75, 0, 100, 25};     // duplicate del time in sec
+    private static int[] sharingTime = new int[]{75, 0, 100, 25};     // duplicate delete time in sec
 
     @JsonProperty(value="id")
     String id;

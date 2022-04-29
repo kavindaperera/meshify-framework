@@ -75,7 +75,7 @@ public class MessageController {
 
                     Log.d(TAG, "incomingMeshMessageAction: remaining hops " + forwardEntity.getHops() );
 
-                    if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {
+                    if (forwardEntity != null && forwardEntity.getHops() > 0 && !Meshify.getInstance().getMeshifyClient().getUserUuid().equalsIgnoreCase(forwardEntity.getSender())) {   // LHC RULE
                         entityArrayList.add(forwardEntity);
                         continue;
                     }

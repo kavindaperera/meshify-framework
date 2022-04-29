@@ -21,9 +21,9 @@ public class Meshify {
 
     private MeshifyClient meshifyClient;    // [Layer] [API]
 
-    static Meshify meshifyInstance;
+    static Meshify meshifyInstance;         // meshify instance
 
-    private MeshifyCore meshifyCore;    // [Layer] [Discovery Manager]
+    private MeshifyCore meshifyCore;        // [Layer] [Discovery Manager]
 
     private Context context;
 
