@@ -73,10 +73,10 @@ public class ForwardController {
                 return;
             }
 
-            if (isSubOptimal(forwardEntity)) {                              // SPD RULE
-                Log.e(TAG, "Forward Entity dropped by SPD Rule");
-                return;
-            }
+//            if (isSubOptimal(forwardEntity)) {                              // SPD RULE
+//                Log.e(TAG, "Forward Entity dropped by SPD Rule");
+//                return;
+//            }
 
             this.discardExpiredEntities(); //remove expire entities
 
@@ -277,6 +277,7 @@ public class ForwardController {
             }
             return null;
         }
+    }
 
     class SpdEntry {
 
